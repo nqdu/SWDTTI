@@ -1,3 +1,11 @@
+
+/*
+:copyright:
+    Nanqiao Du (nqdu@foxmail.com), March 2021
+:license:
+    GNU General Public License, Version 3
+    (http://www.gnu.org/copyleft/gpl.html)
+*/
 #pragma once
 #include<Eigen/Core>
 #include<iostream>
