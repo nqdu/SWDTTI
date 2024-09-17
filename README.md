@@ -1,4 +1,4 @@
-# SurfDisp
+# SWDTTI
 Surface wave dispersion, eigen function and sensitivity kernel for General TI model (Tilted Transversely Isotropic)
 
 Preliminary:
