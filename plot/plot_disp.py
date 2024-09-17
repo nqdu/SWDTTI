@@ -1,13 +1,76 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
-plt.figure(1)
-d = np.loadtxt("dispersion.dat")
-plt.plot(d[:,0],d[:,1],d[:,0],d[:,2])
-plt.legend(["Phase","Group"])
-plt.title("Dispersion Curve for Love Wave")
 
-plt.figure(2)
-plt.plot(d[:,0],d[:,3],d[:,0],d[:,4])
-plt.legend(["Phase","Group"])
-plt.title("Dispersion Curve for Rayleigh Wave")
-plt.show()
+def fetch_data(T,data,nc,col_id):
+    nt = len(T)
+    c_all = np.zeros((nt,nc)) - 1
+
+    for it in range(len(T)):
+        idx = data[:,0] == T[it]
+        c = data[idx,col_id]
+        for i in range(len(c)):
+            if i >= c_all.shape[1] : break 
+            c_all[it,i] = c[i]
+
+    return c_all
+
+# load swd data
+data = np.loadtxt("out/swd.txt")
+data1 = np.loadtxt("out/swd.cps.txt")
+
+# find unique T
+T = np.unique(data[:,0])
+nt = len(T)
+
+# plot phase
+nc = 4
+plt.figure(1,figsize=(14,5))
+#plt.scatter(1./data[:,0],data[:,1],s=10,color='k')
+c_all = fetch_data(T,data,nc,1)
+for i in range(c_all.shape[1]):
+    idx = c_all[:,i] > 0
+    if np.sum(idx) != 0:
+        plt.plot(1./T[idx],c_all[idx,i])
+
+T1 = np.unique(data1[:,0])
+c1_all = fetch_data(T1,data1,nc,1)
+for i in range(c1_all.shape[1]):
+    idx = c1_all[:,i] > 0
+    if np.sum(idx) != 0:
+        plt.plot(1./T1[idx],c1_all[idx,i],color='k',ls='--',label='cps')
+
+plt.legend()
+plt.xlabel("Frequency,Hz")
+plt.ylabel("Phase Velocity, km/s")
+plt.savefig("phase.jpg")
+plt.clf()
+
+# plot group
+plt.figure(1,figsize=(14,5))
+#plt.scatter(1./data[:,0],data[:,2],s=10,color='k')
+c_all = np.zeros((nt,nc)) - 1
+for it in range(len(T)):
+    idx = data[:,0] == T[it]
+    c = data[idx,2]
+    for i in range(len(c)):
+        if i >= c_all.shape[1] : break 
+        c_all[it,i] = c[i]
+
+# plot
+for i in range(c_all.shape[1]):
+    idx = c_all[:,i] > 0
+    if np.sum(idx) != 0:
+        plt.plot(1./T[idx],c_all[idx,i])
+
+T1 = np.unique(data1[:,0])
+c1_all = fetch_data(T1,data1,nc,2)
+for i in range(c1_all.shape[1]):
+    idx = c1_all[:,i] > 0
+    if np.sum(idx) != 0:
+        plt.plot(1./T1[idx],c1_all[idx,i],color='k',ls='--',label='cps')
+plt.legend()
+plt.xlabel("Frequency,Hz")
+plt.ylabel("Group Velocity, km/s")
+plt.savefig("group.jpg")
+
+    
