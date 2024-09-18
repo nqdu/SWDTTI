@@ -26,126 +26,121 @@ subroutine get_comp1 (NGL,A,C,F,L,N,theta0,dphi,jaco, &
   cosphi = cos(dphi); sinphi = sin(dphi);
 
   ! k^0, Udot psidot
-  temp(:) = A*sinth0**2*cosphi**2*costh0**2 + C*sinth0** &
-      2*cosphi**2*costh0**2 - 2*F*sinth0**2*cosphi**2* &
-      costh0**2 - 4*L*sinth0**2*cosphi**2*costh0**2 + &
-      L*sinth0**2*cosphi**2 + L*costh0**2 - N*sinth0 &
-      **2*cosphi**2 - N*costh0**2 + N
+  temp(:) = A*sinth0**2*cosphi**2*costh0**2 + C*sinth0**2*cosphi**2*costh0**2 &
+      - 2*F*sinth0**2*cosphi**2*costh0**2 &
+      - 4*L*sinth0**2*cosphi**2*costh0**2 + L*sinth0**2*cosphi**2 &
+      + L*costh0**2 - N*sinth0**2*cosphi**2 &
+      - N*costh0**2 + N
   do j=1,NGL; do i=1,NGL; 
     K0U(i,j) = K0U(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^0, Wdot psidot
-  temp(:) = A*sinphi*sinth0**2*cosphi*costh0**2 + C*sin( &
-      dphi)*sinth0**2*cosphi*costh0**2 - 2*F*sinphi*sin &
-      (theta0)**2*cosphi*costh0**2 - 4*L*sinphi*sinth0 &
-      **2*cosphi*costh0**2 + L*sinphi*sinth0**2*cos( &
-      dphi) - N*sinphi*sinth0**2*cosphi
+  temp(:) = A*sinphi*sinth0**2*cosphi*costh0**2 &
+      + C*sinphi*sinth0**2*cosphi*costh0**2 - 2*F*sinphi*sinth0**2*cosphi*costh0**2 &
+      - 4*L*sinphi*sinth0**2*cosphi*costh0**2 &
+      + L*sinphi*sinth0**2*cosphi &
+      - N*sinphi*sinth0**2*cosphi
   do j=1,NGL; do i=1,NGL; 
     K0W(i,j) = K0W(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^0, Vdot psidot
-  temp(:) = A*sinth0*cosphi*costh0**3 - A*sinth0*cos( &
-      dphi)*costh0 + C*sinth0*cosphi*costh0**3 - 2*F* &
-      sinth0*cosphi*costh0**3 + F*sinth0*cosphi* &
-      costh0 - 4*L*sinth0*cosphi*costh0**3 + 2*L*sin( &
-      theta0)*cosphi*costh0
+  temp(:) = A*sinth0*cosphi*costh0**3 - A*sinth0*cosphi*costh0 &
+      + C*sinth0*cosphi*costh0**3 - 2*F*sinth0*cosphi*costh0**3 &
+      + F*sinth0*cosphi*costh0 &
+      - 4*L*sinth0*cosphi*costh0**3 &
+      + 2*L*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K0V(i,j) = K0V(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^1, U psidot
-  temp(:) = -cmplx(0,1)*A*sinth0**3*cosphi**3*costh0 + cmplx( &
-      0,1)*A*sinth0*cosphi*costh0 - cmplx(0,1)*C*sin( &
-      theta0)**3*cosphi**3*costh0 + 2*cmplx(0,1)*F*sinth0 &
-      **3*cosphi**3*costh0 - cmplx(0,1)*F*sinth0*cosphi &
-      *costh0 + 4*cmplx(0,1)*L*sinth0**3*cosphi**3*cos( &
-      theta0) - 2*cmplx(0,1)*L*sinth0*cosphi*costh0
+  temp(:) = - cmplx(0,1)*A*sinth0**3*cosphi**3*costh0 &
+      + cmplx(0,1)*A*sinth0*cosphi*costh0 - cmplx(0,1)*C*sinth0**3*cosphi**3*costh0 &
+      + 2*cmplx(0,1)*F*sinth0**3*cosphi**3*costh0 &
+      - cmplx(0,1)*F*sinth0*cosphi*costh0 &
+      + 4*cmplx(0,1)*L*sinth0**3*cosphi**3*costh0 &
+      - 2*cmplx(0,1)*L*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K1U(i,j) = K1U(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Udot psi
-  temp(:) = cmplx(0,1)*A*sinth0**3*cosphi**3*costh0 - cmplx(0 &
-      ,1)*A*sinth0*cosphi*costh0 + cmplx(0,1)*C*sin(theta0 &
-      )**3*cosphi**3*costh0 - 2*cmplx(0,1)*F*sinth0**3*cos &
-      (dphi)**3*costh0 + cmplx(0,1)*F*sinth0*cosphi*cos( &
-      theta0) - 4*cmplx(0,1)*L*sinth0**3*cosphi**3*costh0 &
-      + 2*cmplx(0,1)*L*sinth0*cosphi*costh0
+  temp(:) = cmplx(0,1)*A*sinth0**3*cosphi**3*costh0 &
+      - cmplx(0,1)*A*sinth0*cosphi*costh0 + cmplx(0,1)*C*sinth0**3*cosphi**3*costh0 &
+      - 2*cmplx(0,1)*F*sinth0**3*cosphi**3*costh0 &
+      + cmplx(0,1)*F*sinth0*cosphi*costh0 &
+      - 4*cmplx(0,1)*L*sinth0**3*cosphi**3*costh0+ 2*cmplx(0,1)*L*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K1U(i,j) = K1U(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^1, W psidot
-  temp(:) = -cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*cos(theta0 &
-      ) - cmplx(0,1)*C*sinphi*sinth0**3*cosphi**2*cos(theta0 &
-      ) + 2*cmplx(0,1)*F*sinphi*sinth0**3*cosphi**2*cos( &
-      theta0) + 4*cmplx(0,1)*L*sinphi*sinth0**3*cosphi**2* &
-      costh0 - cmplx(0,1)*L*sinphi*sinth0*costh0 + &
-      cmplx(0,1)*N*sinphi*sinth0*costh0
+  temp(:) = - cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*costh0 &
+      - cmplx(0,1)*C*sinphi*sinth0**3*cosphi**2*costh0 &
+      + 2*cmplx(0,1)*F*sinphi*sinth0**3*cosphi**2*costh0 &
+      + 4*cmplx(0,1)*L*sinphi*sinth0**3*cosphi**2*costh0 &
+      - cmplx(0,1)*L*sinphi*sinth0*costh0 &
+      + cmplx(0,1)*N*sinphi*sinth0*costh0
   do j=1,NGL; do i=1,NGL; 
     K1W(i,j) = K1W(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Wdot psi
-  temp(:) = cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*cos(theta0 &
-      ) - cmplx(0,1)*A*sinphi*sinth0*costh0 + cmplx(0,1)*C &
-      *sinphi*sinth0**3*cosphi**2*costh0 - 2*cmplx(0,1) &
-      *F*sinphi*sinth0**3*cosphi**2*costh0 + cmplx(0,1) &
-      *F*sinphi*sinth0*costh0 - 4*cmplx(0,1)*L*sinphi* &
-      sinth0**3*cosphi**2*costh0 + 2*cmplx(0,1)*N*sin(dphi &
-      )*sinth0*costh0
+  temp(:) = cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*costh0 &
+      - cmplx(0,1)*A*sinphi*sinth0*costh0 &
+      + cmplx(0,1)*C*sinphi*sinth0**3*cosphi**2*costh0 - 2*cmplx(0,1)*F*sinphi*sinth0**3*cosphi**2*costh0 &
+      + cmplx(0,1)*F*sinphi*sinth0*costh0 &
+      - 4*cmplx(0,1)*L*sinphi*sinth0**3*cosphi**2*costh0 &
+      + 2*cmplx(0,1)*N*sinphi*sinth0*costh0
   do j=1,NGL; do i=1,NGL; 
     K1W(i,j) = K1W(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^1, V psidot
-  temp(:) = -cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 - &
-      cmplx(0,1)*C*sinth0**2*cosphi**2*costh0**2 + 2*cmplx &
-      (0,1)*F*sinth0**2*cosphi**2*costh0**2 + 4*cmplx(0,1) &
-      *L*sinth0**2*cosphi**2*costh0**2 - cmplx(0,1)*L*sin( &
-      theta0)**2*cosphi**2 - cmplx(0,1)*L*costh0**2 + cmplx(0,1 &
-      )*N*sinth0**2*cosphi**2 + cmplx(0,1)*N*costh0**2 - &
-      cmplx(0,1)*N
+  temp(:) = - cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 &
+      - cmplx(0,1)*C*sinth0**2*cosphi**2*costh0**2 &
+      + 2*cmplx(0,1)*F*sinth0**2*cosphi**2*costh0**2 + 4*cmplx(0,1)*L*sinth0**2*cosphi**2*costh0**2 &
+      - cmplx(0,1)*L*sinth0**2*cosphi**2 &
+      - cmplx(0,1)*L*costh0**2 + cmplx(0,1)*N*sinth0**2*cosphi**2 &
+      + cmplx(0,1)*N*costh0**2 - cmplx(0,1)*N
   do j=1,NGL; do i=1,NGL; 
     K1V(i,j) = K1V(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Vdot psi
-  temp(:) = cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 - &
-      cmplx(0,1)*A*sinth0**2*cosphi**2 - cmplx(0,1)*A*cos( &
-      theta0)**2 + cmplx(0,1)*A + cmplx(0,1)*C*sinth0**2*cosphi &
-      **2*costh0**2 - 2*cmplx(0,1)*F*sinth0**2*cosphi**2* &
-      costh0**2 + cmplx(0,1)*F*sinth0**2*cosphi**2 + cmplx &
-      (0,1)*F*costh0**2 - 4*cmplx(0,1)*L*sinth0**2*cosphi &
-      **2*costh0**2 + 2*cmplx(0,1)*N*sinth0**2*cosphi**2 + &
-      2*cmplx(0,1)*N*costh0**2 - 2*cmplx(0,1)*N
+  temp(:) = cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 &
+      - cmplx(0,1)*A*sinth0**2*cosphi**2 - cmplx(0,1)*A*costh0**2 + cmplx(0,1)*A &
+      + cmplx(0,1)*C*sinth0**2*cosphi**2*costh0**2 &
+      - 2*cmplx(0,1)*F*sinth0**2*cosphi**2*costh0**2 &
+      + cmplx(0,1)*F*sinth0**2*cosphi**2 + cmplx(0,1)*F*costh0**2 &
+      - 4*cmplx(0,1)*L*sinth0**2*cosphi**2*costh0**2 + 2*cmplx(0,1)*N*sinth0**2*cosphi**2 &
+      + 2*cmplx(0,1)*N*costh0**2 - 2*cmplx(0,1)*N
   do j=1,NGL; do i=1,NGL; 
     K1V(i,j) = K1V(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^2, U psi
-  temp(:) = A*sinth0**4*cosphi**4 - 2*A*sinth0**2*cosphi** &
-      2 + A + C*sinth0**4*cosphi**4 - 2*F*sinth0**4*cos( &
-      dphi)**4 + 2*F*sinth0**2*cosphi**2 - 4*L*sinth0**4* &
-      cosphi**4 + 4*L*sinth0**2*cosphi**2
+  temp(:) = A*sinth0**4*cosphi**4 - 2*A*sinth0**2*cosphi**2 + A &
+      + C*sinth0**4*cosphi**4 - 2*F*sinth0**4*cosphi**4 &
+      + 2*F*sinth0**2*cosphi**2 - 4*L*sinth0**4*cosphi**4 &
+      + 4*L*sinth0**2*cosphi**2
   do i=1,NGL; K2U(i,i) = K2U(i,i) + temp(i) * weight(i) * jaco; enddo
 
   ! k^2, W psi
-  temp(:) = A*sinphi*sinth0**4*cosphi**3 - A*sinphi*sin( &
-      theta0)**2*cosphi + C*sinphi*sinth0**4*cosphi**3 - &
-      2*F*sinphi*sinth0**4*cosphi**3 + F*sinphi*sin( &
-      theta0)**2*cosphi - 4*L*sinphi*sinth0**4*cosphi**3 &
-      + 2*L*sinphi*sinth0**2*cosphi
+  temp(:) = A*sinphi*sinth0**4*cosphi**3 - A*sinphi*sinth0**2*cosphi &
+      + C*sinphi*sinth0**4*cosphi**3 &
+      - 2*F*sinphi*sinth0**4*cosphi**3 + F*sinphi*sinth0**2*cosphi &
+      - 4*L*sinphi*sinth0**4*cosphi**3+ 2*L*sinphi*sinth0**2*cosphi
   do i=1,NGL; K2W(i,i) = K2W(i,i) + temp(i) * weight(i) * jaco; enddo
 
   ! k^2, V psi
-  temp(:) = A*sinth0**3*cosphi**3*costh0 - A*sinth0*cos( &
-      dphi)*costh0 + C*sinth0**3*cosphi**3*costh0 - 2 &
-      *F*sinth0**3*cosphi**3*costh0 + F*sinth0*cos( &
-      dphi)*costh0 - 4*L*sinth0**3*cosphi**3*costh0 + &
-      2*L*sinth0*cosphi*costh0
+  temp(:) = A*sinth0**3*cosphi**3*costh0 - A*sinth0*cosphi*costh0 &
+      + C*sinth0**3*cosphi**3*costh0 &
+      - 2*F*sinth0**3*cosphi**3*costh0 + F*sinth0*cosphi*costh0 &
+      - 4*L*sinth0**3*cosphi**3*costh0 &
+      + 2*L*sinth0*cosphi*costh0
   do i=1,NGL; K2V(i,i) = K2V(i,i) + temp(i) * weight(i) * jaco; enddo
 
   !transpose
@@ -179,125 +174,121 @@ subroutine get_comp2 (NGL,A,C,F,L,N,theta0,dphi,jaco, &
   cosphi = cos(dphi); sinphi = sin(dphi);
 
   ! k^0, Udot psidot
-  temp(:) = A*sinphi*sinth0**2*cosphi*costh0**2 + C*sin( &
-      dphi)*sinth0**2*cosphi*costh0**2 - 2*F*sinphi*sin &
-      (theta0)**2*cosphi*costh0**2 - 4*L*sinphi*sinth0 &
-      **2*cosphi*costh0**2 + L*sinphi*sinth0**2*cos( &
-      dphi) - N*sinphi*sinth0**2*cosphi
+  temp(:) = A*sinphi*sinth0**2*cosphi*costh0**2 &
+      + C*sinphi*sinth0**2*cosphi*costh0**2 - 2*F*sinphi*sinth0**2*cosphi*costh0**2 &
+      - 4*L*sinphi*sinth0**2*cosphi*costh0**2 &
+      + L*sinphi*sinth0**2*cosphi &
+      - N*sinphi*sinth0**2*cosphi
   do j=1,NGL; do i=1,NGL; 
     K0U(i,j) = K0U(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^0, Wdot psidot
-  temp(:) = A*sinphi**2*sinth0**2*costh0**2 + C*sinphi**2* &
-      sinth0**2*costh0**2 - 2*F*sinphi**2*sinth0**2* &
-      costh0**2 - 4*L*sinphi**2*sinth0**2*costh0**2 + &
-      L*sinphi**2*sinth0**2 + L*costh0**2 - N*sinphi**2 &
-      *sinth0**2 - N*costh0**2 + N
+  temp(:) = A*sinphi**2*sinth0**2*costh0**2 + C*sinphi**2*sinth0**2*costh0**2 &
+      - 2*F*sinphi**2*sinth0**2*costh0**2 &
+      - 4*L*sinphi**2*sinth0**2*costh0**2 + L*sinphi**2*sinth0**2 &
+      + L*costh0**2 - N*sinphi**2*sinth0**2 &
+      - N*costh0**2 + N
   do j=1,NGL; do i=1,NGL; 
     K0W(i,j) = K0W(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^0, Vdot psidot
-  temp(:) = A*sinphi*sinth0*costh0**3 - A*sinphi*sin( &
-      theta0)*costh0 + C*sinphi*sinth0*costh0**3 - 2* &
-      F*sinphi*sinth0*costh0**3 + F*sinphi*sinth0* &
-      costh0 - 4*L*sinphi*sinth0*costh0**3 + 2*L*sin( &
-      dphi)*sinth0*costh0
+  temp(:) = A*sinphi*sinth0*costh0**3 - A*sinphi*sinth0*costh0 &
+      + C*sinphi*sinth0*costh0**3 - 2*F*sinphi*sinth0*costh0**3 &
+      + F*sinphi*sinth0*costh0 &
+      - 4*L*sinphi*sinth0*costh0**3 &
+      + 2*L*sinphi*sinth0*costh0
   do j=1,NGL; do i=1,NGL; 
     K0V(i,j) = K0V(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^1, U psidot
-  temp(:) = -cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*cos(theta0 &
-      ) + cmplx(0,1)*A*sinphi*sinth0*costh0 - cmplx(0,1)*C &
-      *sinphi*sinth0**3*cosphi**2*costh0 + 2*cmplx(0,1) &
-      *F*sinphi*sinth0**3*cosphi**2*costh0 - cmplx(0,1) &
-      *F*sinphi*sinth0*costh0 + 4*cmplx(0,1)*L*sinphi* &
-      sinth0**3*cosphi**2*costh0 - 2*cmplx(0,1)*N*sin(dphi &
-      )*sinth0*costh0
+  temp(:) = - cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*costh0 &
+      + cmplx(0,1)*A*sinphi*sinth0*costh0 &
+      - cmplx(0,1)*C*sinphi*sinth0**3*cosphi**2*costh0 &
+      + 2*cmplx(0,1)*F*sinphi*sinth0**3*cosphi**2*costh0 - cmplx(0,1)*F*sinphi*sinth0*costh0 &
+      + 4*cmplx(0,1)*L*sinphi*sinth0**3*cosphi**2*costh0 &
+      - 2*cmplx(0,1)*N*sinphi*sinth0*costh0
   do j=1,NGL; do i=1,NGL; 
     K1U(i,j) = K1U(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Udot psi
-  temp(:) = cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*cos(theta0 &
-      ) + cmplx(0,1)*C*sinphi*sinth0**3*cosphi**2*cos(theta0 &
-      ) - 2*cmplx(0,1)*F*sinphi*sinth0**3*cosphi**2*cos( &
-      theta0) - 4*cmplx(0,1)*L*sinphi*sinth0**3*cosphi**2* &
-      costh0 + cmplx(0,1)*L*sinphi*sinth0*costh0 - &
-      cmplx(0,1)*N*sinphi*sinth0*costh0
+  temp(:) = cmplx(0,1)*A*sinphi*sinth0**3*cosphi**2*costh0 &
+      + cmplx(0,1)*C*sinphi*sinth0**3*cosphi**2*costh0 &
+      - 2*cmplx(0,1)*F*sinphi*sinth0**3*cosphi**2*costh0 &
+      - 4*cmplx(0,1)*L*sinphi*sinth0**3*cosphi**2*costh0 &
+      + cmplx(0,1)*L*sinphi*sinth0*costh0 &
+      - cmplx(0,1)*N*sinphi*sinth0*costh0
   do j=1,NGL; do i=1,NGL; 
     K1U(i,j) = K1U(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^1, W psidot
-  temp(:) = -cmplx(0,1)*A*sinphi**2*sinth0**3*cosphi*cos(theta0 &
-      ) - cmplx(0,1)*C*sinphi**2*sinth0**3*cosphi*cos(theta0 &
-      ) + 2*cmplx(0,1)*F*sinphi**2*sinth0**3*cosphi*cos( &
-      theta0) + 4*cmplx(0,1)*L*sinphi**2*sinth0**3*cosphi* &
-      costh0 - cmplx(0,1)*L*sinth0*cosphi*costh0 + &
-      cmplx(0,1)*N*sinth0*cosphi*costh0
+  temp(:) = - cmplx(0,1)*A*sinphi**2*sinth0**3*cosphi*costh0 &
+      - cmplx(0,1)*C*sinphi**2*sinth0**3*cosphi*costh0 &
+      + 2*cmplx(0,1)*F*sinphi**2*sinth0**3*cosphi*costh0 &
+      + 4*cmplx(0,1)*L*sinphi**2*sinth0**3*cosphi*costh0 &
+      - cmplx(0,1)*L*sinth0*cosphi*costh0 &
+      + cmplx(0,1)*N*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K1W(i,j) = K1W(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Wdot psi
-  temp(:) = cmplx(0,1)*A*sinphi**2*sinth0**3*cosphi*cos(theta0 &
-      ) + cmplx(0,1)*C*sinphi**2*sinth0**3*cosphi*cos(theta0 &
-      ) - 2*cmplx(0,1)*F*sinphi**2*sinth0**3*cosphi*cos( &
-      theta0) - 4*cmplx(0,1)*L*sinphi**2*sinth0**3*cosphi* &
-      costh0 + cmplx(0,1)*L*sinth0*cosphi*costh0 - &
-      cmplx(0,1)*N*sinth0*cosphi*costh0
+  temp(:) = cmplx(0,1)*A*sinphi**2*sinth0**3*cosphi*costh0 &
+      + cmplx(0,1)*C*sinphi**2*sinth0**3*cosphi*costh0 &
+      - 2*cmplx(0,1)*F*sinphi**2*sinth0**3*cosphi*costh0 &
+      - 4*cmplx(0,1)*L*sinphi**2*sinth0**3*cosphi*costh0 &
+      + cmplx(0,1)*L*sinth0*cosphi*costh0 &
+      - cmplx(0,1)*N*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K1W(i,j) = K1W(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^1, V psidot
-  temp(:) = -cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0** &
-      2 - cmplx(0,1)*C*sinphi*sinth0**2*cosphi*costh0** &
-      2 + 2*cmplx(0,1)*F*sinphi*sinth0**2*cosphi*costh0 &
-      **2 + 4*cmplx(0,1)*L*sinphi*sinth0**2*cosphi*cos( &
-      theta0)**2 - cmplx(0,1)*L*sinphi*sinth0**2*cosphi + &
-      cmplx(0,1)*N*sinphi*sinth0**2*cosphi
+  temp(:) = - cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0**2 &
+      - cmplx(0,1)*C*sinphi*sinth0**2*cosphi*costh0**2 &
+      + 2*cmplx(0,1)*F*sinphi*sinth0**2*cosphi*costh0**2 &
+      + 4*cmplx(0,1)*L*sinphi*sinth0**2*cosphi*costh0**2 &
+      - cmplx(0,1)*L*sinphi*sinth0**2*cosphi &
+      + cmplx(0,1)*N*sinphi*sinth0**2*cosphi
   do j=1,NGL; do i=1,NGL; 
     K1V(i,j) = K1V(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Vdot psi
-  temp(:) = cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0**2 &
-      - cmplx(0,1)*A*sinphi*sinth0**2*cosphi + cmplx(0,1)*C* &
-      sinphi*sinth0**2*cosphi*costh0**2 - 2*cmplx(0,1)* &
-      F*sinphi*sinth0**2*cosphi*costh0**2 + cmplx(0,1)* &
-      F*sinphi*sinth0**2*cosphi - 4*cmplx(0,1)*L*sinphi* &
-      sinth0**2*cosphi*costh0**2 + 2*cmplx(0,1)*N*sin(dphi &
-      )*sinth0**2*cosphi
+  temp(:) = cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0**2- cmplx(0,1)*A*sinphi*sinth0**2*cosphi &
+      + cmplx(0,1)*C*sinphi*sinth0**2*cosphi*costh0**2 - 2*cmplx(0,1)*F*sinphi*sinth0**2*cosphi*costh0**2 &
+      + cmplx(0,1)*F*sinphi*sinth0**2*cosphi &
+      - 4*cmplx(0,1)*L*sinphi*sinth0**2*cosphi*costh0**2 &
+      + 2*cmplx(0,1)*N*sinphi*sinth0**2*cosphi
   do j=1,NGL; do i=1,NGL; 
     K1V(i,j) = K1V(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^2, U psi
-  temp(:) = A*sinphi*sinth0**4*cosphi**3 - A*sinphi*sin( &
-      theta0)**2*cosphi + C*sinphi*sinth0**4*cosphi**3 - &
-      2*F*sinphi*sinth0**4*cosphi**3 + F*sinphi*sin( &
-      theta0)**2*cosphi - 4*L*sinphi*sinth0**4*cosphi**3 &
-      + 2*L*sinphi*sinth0**2*cosphi
+  temp(:) = A*sinphi*sinth0**4*cosphi**3 - A*sinphi*sinth0**2*cosphi &
+      + C*sinphi*sinth0**4*cosphi**3 &
+      - 2*F*sinphi*sinth0**4*cosphi**3 + F*sinphi*sinth0**2*cosphi &
+      - 4*L*sinphi*sinth0**4*cosphi**3+ 2*L*sinphi*sinth0**2*cosphi
   do i=1,NGL; K2U(i,i) = K2U(i,i) + temp(i) * weight(i) * jaco; enddo
 
   ! k^2, W psi
-  temp(:) = A*sinphi**2*sinth0**4*cosphi**2 + C*sinphi**2* &
-      sinth0**4*cosphi**2 - 2*F*sinphi**2*sinth0**4*cos &
-      (dphi)**2 - 4*L*sinphi**2*sinth0**4*cosphi**2 + L*sin( &
-      dphi)**2*sinth0**2 + L*sinth0**2*cosphi**2 - N*sin( &
-      dphi)**2*sinth0**2 - N*sinth0**2*cosphi**2 + N
+  temp(:) = A*sinphi**2*sinth0**4*cosphi**2 + C*sinphi**2*sinth0**4*cosphi**2 &
+      - 2*F*sinphi**2*sinth0**4*cosphi**2 &
+      - 4*L*sinphi**2*sinth0**4*cosphi**2 + L*sinphi**2*sinth0**2 &
+      + L*sinth0**2*cosphi**2 - N*sinphi**2*sinth0**2 &
+      - N*sinth0**2*cosphi**2 + N
   do i=1,NGL; K2W(i,i) = K2W(i,i) + temp(i) * weight(i) * jaco; enddo
 
   ! k^2, V psi
-  temp(:) = A*sinphi*sinth0**3*cosphi**2*costh0 + C*sin( &
-      dphi)*sinth0**3*cosphi**2*costh0 - 2*F*sinphi*sin &
-      (theta0)**3*cosphi**2*costh0 - 4*L*sinphi*sinth0 &
-      **3*cosphi**2*costh0 + L*sinphi*sinth0*cos(theta0 &
-      ) - N*sinphi*sinth0*costh0
+  temp(:) = A*sinphi*sinth0**3*cosphi**2*costh0 &
+      + C*sinphi*sinth0**3*cosphi**2*costh0 - 2*F*sinphi*sinth0**3*cosphi**2*costh0 &
+      - 4*L*sinphi*sinth0**3*cosphi**2*costh0 &
+      + L*sinphi*sinth0*costh0 &
+      - N*sinphi*sinth0*costh0
   do i=1,NGL; K2V(i,i) = K2V(i,i) + temp(i) * weight(i) * jaco; enddo
 
   !transpose
@@ -331,125 +322,119 @@ subroutine get_comp3 (NGL,A,C,F,L,N,theta0,dphi,jaco, &
   cosphi = cos(dphi); sinphi = sin(dphi);
 
   ! k^0, Udot psidot
-  temp(:) = A*sinth0*cosphi*costh0**3 - A*sinth0*cos( &
-      dphi)*costh0 + C*sinth0*cosphi*costh0**3 - 2*F* &
-      sinth0*cosphi*costh0**3 + F*sinth0*cosphi* &
-      costh0 - 4*L*sinth0*cosphi*costh0**3 + 2*L*sin( &
-      theta0)*cosphi*costh0
+  temp(:) = A*sinth0*cosphi*costh0**3 - A*sinth0*cosphi*costh0 &
+      + C*sinth0*cosphi*costh0**3 - 2*F*sinth0*cosphi*costh0**3 &
+      + F*sinth0*cosphi*costh0 &
+      - 4*L*sinth0*cosphi*costh0**3 &
+      + 2*L*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K0U(i,j) = K0U(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^0, Wdot psidot
-  temp(:) = A*sinphi*sinth0*costh0**3 - A*sinphi*sin( &
-      theta0)*costh0 + C*sinphi*sinth0*costh0**3 - 2* &
-      F*sinphi*sinth0*costh0**3 + F*sinphi*sinth0* &
-      costh0 - 4*L*sinphi*sinth0*costh0**3 + 2*L*sin( &
-      dphi)*sinth0*costh0
+  temp(:) = A*sinphi*sinth0*costh0**3 - A*sinphi*sinth0*costh0 &
+      + C*sinphi*sinth0*costh0**3 - 2*F*sinphi*sinth0*costh0**3 &
+      + F*sinphi*sinth0*costh0 &
+      - 4*L*sinphi*sinth0*costh0**3 &
+      + 2*L*sinphi*sinth0*costh0
   do j=1,NGL; do i=1,NGL; 
     K0W(i,j) = K0W(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^0, Vdot psidot
-  temp(:) = A*costh0**4 - 2*A*costh0**2 + A + C*costh0**4 - &
-      2*F*costh0**4 + 2*F*costh0**2 - 4*L*costh0**4 + 4* &
-      L*costh0**2
+  temp(:) = A*costh0**4 - 2*A*costh0**2 + A + C*costh0**4 &
+      - 2*F*costh0**4 + 2*F*costh0**2 - 4*L*costh0**4 &
+      + 4*L*costh0**2
   do j=1,NGL; do i=1,NGL; 
     K0V(i,j) = K0V(i,j) + sum(weight * temp / jaco * hp(:,j) * hp(:,i))
   enddo; enddo; 
 
   ! k^1, U psidot
-  temp(:) = -cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 + &
-      cmplx(0,1)*A*sinth0**2*cosphi**2 + cmplx(0,1)*A*cos( &
-      theta0)**2 - cmplx(0,1)*A - cmplx(0,1)*C*sinth0**2*cosphi &
-      **2*costh0**2 + 2*cmplx(0,1)*F*sinth0**2*cosphi**2* &
-      costh0**2 - cmplx(0,1)*F*sinth0**2*cosphi**2 - cmplx &
-      (0,1)*F*costh0**2 + 4*cmplx(0,1)*L*sinth0**2*cosphi &
-      **2*costh0**2 - 2*cmplx(0,1)*N*sinth0**2*cosphi**2 - &
-      2*cmplx(0,1)*N*costh0**2 + 2*cmplx(0,1)*N
+  temp(:) = - cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 &
+      + cmplx(0,1)*A*sinth0**2*cosphi**2 + cmplx(0,1)*A*costh0**2 - cmplx(0,1)*A &
+      - cmplx(0,1)*C*sinth0**2*cosphi**2*costh0**2 &
+      + 2*cmplx(0,1)*F*sinth0**2*cosphi**2*costh0**2 &
+      - cmplx(0,1)*F*sinth0**2*cosphi**2 - cmplx(0,1)*F*costh0**2 &
+      + 4*cmplx(0,1)*L*sinth0**2*cosphi**2*costh0**2 - 2*cmplx(0,1)*N*sinth0**2*cosphi**2 &
+      - 2*cmplx(0,1)*N*costh0**2 + 2*cmplx(0,1)*N
   do j=1,NGL; do i=1,NGL; 
     K1U(i,j) = K1U(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Udot psi
-  temp(:) = cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 + &
-      cmplx(0,1)*C*sinth0**2*cosphi**2*costh0**2 - 2*cmplx &
-      (0,1)*F*sinth0**2*cosphi**2*costh0**2 - 4*cmplx(0,1) &
-      *L*sinth0**2*cosphi**2*costh0**2 + cmplx(0,1)*L*sin( &
-      theta0)**2*cosphi**2 + cmplx(0,1)*L*costh0**2 - cmplx(0,1 &
-      )*N*sinth0**2*cosphi**2 - cmplx(0,1)*N*costh0**2 + &
-      cmplx(0,1)*N
+  temp(:) = cmplx(0,1)*A*sinth0**2*cosphi**2*costh0**2 &
+      + cmplx(0,1)*C*sinth0**2*cosphi**2*costh0**2 &
+      - 2*cmplx(0,1)*F*sinth0**2*cosphi**2*costh0**2 - 4*cmplx(0,1)*L*sinth0**2*cosphi**2*costh0**2 &
+      + cmplx(0,1)*L*sinth0**2*cosphi**2 &
+      + cmplx(0,1)*L*costh0**2 - cmplx(0,1)*N*sinth0**2*cosphi**2 &
+      - cmplx(0,1)*N*costh0**2 + cmplx(0,1)*N
   do j=1,NGL; do i=1,NGL; 
     K1U(i,j) = K1U(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^1, W psidot
-  temp(:) = -cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0** &
-      2 + cmplx(0,1)*A*sinphi*sinth0**2*cosphi - cmplx(0,1)* &
-      C*sinphi*sinth0**2*cosphi*costh0**2 + 2*cmplx(0,1 &
-      )*F*sinphi*sinth0**2*cosphi*costh0**2 - cmplx(0,1 &
-      )*F*sinphi*sinth0**2*cosphi + 4*cmplx(0,1)*L*sinphi &
-      *sinth0**2*cosphi*costh0**2 - 2*cmplx(0,1)*N*sin( &
-      dphi)*sinth0**2*cosphi
+  temp(:) = - cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0**2 &
+      + cmplx(0,1)*A*sinphi*sinth0**2*cosphi &
+      - cmplx(0,1)*C*sinphi*sinth0**2*cosphi*costh0**2 &
+      + 2*cmplx(0,1)*F*sinphi*sinth0**2*cosphi*costh0**2 - cmplx(0,1)*F*sinphi*sinth0**2*cosphi &
+      + 4*cmplx(0,1)*L*sinphi*sinth0**2*cosphi*costh0**2 &
+      - 2*cmplx(0,1)*N*sinphi*sinth0**2*cosphi
   do j=1,NGL; do i=1,NGL; 
     K1W(i,j) = K1W(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Wdot psi
-  temp(:) = cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0**2 &
-      + cmplx(0,1)*C*sinphi*sinth0**2*cosphi*costh0**2 &
-      - 2*cmplx(0,1)*F*sinphi*sinth0**2*cosphi*costh0** &
-      2 - 4*cmplx(0,1)*L*sinphi*sinth0**2*cosphi*costh0 &
-      **2 + cmplx(0,1)*L*sinphi*sinth0**2*cosphi - cmplx(0,1 &
-      )*N*sinphi*sinth0**2*cosphi
+  temp(:) = cmplx(0,1)*A*sinphi*sinth0**2*cosphi*costh0**2+ cmplx(0,1)*C*sinphi*sinth0**2*cosphi*costh0**2- 2*cmplx(0,1)*F*sinphi*sinth0**2*cosphi*costh0**2 &
+      - 4*cmplx(0,1)*L*sinphi*sinth0**2*cosphi*costh0**2 &
+      + cmplx(0,1)*L*sinphi*sinth0**2*cosphi &
+      - cmplx(0,1)*N*sinphi*sinth0**2*cosphi
   do j=1,NGL; do i=1,NGL; 
     K1W(i,j) = K1W(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^1, V psidot
-  temp(:) = -cmplx(0,1)*A*sinth0*cosphi*costh0**3 + cmplx(0,1 &
-      )*A*sinth0*cosphi*costh0 - cmplx(0,1)*C*sinth0* &
-      cosphi*costh0**3 + 2*cmplx(0,1)*F*sinth0*cosphi* &
-      costh0**3 - cmplx(0,1)*F*sinth0*cosphi*costh0 + &
-      4*cmplx(0,1)*L*sinth0*cosphi*costh0**3 - 2*cmplx(0,1 &
-      )*L*sinth0*cosphi*costh0
+  temp(:) = - cmplx(0,1)*A*sinth0*cosphi*costh0**3 &
+      + cmplx(0,1)*A*sinth0*cosphi*costh0 - cmplx(0,1)*C*sinth0*cosphi*costh0**3 &
+      + 2*cmplx(0,1)*F*sinth0*cosphi*costh0**3 &
+      - cmplx(0,1)*F*sinth0*cosphi*costh0 &
+      + 4*cmplx(0,1)*L*sinth0*cosphi*costh0**3 &
+      - 2*cmplx(0,1)*L*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K1V(i,j) = K1V(i,j) + temp(j) * weight(j) * hpT(i,j)
   enddo; enddo; 
 
   ! k^1, Vdot psi
-  temp(:) = cmplx(0,1)*A*sinth0*cosphi*costh0**3 - cmplx(0,1) &
-      *A*sinth0*cosphi*costh0 + cmplx(0,1)*C*sinth0* &
-      cosphi*costh0**3 - 2*cmplx(0,1)*F*sinth0*cosphi* &
-      costh0**3 + cmplx(0,1)*F*sinth0*cosphi*costh0 - &
-      4*cmplx(0,1)*L*sinth0*cosphi*costh0**3 + 2*cmplx(0,1 &
-      )*L*sinth0*cosphi*costh0
+  temp(:) = cmplx(0,1)*A*sinth0*cosphi*costh0**3 &
+      - cmplx(0,1)*A*sinth0*cosphi*costh0 + cmplx(0,1)*C*sinth0*cosphi*costh0**3 &
+      - 2*cmplx(0,1)*F*sinth0*cosphi*costh0**3 &
+      + cmplx(0,1)*F*sinth0*cosphi*costh0 - 4*cmplx(0,1)*L*sinth0*cosphi*costh0**3 &
+      + 2*cmplx(0,1)*L*sinth0*cosphi*costh0
   do j=1,NGL; do i=1,NGL; 
     K1V(i,j) = K1V(i,j) + temp(i) * weight(i) * hp(i,j)
   enddo; enddo; 
 
   ! k^2, U psi
-  temp(:) = A*sinth0**3*cosphi**3*costh0 - A*sinth0*cos( &
-      dphi)*costh0 + C*sinth0**3*cosphi**3*costh0 - 2 &
-      *F*sinth0**3*cosphi**3*costh0 + F*sinth0*cos( &
-      dphi)*costh0 - 4*L*sinth0**3*cosphi**3*costh0 + &
-      2*L*sinth0*cosphi*costh0
+  temp(:) = A*sinth0**3*cosphi**3*costh0 - A*sinth0*cosphi*costh0 &
+      + C*sinth0**3*cosphi**3*costh0 &
+      - 2*F*sinth0**3*cosphi**3*costh0 + F*sinth0*cosphi*costh0 &
+      - 4*L*sinth0**3*cosphi**3*costh0 &
+      + 2*L*sinth0*cosphi*costh0
   do i=1,NGL; K2U(i,i) = K2U(i,i) + temp(i) * weight(i) * jaco; enddo
 
   ! k^2, W psi
-  temp(:) = A*sinphi*sinth0**3*cosphi**2*costh0 + C*sin( &
-      dphi)*sinth0**3*cosphi**2*costh0 - 2*F*sinphi*sin &
-      (theta0)**3*cosphi**2*costh0 - 4*L*sinphi*sinth0 &
-      **3*cosphi**2*costh0 + L*sinphi*sinth0*cos(theta0 &
-      ) - N*sinphi*sinth0*costh0
+  temp(:) = A*sinphi*sinth0**3*cosphi**2*costh0 &
+      + C*sinphi*sinth0**3*cosphi**2*costh0 - 2*F*sinphi*sinth0**3*cosphi**2*costh0 &
+      - 4*L*sinphi*sinth0**3*cosphi**2*costh0 &
+      + L*sinphi*sinth0*costh0 &
+      - N*sinphi*sinth0*costh0
   do i=1,NGL; K2W(i,i) = K2W(i,i) + temp(i) * weight(i) * jaco; enddo
 
   ! k^2, V psi
-  temp(:) = A*sinth0**2*cosphi**2*costh0**2 + C*sinth0** &
-      2*cosphi**2*costh0**2 - 2*F*sinth0**2*cosphi**2* &
-      costh0**2 - 4*L*sinth0**2*cosphi**2*costh0**2 + &
-      L*sinth0**2*cosphi**2 + L*costh0**2 - N*sinth0 &
-      **2*cosphi**2 - N*costh0**2 + N
+  temp(:) = A*sinth0**2*cosphi**2*costh0**2 + C*sinth0**2*cosphi**2*costh0**2 &
+      - 2*F*sinth0**2*cosphi**2*costh0**2 &
+      - 4*L*sinth0**2*cosphi**2*costh0**2 + L*sinth0**2*cosphi**2 &
+      + L*costh0**2 - N*sinth0**2*cosphi**2 &
+      - N*costh0**2 + N
   do i=1,NGL; K2V(i,i) = K2V(i,i) + temp(i) * weight(i) * jaco; enddo
 
   !transpose
@@ -480,704 +465,653 @@ subroutine get_kernels (NGL,k,A,C,F,L,N,theta0,dphi, &
   costh0 = cos(theta0); sinth0 = sin(theta0);
   cosphi = cos(dphi); sinphi = sin(dphi);
 
-  temp(:) = -U*k**2*(sinphi*sinth0**4*cosphi**3 - sinphi*sin &
-      (theta0)**2*cosphi)*conjg(W) - U*k**2*(sinth0**3*cos(dphi &
-      )**3*costh0 - sinth0*cosphi*costh0)*conjg(V) - &
-      U*k**2*(sinth0**4*cosphi**4 - 2*sinth0**2*cosphi &
-      **2 + 1)*conjg(U) + cmplx(0,1)*U*k*(sinth0**3*cosphi**3* &
-      costh0 - sinth0*cosphi*costh0)*conjg(Udot) + &
-      cmplx(0,1)*U*k*(sinphi*sinth0**3*cosphi**2*cos(theta0 &
-      ) - sinphi*sinth0*costh0)*conjg(Wdot) + cmplx(0,1)*U &
-      *k*(sinth0**2*cosphi**2*costh0**2 - sinth0**2* &
-      cosphi**2 - costh0**2 + 1)*conjg(Vdot) - cmplx(0,1)*Udot* &
-      k*(sinth0**3*cosphi**3*costh0 - sinth0*cos(dphi &
-      )*costh0)*conjg(U) - cmplx(0,1)*Udot*k*sinphi*sinth0 &
-      **3*cosphi**2*costh0*conjg(W) - cmplx(0,1)*Udot*k*sin( &
-      theta0)**2*cosphi**2*costh0**2*conjg(V) - Udot*(sin( &
-      theta0)*cosphi*costh0**3 - sinth0*cosphi*cos( &
-      theta0))*conjg(Vdot) - Udot*sinphi*sinth0**2*cosphi* &
-      costh0**2*conjg(Wdot) - Udot*sinth0**2*cosphi**2*cos &
-      (theta0)**2*conjg(Udot) - V*k**2*(sinth0**3*cosphi**3*cos &
-      (theta0) - sinth0*cosphi*costh0)*conjg(U) - V*k**2* &
-      sinphi*sinth0**3*cosphi**2*costh0*conjg(W) - V*k &
-      **2*sinth0**2*cosphi**2*costh0**2*conjg(V) + cmplx(0 &
-      ,1)*V*k*(sinth0*cosphi*costh0**3 - sinth0*cos( &
-      dphi)*costh0)*conjg(Vdot) + cmplx(0,1)*V*k*sinphi*sin( &
-      theta0)**2*cosphi*costh0**2*conjg(Wdot) + cmplx(0,1)*V*k* &
-      sinth0**2*cosphi**2*costh0**2*conjg(Udot) - cmplx(0, &
-      1)*Vdot*k*(sinth0*cosphi*costh0**3 - sinth0*cos &
-      (dphi)*costh0)*conjg(V) - cmplx(0,1)*Vdot*k*(sinphi*sin( &
-      theta0)**2*cosphi*costh0**2 - sinphi*sinth0**2* &
-      cosphi)*conjg(W) - cmplx(0,1)*Vdot*k*(sinth0**2*cosphi &
-      **2*costh0**2 - sinth0**2*cosphi**2 - costh0**2 &
-      + 1)*conjg(U) - Vdot*(sinphi*sinth0*costh0**3 - sin( &
-      dphi)*sinth0*costh0)*conjg(Wdot) - Vdot*(sinth0* &
-      cosphi*costh0**3 - sinth0*cosphi*costh0)* &
-      conjg(Udot) - Vdot*(costh0**4 - 2*costh0**2 + 1)*conjg( &
-      Vdot) - W*k**2*(sinphi*sinth0**4*cosphi**3 - sinphi &
-      *sinth0**2*cosphi)*conjg(U) - W*k**2*sinphi**2*sin( &
-      theta0)**4*cosphi**2*conjg(W) - W*k**2*sinphi*sinth0** &
-      3*cosphi**2*costh0*conjg(V) + cmplx(0,1)*W*k*(sinphi* &
-      sinth0**2*cosphi*costh0**2 - sinphi*sinth0** &
-      2*cosphi)*conjg(Vdot) + cmplx(0,1)*W*k*sinphi**2*sin(theta0 &
-      )**3*cosphi*costh0*conjg(Wdot) + cmplx(0,1)*W*k*sinphi &
-      *sinth0**3*cosphi**2*costh0*conjg(Udot) - cmplx(0,1) &
-      *Wdot*k*(sinphi*sinth0**3*cosphi**2*costh0 - sin( &
-      dphi)*sinth0*costh0)*conjg(U) - cmplx(0,1)*Wdot*k*sin( &
-      dphi)**2*sinth0**3*cosphi*costh0*conjg(W) - cmplx(0, &
-      1)*Wdot*k*sinphi*sinth0**2*cosphi*costh0**2*conjg &
-      (V) - Wdot*(sinphi*sinth0*costh0**3 - sinphi*sin( &
-      theta0)*costh0)*conjg(Vdot) - Wdot*sinphi**2*sinth0 &
-      **2*costh0**2*conjg(Wdot) - Wdot*sinphi*sinth0**2* &
-      cosphi*costh0**2*conjg(Udot)
+  temp(:) = - U*k**2*(sinphi*sinth0**4*cosphi**3 &
+      - sinphi*sinth0**2*cosphi)*conjg(W) - U*k**2*(sinth0**3*cosphi**3*costh0 &
+      - sinth0*cosphi*costh0)*conjg(V) - U*k**2*(sinth0**4*cosphi**4 &
+      - 2*sinth0**2*cosphi**2 + 1)*conjg(U) &
+      + cmplx(0,1)*U*k*(sinth0**3*cosphi**3*costh0 &
+      - sinth0*cosphi*costh0)*conjg(Udot) + cmplx(0,1)*U*k*(sinphi*sinth0**3*cosphi**2*costh0 &
+      - sinphi*sinth0*costh0)*conjg(Wdot) &
+      + cmplx(0,1)*U*k*(sinth0**2*cosphi**2*costh0**2 &
+      - sinth0**2*cosphi**2 - costh0**2 + 1)*conjg(Vdot) &
+      - cmplx(0,1)*Udot*k*(sinth0**3*cosphi**3*costh0 &
+      - sinth0*cosphi*costh0)*conjg(U) - cmplx(0,1)*Udot*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(W) &
+      - cmplx(0,1)*Udot*k*sinth0**2*cosphi**2*costh0**2*conjg(V) &
+      - Udot*(sinth0*cosphi*costh0**3 &
+      - sinth0*cosphi*costh0)*conjg(Vdot) &
+      - Udot*sinphi*sinth0**2*cosphi*costh0**2*conjg(Wdot) &
+      - Udot*sinth0**2*cosphi**2*costh0**2*conjg(Udot) &
+      - V*k**2*(sinth0**3*cosphi**3*costh0 - sinth0*cosphi*costh0)*conjg(U) &
+      - V*k**2*sinphi*sinth0**3*cosphi**2*costh0*conjg(W) &
+      - V*k**2*sinth0**2*cosphi**2*costh0**2*conjg(V) &
+      + cmplx(0,1)*V*k*(sinth0*cosphi*costh0**3 - sinth0*cosphi*costh0)*conjg(Vdot) &
+      + cmplx(0,1)*V*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(Wdot) &
+      + cmplx(0,1)*V*k*sinth0**2*cosphi**2*costh0**2*conjg(Udot) &
+      - cmplx(0,1)*Vdot*k*(sinth0*cosphi*costh0**3 &
+      - sinth0*cosphi*costh0)*conjg(V) &
+      - cmplx(0,1)*Vdot*k*(sinphi*sinth0**2*cosphi*costh0**2 &
+      - sinphi*sinth0**2*cosphi)*conjg(W) &
+      - cmplx(0,1)*Vdot*k*(sinth0**2*cosphi**2*costh0**2 - sinth0**2*cosphi**2 &
+      - costh0**2+ 1)*conjg(U) - Vdot*(sinphi*sinth0*costh0**3 &
+      - sinphi*sinth0*costh0)*conjg(Wdot) &
+      - Vdot*(sinth0*cosphi*costh0**3 - sinth0*cosphi*costh0)*conjg(Udot) &
+      - Vdot*(costh0**4 - 2*costh0**2 + 1)*conjg(Vdot) &
+      - W*k**2*(sinphi*sinth0**4*cosphi**3 - sinphi*sinth0**2*cosphi)*conjg(U) &
+      - W*k**2*sinphi**2*sinth0**4*cosphi**2*conjg(W) &
+      - W*k**2*sinphi*sinth0**3*cosphi**2*costh0*conjg(V) &
+      + cmplx(0,1)*W*k*(sinphi*sinth0**2*cosphi*costh0**2 &
+      - sinphi*sinth0**2*cosphi)*conjg(Vdot) &
+      + cmplx(0,1)*W*k*sinphi**2*sinth0**3*cosphi*costh0*conjg(Wdot) &
+      + cmplx(0,1)*W*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(Udot) &
+      - cmplx(0,1)*Wdot*k*(sinphi*sinth0**3*cosphi**2*costh0 &
+      - sinphi*sinth0*costh0)*conjg(U) &
+      - cmplx(0,1)*Wdot*k*sinphi**2*sinth0**3*cosphi*costh0*conjg(W) &
+      - cmplx(0,1)*Wdot*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(V) &
+      - Wdot*(sinphi*sinth0*costh0**3 - sinphi*sinth0*costh0)*conjg(Vdot) &
+      - Wdot*sinphi**2*sinth0**2*costh0**2*conjg(Wdot) &
+      - Wdot*sinphi*sinth0**2*cosphi*costh0**2*conjg(Udot)
   KA(:) = real(temp(:),kind=dp)
 
-  temp(:) = -U*k**2*sinphi*sinth0**4*cosphi**3*conjg(W) - U*k** &
-      2*sinth0**4*cosphi**4*conjg(U) - U*k**2*sinth0**3* &
-      cosphi**3*costh0*conjg(V) + cmplx(0,1)*U*k*sinphi*sin( &
-      theta0)**3*cosphi**2*costh0*conjg(Wdot) + cmplx(0,1)*U*k* &
-      sinth0**3*cosphi**3*costh0*conjg(Udot) + cmplx(0,1)* &
-      U*k*sinth0**2*cosphi**2*costh0**2*conjg(Vdot) - &
-      cmplx(0,1)*Udot*k*sinphi*sinth0**3*cosphi**2*cos( &
-      theta0)*conjg(W) - cmplx(0,1)*Udot*k*sinth0**3*cosphi**3* &
-      costh0*conjg(U) - cmplx(0,1)*Udot*k*sinth0**2*cosphi &
-      **2*costh0**2*conjg(V) - Udot*sinphi*sinth0**2*cos( &
-      dphi)*costh0**2*conjg(Wdot) - Udot*sinth0**2*cosphi &
-      **2*costh0**2*conjg(Udot) - Udot*sinth0*cosphi*cos( &
-      theta0)**3*conjg(Vdot) - V*k**2*sinphi*sinth0**3*cos(dphi &
-      )**2*costh0*conjg(W) - V*k**2*sinth0**3*cosphi**3* &
-      costh0*conjg(U) - V*k**2*sinth0**2*cosphi**2*cos( &
-      theta0)**2*conjg(V) + cmplx(0,1)*V*k*sinphi*sinth0**2*cos &
-      (dphi)*costh0**2*conjg(Wdot) + cmplx(0,1)*V*k*sinth0**2 &
-      *cosphi**2*costh0**2*conjg(Udot) + cmplx(0,1)*V*k*sin( &
-      theta0)*cosphi*costh0**3*conjg(Vdot) - cmplx(0,1)*Vdot*k* &
-      sinphi*sinth0**2*cosphi*costh0**2*conjg(W) - &
-      cmplx(0,1)*Vdot*k*sinth0**2*cosphi**2*costh0**2* &
-      conjg(U) - cmplx(0,1)*Vdot*k*sinth0*cosphi*costh0**3 &
-      *conjg(V) - Vdot*sinphi*sinth0*costh0**3*conjg(Wdot &
-      ) - Vdot*sinth0*cosphi*costh0**3*conjg(Udot) - Vdot* &
-      costh0**4*conjg(Vdot) - W*k**2*sinphi**2*sinth0**4* &
-      cosphi**2*conjg(W) - W*k**2*sinphi*sinth0**4*cosphi &
-      **3*conjg(U) - W*k**2*sinphi*sinth0**3*cosphi**2*cos( &
-      theta0)*conjg(V) + cmplx(0,1)*W*k*sinphi**2*sinth0**3*cos &
-      (dphi)*costh0*conjg(Wdot) + cmplx(0,1)*W*k*sinphi*sin( &
-      theta0)**3*cosphi**2*costh0*conjg(Udot) + cmplx(0,1)*W*k* &
-      sinphi*sinth0**2*cosphi*costh0**2*conjg(Vdot) - &
-      cmplx(0,1)*Wdot*k*sinphi**2*sinth0**3*cosphi*cos( &
-      theta0)*conjg(W) - cmplx(0,1)*Wdot*k*sinphi*sinth0**3*cos &
-      (dphi)**2*costh0*conjg(U) - cmplx(0,1)*Wdot*k*sinphi*sin( &
-      theta0)**2*cosphi*costh0**2*conjg(V) - Wdot*sinphi**2* &
-      sinth0**2*costh0**2*conjg(Wdot) - Wdot*sinphi*sin( &
-      theta0)**2*cosphi*costh0**2*conjg(Udot) - Wdot*sinphi* &
-      sinth0*costh0**3*conjg(Vdot)
+  temp(:) = - U*k**2*sinphi*sinth0**4*cosphi**3*conjg(W) &
+      - U*k**2*sinth0**4*cosphi**4*conjg(U) - U*k**2*sinth0**3*cosphi**3*costh0*conjg(V) &
+      + cmplx(0,1)*U*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(Wdot) &
+      + cmplx(0,1)*U*k*sinth0**3*cosphi**3*costh0*conjg(Udot) &
+      + cmplx(0,1)*U*k*sinth0**2*cosphi**2*costh0**2*conjg(Vdot) &
+      - cmplx(0,1)*Udot*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(W) &
+      - cmplx(0,1)*Udot*k*sinth0**3*cosphi**3*costh0*conjg(U) &
+      - cmplx(0,1)*Udot*k*sinth0**2*cosphi**2*costh0**2*conjg(V) &
+      - Udot*sinphi*sinth0**2*cosphi*costh0**2*conjg(Wdot) &
+      - Udot*sinth0**2*cosphi**2*costh0**2*conjg(Udot) &
+      - Udot*sinth0*cosphi*costh0**3*conjg(Vdot) &
+      - V*k**2*sinphi*sinth0**3*cosphi**2*costh0*conjg(W) &
+      - V*k**2*sinth0**3*cosphi**3*costh0*conjg(U) &
+      - V*k**2*sinth0**2*cosphi**2*costh0**2*conjg(V) &
+      + cmplx(0,1)*V*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(Wdot) &
+      + cmplx(0,1)*V*k*sinth0**2*cosphi**2*costh0**2*conjg(Udot) &
+      + cmplx(0,1)*V*k*sinth0*cosphi*costh0**3*conjg(Vdot) &
+      - cmplx(0,1)*Vdot*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(W) &
+      - cmplx(0,1)*Vdot*k*sinth0**2*cosphi**2*costh0**2*conjg(U) &
+      - cmplx(0,1)*Vdot*k*sinth0*cosphi*costh0**3*conjg(V) &
+      - Vdot*sinphi*sinth0*costh0**3*conjg(Wdot) &
+      - Vdot*sinth0*cosphi*costh0**3*conjg(Udot) - Vdot*costh0**4*conjg(Vdot) &
+      - W*k**2*sinphi**2*sinth0**4*cosphi**2*conjg(W) &
+      - W*k**2*sinphi*sinth0**4*cosphi**3*conjg(U) - W*k**2*sinphi*sinth0**3*cosphi**2*costh0*conjg(V) &
+      + cmplx(0,1)*W*k*sinphi**2*sinth0**3*cosphi*costh0*conjg(Wdot) &
+      + cmplx(0,1)*W*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(Udot) &
+      + cmplx(0,1)*W*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(Vdot) &
+      - cmplx(0,1)*Wdot*k*sinphi**2*sinth0**3*cosphi*costh0*conjg(W) &
+      - cmplx(0,1)*Wdot*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(U) &
+      - cmplx(0,1)*Wdot*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(V) &
+      - Wdot*sinphi**2*sinth0**2*costh0**2*conjg(Wdot) &
+      - Wdot*sinphi*sinth0**2*cosphi*costh0**2*conjg(Udot) &
+      - Wdot*sinphi*sinth0*costh0**3*conjg(Vdot)
   KC(:) = real(temp(:),kind=dp)
 
-  temp(:) = -U*k**2*(-2*sinth0**4*cosphi**4 + 2*sinth0**2*cos &
-      (dphi)**2)*conjg(U) - U*k**2*(-2*sinphi*sinth0**4*cos( &
-      dphi)**3 + sinphi*sinth0**2*cosphi)*conjg(W) - U*k**2* &
-      (-2*sinth0**3*cosphi**3*costh0 + sinth0*cos( &
-      dphi)*costh0)*conjg(V) + cmplx(0,1)*U*k*(-2*sinth0**3* &
-      cosphi**3*costh0 + sinth0*cosphi*costh0)* &
-      conjg(Udot) + cmplx(0,1)*U*k*(-2*sinphi*sinth0**3*cos( &
-      dphi)**2*costh0 + sinphi*sinth0*costh0)*conjg( &
-      Wdot) + cmplx(0,1)*U*k*(-2*sinth0**2*cosphi**2*cos(theta0 &
-      )**2 + sinth0**2*cosphi**2 + costh0**2)*conjg(Vdot) &
-      - cmplx(0,1)*Udot*k*(-2*sinth0**3*cosphi**3*costh0 + &
-      sinth0*cosphi*costh0)*conjg(U) + 2*cmplx(0,1)*Udot*k &
-      *sinphi*sinth0**3*cosphi**2*costh0*conjg(W) + 2* &
-      cmplx(0,1)*Udot*k*sinth0**2*cosphi**2*costh0**2* &
-      conjg(V) - Udot*(-2*sinth0*cosphi*costh0**3 + sin( &
-      theta0)*cosphi*costh0)*conjg(Vdot) + 2*Udot*sinphi*sin &
-      (theta0)**2*cosphi*costh0**2*conjg(Wdot) + 2*Udot*sin( &
-      theta0)**2*cosphi**2*costh0**2*conjg(Udot) - V*k**2*(-2* &
-      sinth0**3*cosphi**3*costh0 + sinth0*cosphi* &
-      costh0)*conjg(U) + 2*V*k**2*sinphi*sinth0**3*cos( &
-      dphi)**2*costh0*conjg(W) + 2*V*k**2*sinth0**2*cosphi &
-      **2*costh0**2*conjg(V) + cmplx(0,1)*V*k*(-2*sinth0*cos( &
-      dphi)*costh0**3 + sinth0*cosphi*costh0)*conjg( &
-      Vdot) - 2*cmplx(0,1)*V*k*sinphi*sinth0**2*cosphi*cos( &
-      theta0)**2*conjg(Wdot) - 2*cmplx(0,1)*V*k*sinth0**2*cos(dphi &
-      )**2*costh0**2*conjg(Udot) - cmplx(0,1)*Vdot*k*(-2*sin( &
-      theta0)*cosphi*costh0**3 + sinth0*cosphi*cos( &
-      theta0))*conjg(V) - cmplx(0,1)*Vdot*k*(-2*sinphi*sinth0** &
-      2*cosphi*costh0**2 + sinphi*sinth0**2*cosphi)* &
-      conjg(W) - cmplx(0,1)*Vdot*k*(-2*sinth0**2*cosphi**2*cos( &
-      theta0)**2 + sinth0**2*cosphi**2 + costh0**2)*conjg( &
-      U) - Vdot*(-2*sinphi*sinth0*costh0**3 + sinphi* &
-      sinth0*costh0)*conjg(Wdot) - Vdot*(-2*sinth0*cos( &
-      dphi)*costh0**3 + sinth0*cosphi*costh0)*conjg( &
-      Udot) - Vdot*(-2*costh0**4 + 2*costh0**2)*conjg(Vdot) - &
-      W*k**2*(-2*sinphi*sinth0**4*cosphi**3 + sinphi*sin( &
-      theta0)**2*cosphi)*conjg(U) + 2*W*k**2*sinphi**2*sin(theta0 &
-      )**4*cosphi**2*conjg(W) + 2*W*k**2*sinphi*sinth0**3* &
-      cosphi**2*costh0*conjg(V) + cmplx(0,1)*W*k*(-2*sinphi* &
-      sinth0**2*cosphi*costh0**2 + sinphi*sinth0** &
-      2*cosphi)*conjg(Vdot) - 2*cmplx(0,1)*W*k*sinphi**2*sin( &
-      theta0)**3*cosphi*costh0*conjg(Wdot) - 2*cmplx(0,1)*W*k* &
-      sinphi*sinth0**3*cosphi**2*costh0*conjg(Udot) - &
-      cmplx(0,1)*Wdot*k*(-2*sinphi*sinth0**3*cosphi**2*cos( &
-      theta0) + sinphi*sinth0*costh0)*conjg(U) + 2*cmplx(0 &
-      ,1)*Wdot*k*sinphi**2*sinth0**3*cosphi*costh0* &
-      conjg(W) + 2*cmplx(0,1)*Wdot*k*sinphi*sinth0**2*cosphi &
-      *costh0**2*conjg(V) - Wdot*(-2*sinphi*sinth0*cos( &
-      theta0)**3 + sinphi*sinth0*costh0)*conjg(Vdot) + 2* &
-      Wdot*sinphi**2*sinth0**2*costh0**2*conjg(Wdot) + 2* &
-      Wdot*sinphi*sinth0**2*cosphi*costh0**2*conjg(Udot &
-      )
+  temp(:) = - U*k**2*(- 2*sinth0**4*cosphi**4 + 2*sinth0**2*cosphi**2)*conjg(U) &
+      - U*k**2*(- 2*sinphi*sinth0**4*cosphi**3 &
+      + sinphi*sinth0**2*cosphi)*conjg(W) - U*k**2*(- 2*sinth0**3*cosphi**3*costh0 &
+      + sinth0*cosphi*costh0)*conjg(V) &
+      + cmplx(0,1)*U*k*(- 2*sinth0**3*cosphi**3*costh0 &
+      + sinth0*cosphi*costh0)*conjg(Udot) &
+      + cmplx(0,1)*U*k*(- 2*sinphi*sinth0**3*cosphi**2*costh0 + sinphi*sinth0*costh0)*conjg(Wdot) &
+      + cmplx(0,1)*U*k*(- 2*sinth0**2*cosphi**2*costh0**2 &
+      + sinth0**2*cosphi**2 &
+      + costh0**2)*conjg(Vdot)- cmplx(0,1)*Udot*k*(- 2*sinth0**3*cosphi**3*costh0 &
+      + sinth0*cosphi*costh0)*conjg(U) &
+      + 2*cmplx(0,1)*Udot*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(W) &
+      + 2*cmplx(0,1)*Udot*k*sinth0**2*cosphi**2*costh0**2*conjg(V) &
+      - Udot*(- 2*sinth0*cosphi*costh0**3 + sinth0*cosphi*costh0)*conjg(Vdot) &
+      + 2*Udot*sinphi*sinth0**2*cosphi*costh0**2*conjg(Wdot) &
+      + 2*Udot*sinth0**2*cosphi**2*costh0**2*conjg(Udot) &
+      - V*k**2*(- 2*sinth0**3*cosphi**3*costh0 &
+      + sinth0*cosphi*costh0)*conjg(U) + 2*V*k**2*sinphi*sinth0**3*cosphi**2*costh0*conjg(W) &
+      + 2*V*k**2*sinth0**2*cosphi**2*costh0**2*conjg(V) &
+      + cmplx(0,1)*V*k*(- 2*sinth0*cosphi*costh0**3 &
+      + sinth0*cosphi*costh0)*conjg(Vdot) &
+      - 2*cmplx(0,1)*V*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(Wdot) &
+      - 2*cmplx(0,1)*V*k*sinth0**2*cosphi**2*costh0**2*conjg(Udot) &
+      - cmplx(0,1)*Vdot*k*(- 2*sinth0*cosphi*costh0**3 &
+      + sinth0*cosphi*costh0)*conjg(V) &
+      - cmplx(0,1)*Vdot*k*(- 2*sinphi*sinth0**2*cosphi*costh0**2 &
+      + sinphi*sinth0**2*cosphi)*conjg(W) - cmplx(0,1)*Vdot*k*(- 2*sinth0**2*cosphi**2*costh0**2 &
+      + sinth0**2*cosphi**2 + costh0**2)*conjg(U) &
+      - Vdot*(- 2*sinphi*sinth0*costh0**3 &
+      + sinphi*sinth0*costh0)*conjg(Wdot) - Vdot*(- 2*sinth0*cosphi*costh0**3 &
+      + sinth0*cosphi*costh0)*conjg(Udot) &
+      - Vdot*(- 2*costh0**4 + 2*costh0**2)*conjg(Vdot) &
+      - W*k**2*(- 2*sinphi*sinth0**4*cosphi**3 + sinphi*sinth0**2*cosphi)*conjg(U) &
+      + 2*W*k**2*sinphi**2*sinth0**4*cosphi**2*conjg(W) &
+      + 2*W*k**2*sinphi*sinth0**3*cosphi**2*costh0*conjg(V) &
+      + cmplx(0,1)*W*k*(- 2*sinphi*sinth0**2*cosphi*costh0**2 &
+      + sinphi*sinth0**2*cosphi)*conjg(Vdot) &
+      - 2*cmplx(0,1)*W*k*sinphi**2*sinth0**3*cosphi*costh0*conjg(Wdot) &
+      - 2*cmplx(0,1)*W*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(Udot) &
+      - cmplx(0,1)*Wdot*k*(- 2*sinphi*sinth0**3*cosphi**2*costh0 &
+      + sinphi*sinth0*costh0)*conjg(U) &
+      + 2*cmplx(0,1)*Wdot*k*sinphi**2*sinth0**3*cosphi*costh0*conjg(W) &
+      + 2*cmplx(0,1)*Wdot*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(V) &
+      - Wdot*(- 2*sinphi*sinth0*costh0**3 + sinphi*sinth0*costh0)*conjg(Vdot) &
+      + 2*Wdot*sinphi**2*sinth0**2*costh0**2*conjg(Wdot) &
+      + 2*Wdot*sinphi*sinth0**2*cosphi*costh0**2*conjg(Udot)
   KF(:) = real(temp(:),kind=dp)
 
-  temp(:) = -U*k**2*(-4*sinth0**4*cosphi**4 + 4*sinth0**2*cos &
-      (dphi)**2)*conjg(U) - U*k**2*(-4*sinphi*sinth0**4*cos( &
-      dphi)**3 + 2*sinphi*sinth0**2*cosphi)*conjg(W) - U*k** &
-      2*(-4*sinth0**3*cosphi**3*costh0 + 2*sinth0*cos &
-      (dphi)*costh0)*conjg(V) + cmplx(0,1)*U*k*(-4*sinth0**3* &
-      cosphi**3*costh0 + 2*sinth0*cosphi*costh0)* &
-      conjg(Udot) - 4*cmplx(0,1)*U*k*sinphi*sinth0**3*cosphi &
-      **2*costh0*conjg(Wdot) - 4*cmplx(0,1)*U*k*sinth0**2*cos &
-      (dphi)**2*costh0**2*conjg(Vdot) - cmplx(0,1)*Udot*k*(-4*sin( &
-      theta0)**3*cosphi**3*costh0 + 2*sinth0*cosphi*cos &
-      (theta0))*conjg(U) - cmplx(0,1)*Udot*k*(-4*sinphi*sinth0 &
-      **3*cosphi**2*costh0 + sinphi*sinth0*costh0) &
-      *conjg(W) - cmplx(0,1)*Udot*k*(-4*sinth0**2*cosphi**2*cos &
-      (theta0)**2 + sinth0**2*cosphi**2 + costh0**2)*conjg &
-      (V) - Udot*(-4*sinth0*cosphi*costh0**3 + 2*sin( &
-      theta0)*cosphi*costh0)*conjg(Vdot) - Udot*(-4*sinphi* &
-      sinth0**2*cosphi*costh0**2 + sinphi*sinth0** &
-      2*cosphi)*conjg(Wdot) - Udot*(-4*sinth0**2*cosphi**2* &
-      costh0**2 + sinth0**2*cosphi**2 + costh0**2)* &
-      conjg(Udot) - V*k**2*(-4*sinth0**3*cosphi**3*costh0 &
-      + 2*sinth0*cosphi*costh0)*conjg(U) - V*k**2*(-4*sin( &
-      dphi)*sinth0**3*cosphi**2*costh0 + sinphi*sin( &
-      theta0)*costh0)*conjg(W) - V*k**2*(-4*sinth0**2*cos( &
-      dphi)**2*costh0**2 + sinth0**2*cosphi**2 + cos( &
-      theta0)**2)*conjg(V) + cmplx(0,1)*V*k*(-4*sinth0*cosphi* &
-      costh0**3 + 2*sinth0*cosphi*costh0)*conjg(Vdot &
-      ) + cmplx(0,1)*V*k*(-4*sinphi*sinth0**2*cosphi*cos( &
-      theta0)**2 + sinphi*sinth0**2*cosphi)*conjg(Wdot) + &
-      cmplx(0,1)*V*k*(-4*sinth0**2*cosphi**2*costh0**2 + &
-      sinth0**2*cosphi**2 + costh0**2)*conjg(Udot) - cmplx &
-      (0,1)*Vdot*k*(-4*sinth0*cosphi*costh0**3 + 2*sin( &
-      theta0)*cosphi*costh0)*conjg(V) + 4*cmplx(0,1)*Vdot*k*sin &
-      (dphi)*sinth0**2*cosphi*costh0**2*conjg(W) + 4*cmplx &
-      (0,1)*Vdot*k*sinth0**2*cosphi**2*costh0**2*conjg(U) &
-      - Vdot*(-4*sinphi*sinth0*costh0**3 + 2*sinphi*sin &
-      (theta0)*costh0)*conjg(Wdot) - Vdot*(-4*sinth0*cos(dphi &
-      )*costh0**3 + 2*sinth0*cosphi*costh0)*conjg( &
-      Udot) - Vdot*(-4*costh0**4 + 4*costh0**2)*conjg(Vdot) - &
-      W*k**2*(-4*sinphi*sinth0**4*cosphi**3 + 2*sinphi* &
-      sinth0**2*cosphi)*conjg(U) - W*k**2*(-4*sinphi*sin( &
-      theta0)**3*cosphi**2*costh0 + sinphi*sinth0*cos( &
-      theta0))*conjg(V) - W*k**2*(-4*sinphi**2*sinth0**4*cos( &
-      dphi)**2 + sinphi**2*sinth0**2 + sinth0**2*cosphi &
-      **2)*conjg(W) + cmplx(0,1)*W*k*(-4*sinphi*sinth0**3*cos( &
-      dphi)**2*costh0 + sinphi*sinth0*costh0)*conjg( &
-      Udot) + cmplx(0,1)*W*k*(-4*sinphi**2*sinth0**3*cosphi* &
-      costh0 + sinth0*cosphi*costh0)*conjg(Wdot) - 4* &
-      cmplx(0,1)*W*k*sinphi*sinth0**2*cosphi*costh0**2* &
-      conjg(Vdot) - cmplx(0,1)*Wdot*k*(-4*sinphi*sinth0**2*cos( &
-      dphi)*costh0**2 + sinphi*sinth0**2*cosphi)*conjg( &
-      V) - cmplx(0,1)*Wdot*k*(-4*sinphi**2*sinth0**3*cosphi* &
-      costh0 + sinth0*cosphi*costh0)*conjg(W) + 4* &
-      cmplx(0,1)*Wdot*k*sinphi*sinth0**3*cosphi**2*cos( &
-      theta0)*conjg(U) - Wdot*(-4*sinphi*sinth0*costh0**3 &
-      + 2*sinphi*sinth0*costh0)*conjg(Vdot) - Wdot*(-4*sin &
-      (dphi)*sinth0**2*cosphi*costh0**2 + sinphi*sin( &
-      theta0)**2*cosphi)*conjg(Udot) - Wdot*(-4*sinphi**2*sin( &
-      theta0)**2*costh0**2 + sinphi**2*sinth0**2 + cos( &
-      theta0)**2)*conjg(Wdot)
+  temp(:) = - U*k**2*(- 4*sinth0**4*cosphi**4 + 4*sinth0**2*cosphi**2)*conjg(U) &
+      - U*k**2*(- 4*sinphi*sinth0**4*cosphi**3 &
+      + 2*sinphi*sinth0**2*cosphi)*conjg(W) &
+      - U*k**2*(- 4*sinth0**3*cosphi**3*costh0 + 2*sinth0*cosphi*costh0)*conjg(V) &
+      + cmplx(0,1)*U*k*(- 4*sinth0**3*cosphi**3*costh0 &
+      + 2*sinth0*cosphi*costh0)*conjg(Udot) &
+      - 4*cmplx(0,1)*U*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(Wdot) &
+      - 4*cmplx(0,1)*U*k*sinth0**2*cosphi**2*costh0**2*conjg(Vdot) &
+      - cmplx(0,1)*Udot*k*(- 4*sinth0**3*cosphi**3*costh0 &
+      + 2*sinth0*cosphi*costh0)*conjg(U) - cmplx(0,1)*Udot*k*(- 4*sinphi*sinth0**3*cosphi**2*costh0 &
+      + sinphi*sinth0*costh0)*conjg(W) &
+      - cmplx(0,1)*Udot*k*(- 4*sinth0**2*cosphi**2*costh0**2 &
+      + sinth0**2*cosphi**2 + costh0**2)*conjg(V) &
+      - Udot*(- 4*sinth0*cosphi*costh0**3 + 2*sinth0*cosphi*costh0)*conjg(Vdot) &
+      - Udot*(- 4*sinphi*sinth0**2*cosphi*costh0**2 &
+      + sinphi*sinth0**2*cosphi)*conjg(Wdot) &
+      - Udot*(- 4*sinth0**2*cosphi**2*costh0**2 + sinth0**2*cosphi**2 &
+      + costh0**2)*conjg(Udot) &
+      - V*k**2*(- 4*sinth0**3*cosphi**3*costh0+ 2*sinth0*cosphi*costh0)*conjg(U) &
+      - V*k**2*(- 4*sinphi*sinth0**3*cosphi**2*costh0 &
+      + sinphi*sinth0*costh0)*conjg(W) - V*k**2*(- 4*sinth0**2*cosphi**2*costh0**2 &
+      + sinth0**2*cosphi**2 + costh0**2)*conjg(V) &
+      + cmplx(0,1)*V*k*(- 4*sinth0*cosphi*costh0**3 &
+      + 2*sinth0*cosphi*costh0)*conjg(Vdot) &
+      + cmplx(0,1)*V*k*(- 4*sinphi*sinth0**2*cosphi*costh0**2 &
+      + sinphi*sinth0**2*cosphi)*conjg(Wdot) + cmplx(0,1)*V*k*(- 4*sinth0**2*cosphi**2*costh0**2 &
+      + sinth0**2*cosphi**2 + costh0**2)*conjg(Udot) &
+      - cmplx(0,1)*Vdot*k*(- 4*sinth0*cosphi*costh0**3 &
+      + 2*sinth0*cosphi*costh0)*conjg(V) &
+      + 4*cmplx(0,1)*Vdot*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(W) &
+      + 4*cmplx(0,1)*Vdot*k*sinth0**2*cosphi**2*costh0**2*conjg(U)- Vdot*(- 4*sinphi*sinth0*costh0**3 &
+      + 2*sinphi*sinth0*costh0)*conjg(Wdot) &
+      - Vdot*(- 4*sinth0*cosphi*costh0**3 &
+      + 2*sinth0*cosphi*costh0)*conjg(Udot) - Vdot*(- 4*costh0**4 &
+      + 4*costh0**2)*conjg(Vdot) - W*k**2*(- 4*sinphi*sinth0**4*cosphi**3 &
+      + 2*sinphi*sinth0**2*cosphi)*conjg(U) &
+      - W*k**2*(- 4*sinphi*sinth0**3*cosphi**2*costh0 &
+      + sinphi*sinth0*costh0)*conjg(V) - W*k**2*(- 4*sinphi**2*sinth0**4*cosphi**2 &
+      + sinphi**2*sinth0**2 &
+      + sinth0**2*cosphi**2)*conjg(W) + cmplx(0,1)*W*k*(- 4*sinphi*sinth0**3*cosphi**2*costh0 &
+      + sinphi*sinth0*costh0)*conjg(Udot) &
+      + cmplx(0,1)*W*k*(- 4*sinphi**2*sinth0**3*cosphi*costh0 &
+      + sinth0*cosphi*costh0)*conjg(Wdot) &
+      - 4*cmplx(0,1)*W*k*sinphi*sinth0**2*cosphi*costh0**2*conjg(Vdot) &
+      - cmplx(0,1)*Wdot*k*(- 4*sinphi*sinth0**2*cosphi*costh0**2 &
+      + sinphi*sinth0**2*cosphi)*conjg(V) &
+      - cmplx(0,1)*Wdot*k*(- 4*sinphi**2*sinth0**3*cosphi*costh0 &
+      + sinth0*cosphi*costh0)*conjg(W) + 4*cmplx(0,1)*Wdot*k*sinphi*sinth0**3*cosphi**2*costh0*conjg(U) &
+      - Wdot*(- 4*sinphi*sinth0*costh0**3+ 2*sinphi*sinth0*costh0)*conjg(Vdot) &
+      - Wdot*(- 4*sinphi*sinth0**2*cosphi*costh0**2 &
+      + sinphi*sinth0**2*cosphi)*conjg(Udot) - Wdot*(- 4*sinphi**2*sinth0**2*costh0**2 &
+      + sinphi**2*sinth0**2 &
+      + costh0**2)*conjg(Wdot)
   KL(:) = real(temp(:),kind=dp)
 
-  temp(:) = cmplx(0,1)*U*k*(2*sinth0**2*cosphi**2 + 2*costh0 &
-      **2 - 2)*conjg(Vdot) + 2*cmplx(0,1)*U*k*sinphi*sinth0*cos &
-      (theta0)*conjg(Wdot) - cmplx(0,1)*Udot*k*(-sinth0**2*cos( &
-      dphi)**2 - costh0**2 + 1)*conjg(V) + cmplx(0,1)*Udot*k*sin( &
-      dphi)*sinth0*costh0*conjg(W) - Udot*(-sinth0**2* &
-      cosphi**2 - costh0**2 + 1)*conjg(Udot) + Udot*sinphi* &
-      sinth0**2*cosphi*conjg(Wdot) - V*k**2*(-sinth0**2* &
-      cosphi**2 - costh0**2 + 1)*conjg(V) + V*k**2*sinphi* &
-      sinth0*costh0*conjg(W) + cmplx(0,1)*V*k*(-sinth0** &
-      2*cosphi**2 - costh0**2 + 1)*conjg(Udot) - cmplx(0,1)*V*k &
-      *sinphi*sinth0**2*cosphi*conjg(Wdot) - cmplx(0,1)*Vdot &
-      *k*(2*sinth0**2*cosphi**2 + 2*costh0**2 - 2)*conjg(U &
-      ) - 2*cmplx(0,1)*Vdot*k*sinphi*sinth0**2*cosphi*conjg( &
-      W) - W*k**2*(-sinphi**2*sinth0**2 - sinth0**2*cos( &
-      dphi)**2 + 1)*conjg(W) + W*k**2*sinphi*sinth0*costh0 &
-      *conjg(V) + 2*cmplx(0,1)*W*k*sinphi*sinth0**2*cosphi* &
-      conjg(Vdot) - cmplx(0,1)*W*k*sinphi*sinth0*costh0* &
-      conjg(Udot) - cmplx(0,1)*W*k*sinth0*cosphi*costh0* &
-      conjg(Wdot) + cmplx(0,1)*Wdot*k*sinphi*sinth0**2*cos(dphi &
-      )*conjg(V) - 2*cmplx(0,1)*Wdot*k*sinphi*sinth0*cos(theta0 &
-      )*conjg(U) + cmplx(0,1)*Wdot*k*sinth0*cosphi*costh0* &
-      conjg(W) - Wdot*(-sinphi**2*sinth0**2 - costh0**2 + &
-      1)*conjg(Wdot) + Wdot*sinphi*sinth0**2*cosphi*conjg( &
-      Udot)
+  temp(:) = cmplx(0,1)*U*k*(2*sinth0**2*cosphi**2 + 2*costh0**2 &
+      - 2)*conjg(Vdot) + 2*cmplx(0,1)*U*k*sinphi*sinth0*costh0*conjg(Wdot) &
+      - cmplx(0,1)*Udot*k*(- sinth0**2*cosphi**2 - costh0**2 &
+      + 1)*conjg(V) + cmplx(0,1)*Udot*k*sinphi*sinth0*costh0*conjg(W) &
+      - Udot*(- sinth0**2*cosphi**2 - costh0**2 &
+      + 1)*conjg(Udot) + Udot*sinphi*sinth0**2*cosphi*conjg(Wdot) &
+      - V*k**2*(- sinth0**2*cosphi**2 - costh0**2 + 1)*conjg(V) &
+      + V*k**2*sinphi*sinth0*costh0*conjg(W) &
+      + cmplx(0,1)*V*k*(- sinth0**2*cosphi**2 - costh0**2 + 1)*conjg(Udot) &
+      - cmplx(0,1)*V*k*sinphi*sinth0**2*cosphi*conjg(Wdot) &
+      - cmplx(0,1)*Vdot*k*(2*sinth0**2*cosphi**2 + 2*costh0**2 - 2)*conjg(U) &
+      - 2*cmplx(0,1)*Vdot*k*sinphi*sinth0**2*cosphi*conjg(W) &
+      - W*k**2*(- sinphi**2*sinth0**2 - sinth0**2*cosphi**2 &
+      + 1)*conjg(W) + W*k**2*sinphi*sinth0*costh0*conjg(V) &
+      + 2*cmplx(0,1)*W*k*sinphi*sinth0**2*cosphi*conjg(Vdot) &
+      - cmplx(0,1)*W*k*sinphi*sinth0*costh0*conjg(Udot) &
+      - cmplx(0,1)*W*k*sinth0*cosphi*costh0*conjg(Wdot) &
+      + cmplx(0,1)*Wdot*k*sinphi*sinth0**2*cosphi*conjg(V) - 2*cmplx(0,1)*Wdot*k*sinphi*sinth0*costh0*conjg(U) &
+      + cmplx(0,1)*Wdot*k*sinth0*cosphi*costh0*conjg(W) &
+      - Wdot*(- sinphi**2*sinth0**2 - costh0**2 &
+      + 1)*conjg(Wdot) &
+      + Wdot*sinphi*sinth0**2*cosphi*conjg(Udot)
   KN(:) = real(temp(:),kind=dp)
 
-  temp(:) = -U*k**2*(8*(L - N)*sinth0*cosphi**2*costh0 + 4*( &
-      -A + F + 2*N)*sinth0*cosphi**2*costh0 + 4*(A + C - 2 &
-      *F - 4*L)*sinth0**3*cosphi**4*costh0)*conjg(U) - U*k &
-      **2*(4*(L - N)*sinphi*sinth0*cosphi*costh0 + 2*( &
-      -A + F + 2*N)*sinphi*sinth0*cosphi*costh0 + 4*(A &
-      + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**3*cos(theta0 &
-      ))*conjg(W) - U*k**2*(-2*(L - N)*sinth0**2*cosphi + 2*(L &
-      - N)*cosphi*costh0**2 - (-A + F + 2*N)*sinth0**2*cos &
-      (dphi) + (-A + F + 2*N)*cosphi*costh0**2 - (A + C - 2*F - &
-      4*L)*sinth0**4*cosphi**3 + 3*(A + C - 2*F - 4*L)*sin( &
-      theta0)**2*cosphi**3*costh0**2)*conjg(V) + cmplx(0,1)*U*k &
-      *((2*sinth0*cosphi**2*costh0 - 2*sinth0*cos( &
-      theta0))*(-A + F + 2*N) - 2*(A + C - 2*F - 4*L)*sinth0**3* &
-      cosphi**2*costh0 + 2*(A + C - 2*F - 4*L)*sinth0*cos( &
-      dphi)**2*costh0**3)*conjg(Vdot) + cmplx(0,1)*U*k*(-(-A + F + &
-      2*N)*sinphi*sinth0**2 + (-A + F + 2*N)*sinphi*cos( &
-      theta0)**2 - (A + C - 2*F - 4*L)*sinphi*sinth0**4*cos( &
-      dphi)**2 + 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cos( &
-      dphi)**2*costh0**2)*conjg(Wdot) + cmplx(0,1)*U*k*(-2*(L - N) &
-      *sinth0**2*cosphi + 2*(L - N)*cosphi*costh0**2 - &
-      (-A + F + 2*N)*sinth0**2*cosphi + (-A + F + 2*N)*cos(dphi &
-      )*costh0**2 - (A + C - 2*F - 4*L)*sinth0**4*cosphi** &
-      3 + 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi**3*costh0 &
-      **2)*conjg(Udot) - cmplx(0,1)*Udot*k*((L - N)*(2*sinth0*cos( &
-      dphi)**2*costh0 - 2*sinth0*costh0) - 2*(A + C - 2* &
-      F - 4*L)*sinth0**3*cosphi**2*costh0 + 2*(A + C - 2*F &
-      - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(V) - cmplx( &
-      0,1)*Udot*k*(-(L - N)*sinphi*sinth0**2 + (L - N)*sin(dphi &
-      )*costh0**2 - (A + C - 2*F - 4*L)*sinphi*sinth0**4* &
-      cosphi**2 + 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cos &
-      (dphi)**2*costh0**2)*conjg(W) - cmplx(0,1)*Udot*k*(-2*(L - N &
-      )*sinth0**2*cosphi + 2*(L - N)*cosphi*costh0**2 - &
-      (-A + F + 2*N)*sinth0**2*cosphi + (-A + F + 2*N)*cos(dphi &
-      )*costh0**2 - (A + C - 2*F - 4*L)*sinth0**4*cosphi** &
-      3 + 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi**3*costh0 &
-      **2)*conjg(U) - Udot*((L - N)*(2*sinth0*cosphi**2*cos( &
-      theta0) - 2*sinth0*costh0) - 2*(A + C - 2*F - 4*L)*sin( &
-      theta0)**3*cosphi**2*costh0 + 2*(A + C - 2*F - 4*L)*sin( &
-      theta0)*cosphi**2*costh0**3)*conjg(Udot) - Udot*(2*(L - N &
-      )*sinphi*sinth0*cosphi*costh0 - 2*(A + C - 2*F - &
-      4*L)*sinphi*sinth0**3*cosphi*costh0 + 2*(A + C - &
-      2*F - 4*L)*sinphi*sinth0*cosphi*costh0**3)*conjg( &
-      Wdot) - Udot*(-2*(L - N)*sinth0**2*cosphi + 2*(L - N)*cos &
-      (dphi)*costh0**2 - (-A + F + 2*N)*sinth0**2*cosphi + &
-      (-A + F + 2*N)*cosphi*costh0**2 - 3*(A + C - 2*F - 4*L)* &
-      sinth0**2*cosphi*costh0**2 + (A + C - 2*F - 4*L)*cos &
-      (dphi)*costh0**4)*conjg(Vdot) - V*k**2*((L - N)*(2*sin( &
-      theta0)*cosphi**2*costh0 - 2*sinth0*costh0) - 2 &
-      *(A + C - 2*F - 4*L)*sinth0**3*cosphi**2*costh0 + 2* &
-      (A + C - 2*F - 4*L)*sinth0*cosphi**2*costh0**3)* &
-      conjg(V) - V*k**2*(-(L - N)*sinphi*sinth0**2 + (L - N)* &
-      sinphi*costh0**2 - (A + C - 2*F - 4*L)*sinphi*sin( &
-      theta0)**4*cosphi**2 + 3*(A + C - 2*F - 4*L)*sinphi*sin( &
-      theta0)**2*cosphi**2*costh0**2)*conjg(W) - V*k**2*(-2*(L &
-      - N)*sinth0**2*cosphi + 2*(L - N)*cosphi*costh0** &
-      2 - (-A + F + 2*N)*sinth0**2*cosphi + (-A + F + 2*N)*cos( &
-      dphi)*costh0**2 - (A + C - 2*F - 4*L)*sinth0**4*cos( &
-      dphi)**3 + 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi**3*cos( &
-      theta0)**2)*conjg(U) + cmplx(0,1)*V*k*((L - N)*(2*sinth0*cos &
-      (dphi)**2*costh0 - 2*sinth0*costh0) - 2*(A + C - 2 &
-      *F - 4*L)*sinth0**3*cosphi**2*costh0 + 2*(A + C - 2* &
-      F - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(Udot) + &
-      cmplx(0,1)*V*k*(2*(L - N)*sinphi*sinth0*cosphi*cos( &
-      theta0) - 2*(A + C - 2*F - 4*L)*sinphi*sinth0**3*cos(dphi &
-      )*costh0 + 2*(A + C - 2*F - 4*L)*sinphi*sinth0*cos( &
-      dphi)*costh0**3)*conjg(Wdot) + cmplx(0,1)*V*k*(-2*(L - N)* &
-      sinth0**2*cosphi + 2*(L - N)*cosphi*costh0**2 - ( &
-      -A + F + 2*N)*sinth0**2*cosphi + (-A + F + 2*N)*cosphi &
-      *costh0**2 - 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi* &
-      costh0**2 + (A + C - 2*F - 4*L)*cosphi*costh0**4)* &
-      conjg(Vdot) - cmplx(0,1)*Vdot*k*((2*sinth0*cosphi**2*cos( &
-      theta0) - 2*sinth0*costh0)*(-A + F + 2*N) - 2*(A + C - &
-      2*F - 4*L)*sinth0**3*cosphi**2*costh0 + 2*(A + C - 2 &
-      *F - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(U) - &
-      cmplx(0,1)*Vdot*k*(2*(-A + F + 2*N)*sinphi*sinth0*cos( &
-      dphi)*costh0 - 2*(A + C - 2*F - 4*L)*sinphi*sinth0** &
-      3*cosphi*costh0 + 2*(A + C - 2*F - 4*L)*sinphi*sin( &
-      theta0)*cosphi*costh0**3)*conjg(W) - cmplx(0,1)*Vdot*k*( &
-      -2*(L - N)*sinth0**2*cosphi + 2*(L - N)*cosphi*cos( &
-      theta0)**2 - (-A + F + 2*N)*sinth0**2*cosphi + (-A + F + &
-      2*N)*cosphi*costh0**2 - 3*(A + C - 2*F - 4*L)*sinth0 &
-      **2*cosphi*costh0**2 + (A + C - 2*F - 4*L)*cosphi*cos( &
-      theta0)**4)*conjg(V) - Vdot*(-8*(L - N)*sinth0*costh0 - &
-      4*(-A + F + 2*N)*sinth0*costh0 - 4*(A + C - 2*F - 4*L)* &
-      sinth0*costh0**3)*conjg(Vdot) - Vdot*(-2*(L - N)*sin( &
-      dphi)*sinth0**2 + 2*(L - N)*sinphi*costh0**2 - (-A + &
-      F + 2*N)*sinphi*sinth0**2 + (-A + F + 2*N)*sinphi*cos( &
-      theta0)**2 - 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cos( &
-      theta0)**2 + (A + C - 2*F - 4*L)*sinphi*costh0**4)*conjg( &
-      Wdot) - Vdot*(-2*(L - N)*sinth0**2*cosphi + 2*(L - N)*cos &
-      (dphi)*costh0**2 - (-A + F + 2*N)*sinth0**2*cosphi + &
-      (-A + F + 2*N)*cosphi*costh0**2 - 3*(A + C - 2*F - 4*L)* &
-      sinth0**2*cosphi*costh0**2 + (A + C - 2*F - 4*L)*cos &
-      (dphi)*costh0**4)*conjg(Udot) - W*k**2*((L - N)*(2*sinphi &
-      **2*sinth0*costh0 + 2*sinth0*cosphi**2*cos( &
-      theta0)) + 4*(A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cos( &
-      dphi)**2*costh0)*conjg(W) - W*k**2*(4*(L - N)*sinphi*sin( &
-      theta0)*cosphi*costh0 + 2*(-A + F + 2*N)*sinphi*sin( &
-      theta0)*cosphi*costh0 + 4*(A + C - 2*F - 4*L)*sinphi* &
-      sinth0**3*cosphi**3*costh0)*conjg(U) - W*k**2*(-(L - &
-      N)*sinphi*sinth0**2 + (L - N)*sinphi*costh0**2 - &
-      (A + C - 2*F - 4*L)*sinphi*sinth0**4*cosphi**2 + 3*(A &
-      + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi**2*cos(theta0 &
-      )**2)*conjg(V) + cmplx(0,1)*W*k*(2*(-A + F + 2*N)*sinphi*sin( &
-      theta0)*cosphi*costh0 - 2*(A + C - 2*F - 4*L)*sinphi* &
-      sinth0**3*cosphi*costh0 + 2*(A + C - 2*F - 4*L)*sin( &
-      dphi)*sinth0*cosphi*costh0**3)*conjg(Vdot) + cmplx(0 &
-      ,1)*W*k*(-(L - N)*sinphi*sinth0**2 + (L - N)*sinphi* &
-      costh0**2 - (A + C - 2*F - 4*L)*sinphi*sinth0**4*cos &
-      (dphi)**2 + 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cos( &
-      dphi)**2*costh0**2)*conjg(Udot) + cmplx(0,1)*W*k*(-(L - N)* &
-      sinth0**2*cosphi + (L - N)*cosphi*costh0**2 - (A &
-      + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi + 3*(A + C &
-      - 2*F - 4*L)*sinphi**2*sinth0**2*cosphi*costh0**2 &
-      )*conjg(Wdot) - cmplx(0,1)*Wdot*k*(2*(L - N)*sinphi*sin(theta0 &
-      )*cosphi*costh0 - 2*(A + C - 2*F - 4*L)*sinphi*sin( &
-      theta0)**3*cosphi*costh0 + 2*(A + C - 2*F - 4*L)*sin(dphi &
-      )*sinth0*cosphi*costh0**3)*conjg(V) - cmplx(0,1)* &
-      Wdot*k*(-(L - N)*sinth0**2*cosphi + (L - N)*cosphi*cos &
-      (theta0)**2 - (A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cos &
-      (dphi) + 3*(A + C - 2*F - 4*L)*sinphi**2*sinth0**2*cos( &
-      dphi)*costh0**2)*conjg(W) - cmplx(0,1)*Wdot*k*(-(-A + F + 2* &
-      N)*sinphi*sinth0**2 + (-A + F + 2*N)*sinphi*cos(theta0 &
-      )**2 - (A + C - 2*F - 4*L)*sinphi*sinth0**4*cosphi**2 &
-      + 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi**2*cos &
-      (theta0)**2)*conjg(U) - Wdot*((L - N)*(2*sinphi**2*sinth0 &
-      *costh0 - 2*sinth0*costh0) - 2*(A + C - 2*F - 4*L) &
-      *sinphi**2*sinth0**3*costh0 + 2*(A + C - 2*F - 4*L)* &
-      sinphi**2*sinth0*costh0**3)*conjg(Wdot) - Wdot*(2*(L &
+  temp(:) = - U*k**2*(8*(L - N)*sinth0*cosphi**2*costh0 + 4*(- A + F &
+      + 2*N)*sinth0*cosphi**2*costh0 + 4*(A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**4*costh0)*conjg(U) - U*k**2*(4*(L &
+      - N)*sinphi*sinth0*cosphi*costh0 + 2*(- A + F &
+      + 2*N)*sinphi*sinth0*cosphi*costh0 + 4*(A+ C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**3*costh0)*conjg(W) - U*k**2*(- 2*(L &
+      - N)*sinth0**2*cosphi + 2*(L- N)*cosphi*costh0**2 &
+      - (- A + F + 2*N)*sinth0**2*cosphi + (- A + F &
+      + 2*N)*cosphi*costh0**2 - (A + C - 2*F - 4*L)*sinth0**4*cosphi**3 &
+      + 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi**3*costh0**2)*conjg(V) &
+      + cmplx(0,1)*U*k*((2*sinth0*cosphi**2*costh0 &
+      - 2*sinth0*costh0)*(- A + F + 2*N) - 2*(A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**2*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(Vdot) + cmplx(0,1)*U*k*(- (- A &
+      + F + 2*N)*sinphi*sinth0**2 + (- A + F + 2*N)*sinphi*costh0**2 &
+      - (A + C - 2*F - 4*L)*sinphi*sinth0**4*cosphi**2 &
+      + 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi**2*costh0**2)*conjg(Wdot) &
+      + cmplx(0,1)*U*k*(- 2*(L - N)*sinth0**2*cosphi &
+      + 2*(L - N)*cosphi*costh0**2 - (- A + F &
+      + 2*N)*sinth0**2*cosphi + (- A + F + 2*N)*cosphi*costh0**2 &
+      - (A + C - 2*F - 4*L)*sinth0**4*cosphi**3 + 3*(A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**3*costh0**2)*conjg(Udot) &
+      - cmplx(0,1)*Udot*k*((L - N)*(2*sinth0*cosphi**2*costh0 &
+      - 2*sinth0*costh0) - 2*(A + C - 2*F - 4*L)*sinth0**3*cosphi**2*costh0 &
+      + 2*(A + C - 2*F- 4*L)*sinth0*cosphi**2*costh0**3)*conjg(V) &
+      - cmplx(0,1)*Udot*k*(- (L - N)*sinphi*sinth0**2 &
+      + (L - N)*sinphi*costh0**2 - (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**4*cosphi**2 + 3*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi**2*costh0**2)*conjg(W) &
+      - cmplx(0,1)*Udot*k*(- 2*(L - N)*sinth0**2*cosphi + 2*(L - N)*cosphi*costh0**2 &
+      - (- A + F + 2*N)*sinth0**2*cosphi + (- A + F &
+      + 2*N)*cosphi*costh0**2 - (A + C - 2*F - 4*L)*sinth0**4*cosphi**3 &
+      + 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi**3*costh0**2)*conjg(U) &
+      - Udot*((L - N)*(2*sinth0*cosphi**2*costh0 &
+      - 2*sinth0*costh0) - 2*(A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**2*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(Udot) - Udot*(2*(L &
+      - N)*sinphi*sinth0*cosphi*costh0 - 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0*cosphi*costh0**3)*conjg(Wdot) - Udot*(- 2*(L &
+      - N)*sinth0**2*cosphi + 2*(L - N)*cosphi*costh0**2 - (- A &
+      + F + 2*N)*sinth0**2*cosphi + (- A + F + 2*N)*cosphi*costh0**2 &
+      - 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi*costh0**2 &
+      + (A + C - 2*F - 4*L)*cosphi*costh0**4)*conjg(Vdot) &
+      - V*k**2*((L - N)*(2*sinth0*cosphi**2*costh0 &
+      - 2*sinth0*costh0) - 2*(A + C - 2*F - 4*L)*sinth0**3*cosphi**2*costh0 &
+      + 2*(A + C - 2*F - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(V) &
+      - V*k**2*(- (L - N)*sinphi*sinth0**2 &
+      + (L - N)*sinphi*costh0**2 - (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**4*cosphi**2 + 3*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi**2*costh0**2)*conjg(W) - V*k**2*(- 2*(L- N)*sinth0**2*cosphi &
+      + 2*(L - N)*cosphi*costh0**2 - (- A + F &
+      + 2*N)*sinth0**2*cosphi + (- A + F + 2*N)*cosphi*costh0**2 &
+      - (A + C - 2*F - 4*L)*sinth0**4*cosphi**3 + 3*(A &
+      + C - 2*F - 4*L)*sinth0**2*cosphi**3*costh0**2)*conjg(U) &
+      + cmplx(0,1)*V*k*((L - N)*(2*sinth0*cosphi**2*costh0 &
+      - 2*sinth0*costh0) - 2*(A + C - 2*F - 4*L)*sinth0**3*cosphi**2*costh0 &
+      + 2*(A + C - 2*F - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(Udot) &
+      + cmplx(0,1)*V*k*(2*(L &
+      - N)*sinphi*sinth0*cosphi*costh0 - 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0*cosphi*costh0**3)*conjg(Wdot) + cmplx(0,1)*V*k*(- 2*(L &
+      - N)*sinth0**2*cosphi + 2*(L - N)*cosphi*costh0**2 &
+      - (- A + F + 2*N)*sinth0**2*cosphi + (- A + F &
+      + 2*N)*cosphi*costh0**2 - 3*(A + C - 2*F - 4*L)*sinth0**2*cosphi*costh0**2 &
+      + (A + C - 2*F - 4*L)*cosphi*costh0**4)*conjg(Vdot) &
+      - cmplx(0,1)*Vdot*k*((2*sinth0*cosphi**2*costh0 &
+      - 2*sinth0*costh0)*(- A + F + 2*N) - 2*(A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**2*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinth0*cosphi**2*costh0**3)*conjg(U) - cmplx(0,1)*Vdot*k*(2*(- A &
+      + F + 2*N)*sinphi*sinth0*cosphi*costh0 - 2*(A &
+      + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi*costh0 + 2*(A &
+      + C - 2*F - 4*L)*sinphi*sinth0*cosphi*costh0**3)*conjg(W) &
+      - cmplx(0,1)*Vdot*k*(- 2*(L - N)*sinth0**2*cosphi + 2*(L &
+      - N)*cosphi*costh0**2 - (- A + F + 2*N)*sinth0**2*cosphi &
+      + (- A + F + 2*N)*cosphi*costh0**2 - 3*(A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi*costh0**2 + (A + C - 2*F &
+      - 4*L)*cosphi*costh0**4)*conjg(V) - Vdot*(- 8*(L - N)*sinth0*costh0 &
+      - 4*(- A + F + 2*N)*sinth0*costh0 - 4*(A + C &
+      - 2*F - 4*L)*sinth0*costh0**3)*conjg(Vdot) - Vdot*(- 2*(L &
+      - N)*sinphi*sinth0**2 + 2*(L - N)*sinphi*costh0**2 - (- A &
+      + F + 2*N)*sinphi*sinth0**2 + (- A + F + 2*N)*sinphi*costh0**2 &
+      - 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*costh0**2 &
+      + (A + C - 2*F - 4*L)*sinphi*costh0**4)*conjg(Wdot) &
+      - Vdot*(- 2*(L - N)*sinth0**2*cosphi + 2*(L &
+      - N)*cosphi*costh0**2 - (- A + F + 2*N)*sinth0**2*cosphi + (- A + F &
+      + 2*N)*cosphi*costh0**2 - 3*(A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi*costh0**2 + (A + C - 2*F &
+      - 4*L)*cosphi*costh0**4)*conjg(Udot) - W*k**2*((L - N)*(2*sinphi**2*sinth0*costh0 &
+      + 2*sinth0*cosphi**2*costh0) + 4*(A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi**2*costh0)*conjg(W) &
+      - W*k**2*(4*(L - N)*sinphi*sinth0*cosphi*costh0 &
+      + 2*(- A + F + 2*N)*sinphi*sinth0*cosphi*costh0 + 4*(A &
+      + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**3*costh0)*conjg(U) &
+      - W*k**2*(- (L - N)*sinphi*sinth0**2 + (L &
+      - N)*sinphi*costh0**2 - (A + C - 2*F - 4*L)*sinphi*sinth0**4*cosphi**2 &
+      + 3*(A+ C - 2*F - 4*L)*sinphi*sinth0**2*cosphi**2*costh0**2)*conjg(V) &
+      + cmplx(0,1)*W*k*(2*(- A + F &
+      + 2*N)*sinphi*sinth0*cosphi*costh0 - 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0*cosphi*costh0**3)*conjg(Vdot) + cmplx(0,1)*W*k*(- (L &
+      - N)*sinphi*sinth0**2 + (L - N)*sinphi*costh0**2 &
+      - (A + C - 2*F - 4*L)*sinphi*sinth0**4*cosphi**2 &
+      + 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi**2*costh0**2)*conjg(Udot) &
+      + cmplx(0,1)*W*k*(- (L - N)*sinth0**2*cosphi &
+      + (L - N)*cosphi*costh0**2 - (A+ C - 2*F &
+      - 4*L)*sinphi**2*sinth0**4*cosphi + 3*(A + C- 2*F &
+      - 4*L)*sinphi**2*sinth0**2*cosphi*costh0**2)*conjg(Wdot) - cmplx(0,1)*Wdot*k*(2*(L &
       - N)*sinphi*sinth0*cosphi*costh0 - 2*(A + C - 2*F &
       - 4*L)*sinphi*sinth0**3*cosphi*costh0 + 2*(A + C &
-      - 2*F - 4*L)*sinphi*sinth0*cosphi*costh0**3)* &
-      conjg(Udot) - Wdot*(-2*(L - N)*sinphi*sinth0**2 + 2*(L - &
-      N)*sinphi*costh0**2 - (-A + F + 2*N)*sinphi*sin(theta0 &
-      )**2 + (-A + F + 2*N)*sinphi*costh0**2 - 3*(A + C - 2*F - &
-      4*L)*sinphi*sinth0**2*costh0**2 + (A + C - 2*F - 4*L &
-      )*sinphi*costh0**4)*conjg(Vdot)
+      - 2*F - 4*L)*sinphi*sinth0*cosphi*costh0**3)*conjg(V) &
+      - cmplx(0,1)*Wdot*k*(- (L - N)*sinth0**2*cosphi + (L &
+      - N)*cosphi*costh0**2 - (A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi &
+      + 3*(A + C - 2*F - 4*L)*sinphi**2*sinth0**2*cosphi*costh0**2)*conjg(W) &
+      - cmplx(0,1)*Wdot*k*(- (- A + F &
+      + 2*N)*sinphi*sinth0**2 + (- A + F + 2*N)*sinphi*costh0**2 &
+      - (A + C - 2*F - 4*L)*sinphi*sinth0**4*cosphi**2+ 3*(A &
+      + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi**2*costh0**2)*conjg(U) &
+      - Wdot*((L - N)*(2*sinphi**2*sinth0*costh0 &
+      - 2*sinth0*costh0) - 2*(A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0*costh0**3)*conjg(Wdot) - Wdot*(2*(L- N)*sinphi*sinth0*cosphi*costh0 &
+      - 2*(A + C - 2*F- 4*L)*sinphi*sinth0**3*cosphi*costh0 &
+      + 2*(A + C- 2*F &
+      - 4*L)*sinphi*sinth0*cosphi*costh0**3)*conjg(Udot) - Wdot*(- 2*(L &
+      - N)*sinphi*sinth0**2 + 2*(L - N)*sinphi*costh0**2 - (- A + F &
+      + 2*N)*sinphi*sinth0**2 + (- A + F + 2*N)*sinphi*costh0**2 &
+      - 3*(A + C - 2*F - 4*L)*sinphi*sinth0**2*costh0**2 &
+      + (A + C - 2*F - 4*L)*sinphi*costh0**4)*conjg(Vdot)
   Ktheta0(:) = real(temp(:),kind=dp)
 
-  temp(:) = -U*k**2*(-2*(L - N)*sinphi*sinth0*costh0 - (-A + &
-      F + 2*N)*sinphi*sinth0*costh0 - 3*(A + C - 2*F - 4*L &
-      )*sinphi*sinth0**3*cosphi**2*costh0)*conjg(V) - U &
-      *k**2*(-8*(L - N)*sinphi*sinth0**2*cosphi - 4*(-A + F &
-      + 2*N)*sinphi*sinth0**2*cosphi - 4*(A + C - 2*F - 4*L) &
-      *sinphi*sinth0**4*cosphi**3)*conjg(U) - U*k**2*(-2*(L &
-      - N)*sinphi**2*sinth0**2 + 2*(L - N)*sinth0**2*cos( &
-      dphi)**2 - (-A + F + 2*N)*sinphi**2*sinth0**2 + (-A + F + &
-      2*N)*sinth0**2*cosphi**2 - 3*(A + C - 2*F - 4*L)*sin(dphi &
-      )**2*sinth0**4*cosphi**2 + (A + C - 2*F - 4*L)*sin(theta0 &
-      )**4*cosphi**4)*conjg(W) + cmplx(0,1)*U*k*(-2*(-A + F + 2*N)* &
-      sinphi*sinth0**2*cosphi - 2*(A + C - 2*F - 4*L)*sin( &
-      dphi)*sinth0**2*cosphi*costh0**2)*conjg(Vdot) + &
-      cmplx(0,1)*U*k*(-2*(L - N)*sinphi*sinth0*costh0 - ( &
-      -A + F + 2*N)*sinphi*sinth0*costh0 - 3*(A + C - 2*F &
-      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg( &
-      Udot) + cmplx(0,1)*U*k*((-A + F + 2*N)*sinth0*cosphi*cos( &
-      theta0) - 2*(A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cos( &
-      dphi)*costh0 + (A + C - 2*F - 4*L)*sinth0**3*cosphi &
-      **3*costh0)*conjg(Wdot) - cmplx(0,1)*Udot*k*(-2*(L - N)*sin( &
-      dphi)*sinth0**2*cosphi - 2*(A + C - 2*F - 4*L)*sinphi* &
-      sinth0**2*cosphi*costh0**2)*conjg(V) - cmplx(0,1)* &
-      Udot*k*(-2*(L - N)*sinphi*sinth0*costh0 - (-A + F + &
-      2*N)*sinphi*sinth0*costh0 - 3*(A + C - 2*F - 4*L)* &
-      sinphi*sinth0**3*cosphi**2*costh0)*conjg(U) - &
-      cmplx(0,1)*Udot*k*((L - N)*sinth0*cosphi*costh0 - 2* &
-      (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*cos( &
-      theta0))*conjg(W) - Udot*(-2*(L - N)*sinphi*sinth0**2*cos &
-      (dphi) - 2*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi &
-      *costh0**2)*conjg(Udot) - Udot*(-2*(L - N)*sinphi*sin( &
-      theta0)*costh0 - (-A + F + 2*N)*sinphi*sinth0*cos( &
-      theta0) - (A + C - 2*F - 4*L)*sinphi*sinth0*costh0** &
-      3)*conjg(Vdot) - Udot*(-(L - N)*sinphi**2*sinth0**2 + (L &
-      - N)*sinth0**2*cosphi**2 - (A + C - 2*F - 4*L)*sinphi &
-      **2*sinth0**2*costh0**2 + (A + C - 2*F - 4*L)*sin( &
-      theta0)**2*cosphi**2*costh0**2)*conjg(Wdot) - V*k**2*(-2* &
-      (L - N)*sinphi*sinth0**2*cosphi - 2*(A + C - 2*F - 4*L &
-      )*sinphi*sinth0**2*cosphi*costh0**2)*conjg(V) - V &
-      *k**2*(-2*(L - N)*sinphi*sinth0*costh0 - (-A + F + 2 &
-      *N)*sinphi*sinth0*costh0 - 3*(A + C - 2*F - 4*L)*sin &
-      (dphi)*sinth0**3*cosphi**2*costh0)*conjg(U) - V*k**2 &
-      *((L - N)*sinth0*cosphi*costh0 - 2*(A + C - 2*F - 4* &
-      L)*sinphi**2*sinth0**3*cosphi*costh0 + (A + C - 2 &
-      *F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(W) + &
-      cmplx(0,1)*V*k*(-2*(L - N)*sinphi*sinth0**2*cosphi - 2 &
-      *(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi*cos( &
-      theta0)**2)*conjg(Udot) + cmplx(0,1)*V*k*(-2*(L - N)*sinphi* &
-      sinth0*costh0 - (-A + F + 2*N)*sinphi*sinth0* &
-      costh0 - (A + C - 2*F - 4*L)*sinphi*sinth0*cos( &
-      theta0)**3)*conjg(Vdot) + cmplx(0,1)*V*k*(-(L - N)*sinphi**2* &
-      sinth0**2 + (L - N)*sinth0**2*cosphi**2 - (A + C - 2 &
-      *F - 4*L)*sinphi**2*sinth0**2*costh0**2 + (A + C - 2 &
-      *F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Wdot &
-      ) - cmplx(0,1)*Vdot*k*(-2*(-A + F + 2*N)*sinphi*sinth0**2 &
-      *cosphi - 2*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cos( &
-      dphi)*costh0**2)*conjg(U) - cmplx(0,1)*Vdot*k*(-2*(L - N)* &
-      sinphi*sinth0*costh0 - (-A + F + 2*N)*sinphi*sin( &
-      theta0)*costh0 - (A + C - 2*F - 4*L)*sinphi*sinth0* &
-      costh0**3)*conjg(V) - cmplx(0,1)*Vdot*k*(-(-A + F + 2*N)*sin &
-      (dphi)**2*sinth0**2 + (-A + F + 2*N)*sinth0**2*cos(dphi &
-      )**2 - (A + C - 2*F - 4*L)*sinphi**2*sinth0**2*cos(theta0 &
-      )**2 + (A + C - 2*F - 4*L)*sinth0**2*cosphi**2*cos(theta0 &
-      )**2)*conjg(W) - Vdot*(-2*(L - N)*sinphi*sinth0*cos( &
-      theta0) - (-A + F + 2*N)*sinphi*sinth0*costh0 - (A + &
-      C - 2*F - 4*L)*sinphi*sinth0*costh0**3)*conjg(Udot) &
-      - Vdot*(2*(L - N)*sinth0*cosphi*costh0 + (-A + F + 2 &
-      *N)*sinth0*cosphi*costh0 + (A + C - 2*F - 4*L)*sin( &
-      theta0)*cosphi*costh0**3)*conjg(Wdot) - W*k**2*(-2*(A + C &
-      - 2*F - 4*L)*sinphi**3*sinth0**4*cosphi + 2*(A + C - 2 &
-      *F - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(W) - W*k** &
-      2*((L - N)*sinth0*cosphi*costh0 - 2*(A + C - 2*F - 4 &
-      *L)*sinphi**2*sinth0**3*cosphi*costh0 + (A + C - &
-      2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(V) - W* &
-      k**2*(-2*(L - N)*sinphi**2*sinth0**2 + 2*(L - N)*sin( &
-      theta0)**2*cosphi**2 - (-A + F + 2*N)*sinphi**2*sinth0 &
-      **2 + (-A + F + 2*N)*sinth0**2*cosphi**2 - 3*(A + C - 2*F &
-      - 4*L)*sinphi**2*sinth0**4*cosphi**2 + (A + C - 2*F - &
-      4*L)*sinth0**4*cosphi**4)*conjg(U) + cmplx(0,1)*W*k*(-(L &
-      - N)*sinphi*sinth0*costh0 - (A + C - 2*F - 4*L)*sin( &
-      dphi)**3*sinth0**3*costh0 + 2*(A + C - 2*F - 4*L)*sin( &
-      dphi)*sinth0**3*cosphi**2*costh0)*conjg(Wdot) + &
-      cmplx(0,1)*W*k*((L - N)*sinth0*cosphi*costh0 - 2*(A &
-      + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*cos(theta0 &
-      ) + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)* &
-      conjg(Udot) + cmplx(0,1)*W*k*(-(-A + F + 2*N)*sinphi**2*sin( &
-      theta0)**2 + (-A + F + 2*N)*sinth0**2*cosphi**2 - (A + C &
-      - 2*F - 4*L)*sinphi**2*sinth0**2*costh0**2 + (A + C &
-      - 2*F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg( &
-      Vdot) - cmplx(0,1)*Wdot*k*(-(L - N)*sinphi*sinth0*cos( &
-      theta0) - (A + C - 2*F - 4*L)*sinphi**3*sinth0**3*cos( &
-      theta0) + 2*(A + C - 2*F - 4*L)*sinphi*sinth0**3*cos(dphi &
-      )**2*costh0)*conjg(W) - cmplx(0,1)*Wdot*k*((-A + F + 2*N)* &
-      sinth0*cosphi*costh0 - 2*(A + C - 2*F - 4*L)*sin( &
-      dphi)**2*sinth0**3*cosphi*costh0 + (A + C - 2*F - 4* &
-      L)*sinth0**3*cosphi**3*costh0)*conjg(U) - cmplx(0,1) &
-      *Wdot*k*(-(L - N)*sinphi**2*sinth0**2 + (L - N)*sin( &
-      theta0)**2*cosphi**2 - (A + C - 2*F - 4*L)*sinphi**2*sin( &
-      theta0)**2*costh0**2 + (A + C - 2*F - 4*L)*sinth0**2* &
-      cosphi**2*costh0**2)*conjg(V) - Wdot*(2*(L - N)*sinphi &
-      *sinth0**2*cosphi + 2*(A + C - 2*F - 4*L)*sinphi*sin( &
-      theta0)**2*cosphi*costh0**2)*conjg(Wdot) - Wdot*(2*(L - N &
-      )*sinth0*cosphi*costh0 + (-A + F + 2*N)*sinth0* &
-      cosphi*costh0 + (A + C - 2*F - 4*L)*sinth0*cosphi &
-      *costh0**3)*conjg(Vdot) - Wdot*(-(L - N)*sinphi**2*sin( &
-      theta0)**2 + (L - N)*sinth0**2*cosphi**2 - (A + C - 2*F - &
-      4*L)*sinphi**2*sinth0**2*costh0**2 + (A + C - 2*F - &
-      4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Udot)
+  temp(:) = - U*k**2*(- 2*(L - N)*sinphi*sinth0*costh0 - (- A + F &
+      + 2*N)*sinphi*sinth0*costh0 - 3*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(V) - U*k**2*(- 8*(L &
+      - N)*sinphi*sinth0**2*cosphi - 4*(- A &
+      + F+ 2*N)*sinphi*sinth0**2*cosphi - 4*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(U) - U*k**2*(- 2*(L- N)*sinphi**2*sinth0**2 &
+      + 2*(L - N)*sinth0**2*cosphi**2 - (- A + F &
+      + 2*N)*sinphi**2*sinth0**2 + (- A + F + 2*N)*sinth0**2*cosphi**2 &
+      - 3*(A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2 &
+      + (A + C - 2*F - 4*L)*sinth0**4*cosphi**4)*conjg(W) &
+      + cmplx(0,1)*U*k*(- 2*(- A + F + 2*N)*sinphi*sinth0**2*cosphi &
+      - 2*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Vdot) &
+      + cmplx(0,1)*U*k*(- 2*(L - N)*sinphi*sinth0*costh0 &
+      - (- A + F + 2*N)*sinphi*sinth0*costh0 - 3*(A &
+      + C - 2*F- 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Udot) &
+      + cmplx(0,1)*U*k*((- A + F + 2*N)*sinth0*cosphi*costh0 &
+      - 2*(A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0 &
+      + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(Wdot) &
+      - cmplx(0,1)*Udot*k*(- 2*(L &
+      - N)*sinphi*sinth0**2*cosphi - 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(V) - cmplx(0,1)*Udot*k*(- 2*(L &
+      - N)*sinphi*sinth0*costh0 - (- A + F + 2*N)*sinphi*sinth0*costh0 &
+      - 3*(A + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(U) &
+      - cmplx(0,1)*Udot*k*((L &
+      - N)*sinth0*cosphi*costh0 - 2*(A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(W) - Udot*(- 2*(L - N)*sinphi*sinth0**2*cosphi &
+      - 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Udot) - Udot*(- 2*(L &
+      - N)*sinphi*sinth0*costh0 - (- A + F + 2*N)*sinphi*sinth0*costh0 &
+      - (A + C - 2*F - 4*L)*sinphi*sinth0*costh0**3)*conjg(Vdot) &
+      - Udot*(- (L - N)*sinphi**2*sinth0**2 &
+      + (L- N)*sinth0**2*cosphi**2 - (A + C - 2*F - 4*L)*sinphi**2*sinth0**2*costh0**2 &
+      + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Wdot) - V*k**2*(- 2*(L - N)*sinphi*sinth0**2*cosphi &
+      - 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(V) - V*k**2*(- 2*(L &
+      - N)*sinphi*sinth0*costh0 - (- A + F + 2*N)*sinphi*sinth0*costh0 &
+      - 3*(A + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(U) &
+      - V*k**2*((L - N)*sinth0*cosphi*costh0 &
+      - 2*(A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0 &
+      + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(W) &
+      + cmplx(0,1)*V*k*(- 2*(L - N)*sinphi*sinth0**2*cosphi &
+      - 2*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Udot) &
+      + cmplx(0,1)*V*k*(- 2*(L - N)*sinphi*sinth0*costh0 &
+      - (- A + F + 2*N)*sinphi*sinth0*costh0 &
+      - (A + C - 2*F - 4*L)*sinphi*sinth0*costh0**3)*conjg(Vdot) &
+      + cmplx(0,1)*V*k*(- (L - N)*sinphi**2*sinth0**2 + (L &
+      - N)*sinth0**2*cosphi**2 - (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**2*costh0**2 + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Wdot) - cmplx(0,1)*Vdot*k*(- 2*(- A &
+      + F + 2*N)*sinphi*sinth0**2*cosphi - 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(U) &
+      - cmplx(0,1)*Vdot*k*(- 2*(L - N)*sinphi*sinth0*costh0 - (- A + F &
+      + 2*N)*sinphi*sinth0*costh0 - (A + C - 2*F &
+      - 4*L)*sinphi*sinth0*costh0**3)*conjg(V) - cmplx(0,1)*Vdot*k*(- (- A &
+      + F + 2*N)*sinphi**2*sinth0**2 + (- A + F &
+      + 2*N)*sinth0**2*cosphi**2 - (A + C - 2*F - 4*L)*sinphi**2*sinth0**2*costh0**2 &
+      + (A + C - 2*F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(W) &
+      - Vdot*(- 2*(L - N)*sinphi*sinth0*costh0 &
+      - (- A + F + 2*N)*sinphi*sinth0*costh0 - (A + C &
+      - 2*F - 4*L)*sinphi*sinth0*costh0**3)*conjg(Udot)- Vdot*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0*cosphi*costh0**3)*conjg(Wdot) - W*k**2*(- 2*(A + C- 2*F &
+      - 4*L)*sinphi**3*sinth0**4*cosphi + 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(W) - W*k**2*((L &
+      - N)*sinth0*cosphi*costh0 - 2*(A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0 &
+      + (A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(V) - W*k**2*(- 2*(L - N)*sinphi**2*sinth0**2 &
+      + 2*(L - N)*sinth0**2*cosphi**2 - (- A + F &
+      + 2*N)*sinphi**2*sinth0**2 + (- A + F + 2*N)*sinth0**2*cosphi**2 &
+      - 3*(A + C - 2*F- 4*L)*sinphi**2*sinth0**4*cosphi**2 &
+      + (A + C - 2*F - 4*L)*sinth0**4*cosphi**4)*conjg(U) &
+      + cmplx(0,1)*W*k*(- (L- N)*sinphi*sinth0*costh0 - (A + C - 2*F &
+      - 4*L)*sinphi**3*sinth0**3*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Wdot) &
+      + cmplx(0,1)*W*k*((L - N)*sinth0*cosphi*costh0 - 2*(A+ C &
+      - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0 + (A + C &
+      - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(Udot) &
+      + cmplx(0,1)*W*k*(- (- A + F + 2*N)*sinphi**2*sinth0**2 + (- A &
+      + F + 2*N)*sinth0**2*cosphi**2 - (A + C- 2*F &
+      - 4*L)*sinphi**2*sinth0**2*costh0**2 + (A + C- 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Vdot) - cmplx(0,1)*Wdot*k*(- (L &
+      - N)*sinphi*sinth0*costh0 - (A + C - 2*F &
+      - 4*L)*sinphi**3*sinth0**3*costh0 + 2*(A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(W) - cmplx(0,1)*Wdot*k*((- A &
+      + F + 2*N)*sinth0*cosphi*costh0 - 2*(A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0 + (A + C &
+      - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(U) &
+      - cmplx(0,1)*Wdot*k*(- (L - N)*sinphi**2*sinth0**2 + (L &
+      - N)*sinth0**2*cosphi**2 - (A + C - 2*F - 4*L)*sinphi**2*sinth0**2*costh0**2 &
+      + (A + C - 2*F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(V) &
+      - Wdot*(2*(L - N)*sinphi*sinth0**2*cosphi &
+      + 2*(A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Wdot) &
+      - Wdot*(2*(L - N)*sinth0*cosphi*costh0 &
+      + (- A + F + 2*N)*sinth0*cosphi*costh0 + (A &
+      + C - 2*F - 4*L)*sinth0*cosphi*costh0**3)*conjg(Vdot) &
+      - Wdot*(- (L - N)*sinphi**2*sinth0**2 + (L - N)*sinth0**2*cosphi**2 &
+      - (A + C - 2*F - 4*L)*sinphi**2*sinth0**2*costh0**2 &
+      + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Udot)
   Kdphi(:) = real(temp(:),kind=dp)
 
-  temp(:) = -2*U*k*(2*(L - N)*sinphi*sinth0**2*cosphi + (-A + F &
-      + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F - 4*L)* &
-      sinphi*sinth0**4*cosphi**3)*conjg(W) - 2*U*k*(2*(L - N &
-      )*sinth0*cosphi*costh0 + (-A + F + 2*N)*sinth0* &
-      cosphi*costh0 + (A + C - 2*F - 4*L)*sinth0**3*cos( &
-      dphi)**3*costh0)*conjg(V) - 2*U*k*(A + 4*(L - N)*sinth0 &
-      **2*cosphi**2 + 2*(-A + F + 2*N)*sinth0**2*cosphi**2 + &
-      (A + C - 2*F - 4*L)*sinth0**4*cosphi**4)*conjg(U) + cmplx &
-      (0,1)*U*((-A + F + 2*N)*sinphi*sinth0*costh0 + (A + &
-      C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**2*costh0) &
-      *conjg(Wdot) + cmplx(0,1)*U*(2*(L - N)*sinth0*cosphi*cos( &
-      theta0) + (-A + F + 2*N)*sinth0*cosphi*costh0 + (A + &
-      C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg( &
-      Udot) + cmplx(0,1)*U*(A - 2*N + (sinth0**2*cosphi**2 + &
-      costh0**2)*(-A + F + 2*N) + (A + C - 2*F - 4*L)*sinth0 &
-      **2*cosphi**2*costh0**2)*conjg(Vdot) - cmplx(0,1)*Udot*(( &
-      L - N)*sinphi*sinth0*costh0 + (A + C - 2*F - 4*L)* &
-      sinphi*sinth0**3*cosphi**2*costh0)*conjg(W) - &
-      cmplx(0,1)*Udot*(N + (L - N)*(sinth0**2*cosphi**2 + cos( &
-      theta0)**2) + (A + C - 2*F - 4*L)*sinth0**2*cosphi**2*cos &
-      (theta0)**2)*conjg(V) - cmplx(0,1)*Udot*(2*(L - N)*sinth0* &
-      cosphi*costh0 + (-A + F + 2*N)*sinth0*cosphi*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*cos( &
-      theta0))*conjg(U) - 2*V*k*((L - N)*sinphi*sinth0*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi &
-      **2*costh0)*conjg(W) - 2*V*k*(N + (L - N)*(sinth0**2* &
-      cosphi**2 + costh0**2) + (A + C - 2*F - 4*L)*sinth0 &
-      **2*cosphi**2*costh0**2)*conjg(V) - 2*V*k*(2*(L - N)*sin( &
-      theta0)*cosphi*costh0 + (-A + F + 2*N)*sinth0*cos( &
-      dphi)*costh0 + (A + C - 2*F - 4*L)*sinth0**3*cosphi &
-      **3*costh0)*conjg(U) + cmplx(0,1)*V*((L - N)*sinphi*sin( &
-      theta0)**2*cosphi + (A + C - 2*F - 4*L)*sinphi*sinth0 &
-      **2*cosphi*costh0**2)*conjg(Wdot) + cmplx(0,1)*V*(N + (L &
-      - N)*(sinth0**2*cosphi**2 + costh0**2) + (A + C - 2* &
-      F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Udot) &
-      + cmplx(0,1)*V*(2*(L - N)*sinth0*cosphi*costh0 + (-A &
-      + F + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F - 4*L &
-      )*sinth0*cosphi*costh0**3)*conjg(Vdot) - cmplx(0,1)* &
-      Vdot*((-A + F + 2*N)*sinphi*sinth0**2*cosphi + (A + C &
-      - 2*F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)* &
-      conjg(W) - cmplx(0,1)*Vdot*(2*(L - N)*sinth0*cosphi*cos( &
-      theta0) + (-A + F + 2*N)*sinth0*cosphi*costh0 + (A + &
-      C - 2*F - 4*L)*sinth0*cosphi*costh0**3)*conjg(V) - &
-      cmplx(0,1)*Vdot*(A - 2*N + (sinth0**2*cosphi**2 + cos( &
-      theta0)**2)*(-A + F + 2*N) + (A + C - 2*F - 4*L)*sinth0**2* &
-      cosphi**2*costh0**2)*conjg(U) - 2*W*k*((L - N)*sinphi* &
-      sinth0*costh0 + (A + C - 2*F - 4*L)*sinphi*sin( &
-      theta0)**3*cosphi**2*costh0)*conjg(V) - 2*W*k*(N + (L - N &
-      )*(sinphi**2*sinth0**2 + sinth0**2*cosphi**2) + ( &
-      A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)* &
-      conjg(W) - 2*W*k*(2*(L - N)*sinphi*sinth0**2*cosphi + &
-      (-A + F + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
-      - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(U) + cmplx(0, &
-      1)*W*((L - N)*sinphi*sinth0*costh0 + (A + C - 2*F - &
-      4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg( &
-      Udot) + cmplx(0,1)*W*((L - N)*sinth0*cosphi*costh0 + &
-      (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*cos( &
-      theta0))*conjg(Wdot) + cmplx(0,1)*W*((-A + F + 2*N)*sinphi*sin &
-      (theta0)**2*cosphi + (A + C - 2*F - 4*L)*sinphi*sinth0 &
-      **2*cosphi*costh0**2)*conjg(Vdot) - cmplx(0,1)*Wdot*((L - &
-      N)*sinphi*sinth0**2*cosphi + (A + C - 2*F - 4*L)*sin( &
-      dphi)*sinth0**2*cosphi*costh0**2)*conjg(V) - cmplx(0 &
-      ,1)*Wdot*((L - N)*sinth0*cosphi*costh0 + (A + C - 2* &
-      F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg &
-      (W) - cmplx(0,1)*Wdot*((-A + F + 2*N)*sinphi*sinth0*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi &
-      **2*costh0)*conjg(U)
+  temp(:) = - 2*U*k*(2*(L - N)*sinphi*sinth0**2*cosphi + (- A &
+      + F+ 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(W) - 2*U*k*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F + 2*N)*sinth0*cosphi*costh0 &
+      + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(V) &
+      - 2*U*k*(A + 4*(L - N)*sinth0**2*cosphi**2 + 2*(- A &
+      + F + 2*N)*sinth0**2*cosphi**2 + (A + C - 2*F &
+      - 4*L)*sinth0**4*cosphi**4)*conjg(U) + cmplx(0,1)*U*((- A + F &
+      + 2*N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Wdot) + cmplx(0,1)*U*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(Udot) &
+      + cmplx(0,1)*U*(A - 2*N + (sinth0**2*cosphi**2 &
+      + costh0**2)*(- A + F + 2*N) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Vdot) - cmplx(0,1)*Udot*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(W) &
+      - cmplx(0,1)*Udot*(N + (L - N)*(sinth0**2*cosphi**2 + costh0**2) &
+      + (A + C - 2*F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(V) &
+      - cmplx(0,1)*Udot*(2*(L - N)*sinth0*cosphi*costh0 &
+      + (- A + F + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(U) - 2*V*k*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(W) - 2*V*k*(N + (L &
+      - N)*(sinth0**2*cosphi**2 + costh0**2) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(V) - 2*V*k*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(U) + cmplx(0,1)*V*((L &
+      - N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Wdot) + cmplx(0,1)*V*(N &
+      + (L- N)*(sinth0**2*cosphi**2 + costh0**2) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Udot)+ cmplx(0,1)*V*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A+ F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0*cosphi*costh0**3)*conjg(Vdot) - cmplx(0,1)*Vdot*((- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C- 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(W) - cmplx(0,1)*Vdot*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F + 2*N)*sinth0*cosphi*costh0 &
+      + (A + C - 2*F - 4*L)*sinth0*cosphi*costh0**3)*conjg(V) &
+      - cmplx(0,1)*Vdot*(A - 2*N + (sinth0**2*cosphi**2 &
+      + costh0**2)*(- A + F + 2*N) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(U) - 2*W*k*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(V) - 2*W*k*(N + (L &
+      - N)*(sinphi**2*sinth0**2 + sinth0**2*cosphi**2) + (A + C &
+      - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)*conjg(W) - 2*W*k*(2*(L &
+      - N)*sinphi*sinth0**2*cosphi + (- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C &
+      - 2*F- 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(U) + cmplx(0,1)*W*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Udot) + cmplx(0,1)*W*((L &
+      - N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(Wdot) + cmplx(0,1)*W*((- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Vdot) - cmplx(0,1)*Wdot*((L &
+      - N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(V) - cmplx(0,1)*Wdot*((L &
+      - N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(W) &
+      - cmplx(0,1)*Wdot*((- A + F + 2*N)*sinphi*sinth0*costh0 + (A &
+      + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(U)
   Kwvnm(:) = real(temp(:),kind=dp)
 
-  temp(:) = -2*U*k*(2*(L - N)*sinphi*sinth0**2*cosphi + (-A + F &
-      + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F - 4*L)* &
-      sinphi*sinth0**4*cosphi**3)*conjg(W) - 2*U*k*(2*(L - N &
-      )*sinth0*cosphi*costh0 + (-A + F + 2*N)*sinth0* &
-      cosphi*costh0 + (A + C - 2*F - 4*L)*sinth0**3*cos( &
-      dphi)**3*costh0)*conjg(V) - 2*U*k*(A + 4*(L - N)*sinth0 &
-      **2*cosphi**2 + 2*(-A + F + 2*N)*sinth0**2*cosphi**2 + &
-      (A + C - 2*F - 4*L)*sinth0**4*cosphi**4)*conjg(U) + cmplx &
-      (0,1)*U*((-A + F + 2*N)*sinphi*sinth0*costh0 + (A + &
-      C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**2*costh0) &
-      *conjg(Wdot) + cmplx(0,1)*U*(2*(L - N)*sinth0*cosphi*cos( &
-      theta0) + (-A + F + 2*N)*sinth0*cosphi*costh0 + (A + &
-      C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg( &
-      Udot) + cmplx(0,1)*U*(A - 2*N + (sinth0**2*cosphi**2 + &
-      costh0**2)*(-A + F + 2*N) + (A + C - 2*F - 4*L)*sinth0 &
-      **2*cosphi**2*costh0**2)*conjg(Vdot) - cmplx(0,1)*Udot*(( &
-      L - N)*sinphi*sinth0*costh0 + (A + C - 2*F - 4*L)* &
-      sinphi*sinth0**3*cosphi**2*costh0)*conjg(W) - &
-      cmplx(0,1)*Udot*(N + (L - N)*(sinth0**2*cosphi**2 + cos( &
-      theta0)**2) + (A + C - 2*F - 4*L)*sinth0**2*cosphi**2*cos &
-      (theta0)**2)*conjg(V) - cmplx(0,1)*Udot*(2*(L - N)*sinth0* &
-      cosphi*costh0 + (-A + F + 2*N)*sinth0*cosphi*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*cos( &
-      theta0))*conjg(U) - 2*V*k*((L - N)*sinphi*sinth0*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi &
-      **2*costh0)*conjg(W) - 2*V*k*(N + (L - N)*(sinth0**2* &
-      cosphi**2 + costh0**2) + (A + C - 2*F - 4*L)*sinth0 &
-      **2*cosphi**2*costh0**2)*conjg(V) - 2*V*k*(2*(L - N)*sin( &
-      theta0)*cosphi*costh0 + (-A + F + 2*N)*sinth0*cos( &
-      dphi)*costh0 + (A + C - 2*F - 4*L)*sinth0**3*cosphi &
-      **3*costh0)*conjg(U) + cmplx(0,1)*V*((L - N)*sinphi*sin( &
-      theta0)**2*cosphi + (A + C - 2*F - 4*L)*sinphi*sinth0 &
-      **2*cosphi*costh0**2)*conjg(Wdot) + cmplx(0,1)*V*(N + (L &
-      - N)*(sinth0**2*cosphi**2 + costh0**2) + (A + C - 2* &
-      F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Udot) &
-      + cmplx(0,1)*V*(2*(L - N)*sinth0*cosphi*costh0 + (-A &
-      + F + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F - 4*L &
-      )*sinth0*cosphi*costh0**3)*conjg(Vdot) - cmplx(0,1)* &
-      Vdot*((-A + F + 2*N)*sinphi*sinth0**2*cosphi + (A + C &
-      - 2*F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)* &
-      conjg(W) - cmplx(0,1)*Vdot*(2*(L - N)*sinth0*cosphi*cos( &
-      theta0) + (-A + F + 2*N)*sinth0*cosphi*costh0 + (A + &
-      C - 2*F - 4*L)*sinth0*cosphi*costh0**3)*conjg(V) - &
-      cmplx(0,1)*Vdot*(A - 2*N + (sinth0**2*cosphi**2 + cos( &
-      theta0)**2)*(-A + F + 2*N) + (A + C - 2*F - 4*L)*sinth0**2* &
-      cosphi**2*costh0**2)*conjg(U) - 2*W*k*((L - N)*sinphi* &
-      sinth0*costh0 + (A + C - 2*F - 4*L)*sinphi*sin( &
-      theta0)**3*cosphi**2*costh0)*conjg(V) - 2*W*k*(N + (L - N &
-      )*(sinphi**2*sinth0**2 + sinth0**2*cosphi**2) + ( &
-      A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)* &
-      conjg(W) - 2*W*k*(2*(L - N)*sinphi*sinth0**2*cosphi + &
-      (-A + F + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
-      - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(U) + cmplx(0, &
-      1)*W*((L - N)*sinphi*sinth0*costh0 + (A + C - 2*F - &
-      4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg( &
-      Udot) + cmplx(0,1)*W*((L - N)*sinth0*cosphi*costh0 + &
-      (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*cos( &
-      theta0))*conjg(Wdot) + cmplx(0,1)*W*((-A + F + 2*N)*sinphi*sin &
-      (theta0)**2*cosphi + (A + C - 2*F - 4*L)*sinphi*sinth0 &
-      **2*cosphi*costh0**2)*conjg(Vdot) - cmplx(0,1)*Wdot*((L - &
-      N)*sinphi*sinth0**2*cosphi + (A + C - 2*F - 4*L)*sin( &
-      dphi)*sinth0**2*cosphi*costh0**2)*conjg(V) - cmplx(0 &
-      ,1)*Wdot*((L - N)*sinth0*cosphi*costh0 + (A + C - 2* &
-      F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg &
-      (W) - cmplx(0,1)*Wdot*((-A + F + 2*N)*sinphi*sinth0*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi &
-      **2*costh0)*conjg(U)
+  temp(:) = - 2*U*k*(2*(L - N)*sinphi*sinth0**2*cosphi + (- A &
+      + F+ 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(W) - 2*U*k*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F + 2*N)*sinth0*cosphi*costh0 &
+      + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(V) &
+      - 2*U*k*(A + 4*(L - N)*sinth0**2*cosphi**2 + 2*(- A &
+      + F + 2*N)*sinth0**2*cosphi**2 + (A + C - 2*F &
+      - 4*L)*sinth0**4*cosphi**4)*conjg(U) + cmplx(0,1)*U*((- A + F &
+      + 2*N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Wdot) + cmplx(0,1)*U*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(Udot) &
+      + cmplx(0,1)*U*(A - 2*N + (sinth0**2*cosphi**2 &
+      + costh0**2)*(- A + F + 2*N) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Vdot) - cmplx(0,1)*Udot*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(W) &
+      - cmplx(0,1)*Udot*(N + (L - N)*(sinth0**2*cosphi**2 + costh0**2) &
+      + (A + C - 2*F - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(V) &
+      - cmplx(0,1)*Udot*(2*(L - N)*sinth0*cosphi*costh0 &
+      + (- A + F + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(U) - 2*V*k*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(W) - 2*V*k*(N + (L &
+      - N)*(sinth0**2*cosphi**2 + costh0**2) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(V) - 2*V*k*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0**3*cosphi**3*costh0)*conjg(U) + cmplx(0,1)*V*((L &
+      - N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Wdot) + cmplx(0,1)*V*(N &
+      + (L- N)*(sinth0**2*cosphi**2 + costh0**2) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(Udot)+ cmplx(0,1)*V*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A+ F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinth0*cosphi*costh0**3)*conjg(Vdot) - cmplx(0,1)*Vdot*((- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C- 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(W) - cmplx(0,1)*Vdot*(2*(L &
+      - N)*sinth0*cosphi*costh0 + (- A + F + 2*N)*sinth0*cosphi*costh0 &
+      + (A + C - 2*F - 4*L)*sinth0*cosphi*costh0**3)*conjg(V) &
+      - cmplx(0,1)*Vdot*(A - 2*N + (sinth0**2*cosphi**2 &
+      + costh0**2)*(- A + F + 2*N) + (A + C - 2*F &
+      - 4*L)*sinth0**2*cosphi**2*costh0**2)*conjg(U) - 2*W*k*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(V) - 2*W*k*(N + (L &
+      - N)*(sinphi**2*sinth0**2 + sinth0**2*cosphi**2) + (A + C &
+      - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)*conjg(W) - 2*W*k*(2*(L &
+      - N)*sinphi*sinth0**2*cosphi + (- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C &
+      - 2*F- 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(U) + cmplx(0,1)*W*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Udot) + cmplx(0,1)*W*((L &
+      - N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(Wdot) + cmplx(0,1)*W*((- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Vdot) - cmplx(0,1)*Wdot*((L &
+      - N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(V) - cmplx(0,1)*Wdot*((L &
+      - N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(W) &
+      - cmplx(0,1)*Wdot*((- A + F + 2*N)*sinphi*sinth0*costh0 + (A &
+      + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(U)
   dL_dkv(:,1) = real(temp(:),kind=dp)
-  temp(:) = -U*k*((L - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
-      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(V &
-      ) - U*k*((-A + F + 2*N)*sinphi*sinth0*costh0 + (A + &
-      C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**2*costh0) &
-      *conjg(V) - U*k*(N + (L - N)*(sinphi**2*sinth0**2 + sin( &
-      theta0)**2*cosphi**2) + (A + C - 2*F - 4*L)*sinphi**2*sin( &
-      theta0)**4*cosphi**2)*conjg(W) - 2*U*k*(2*(L - N)*sinphi* &
-      sinth0**2*cosphi + (-A + F + 2*N)*sinphi*sinth0** &
-      2*cosphi + (A + C - 2*F - 4*L)*sinphi*sinth0**4*cos( &
-      dphi)**3)*conjg(U) - U*k*(A - 2*N + (sinphi**2*sinth0**2 &
-      + sinth0**2*cosphi**2)*(-A + F + 2*N) + (A + C - 2*F - 4* &
-      L)*sinphi**2*sinth0**4*cosphi**2)*conjg(W) + cmplx(0,1 &
-      )*U*((L - N)*sinphi*sinth0*costh0 + (A + C - 2*F - 4 &
-      *L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Udot &
-      ) + cmplx(0,1)*U*((L - N)*sinth0*cosphi*costh0 + (A &
-      + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*cos(theta0 &
-      ))*conjg(Wdot) + cmplx(0,1)*U*((-A + F + 2*N)*sinphi*sin( &
-      theta0)**2*cosphi + (A + C - 2*F - 4*L)*sinphi*sinth0 &
-      **2*cosphi*costh0**2)*conjg(Vdot) - cmplx(0,1)*Udot*((L - &
-      N)*sinphi*sinth0*costh0 + (A + C - 2*F - 4*L)*sin( &
-      dphi)*sinth0**3*cosphi**2*costh0)*conjg(U) - cmplx(0 &
-      ,1)*Udot*((L - N)*sinphi*sinth0**2*cosphi + (A + C - 2 &
-      *F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)* &
-      conjg(V) - cmplx(0,1)*Udot*((-A + F + 2*N)*sinth0*cosphi* &
-      costh0 + (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cos &
-      (dphi)*costh0)*conjg(W) - V*k*((L - N)*sinphi*sinth0 &
-      *costh0 + (A + C - 2*F - 4*L)*sinphi*sinth0**3*cos( &
-      dphi)**2*costh0)*conjg(U) - 2*V*k*((L - N)*sinphi*sin( &
-      theta0)**2*cosphi + (A + C - 2*F - 4*L)*sinphi*sinth0 &
-      **2*cosphi*costh0**2)*conjg(V) - V*k*((L - N)*sinth0 &
-      *cosphi*costh0 + (A + C - 2*F - 4*L)*sinphi**2*sin( &
-      theta0)**3*cosphi*costh0)*conjg(W) - V*k*((-A + F + 2*N)* &
-      sinphi*sinth0*costh0 + (A + C - 2*F - 4*L)*sinphi &
-      *sinth0**3*cosphi**2*costh0)*conjg(U) - V*k*((-A + F &
-      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F - 4*L)* &
-      sinphi**2*sinth0**3*cosphi*costh0)*conjg(W) + &
-      cmplx(0,1)*V*((L - N)*sinphi*sinth0**2*cosphi + (A + C &
-      - 2*F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)* &
-      conjg(Udot) + cmplx(0,1)*V*(N + (L - N)*(sinphi**2*sinth0 &
-      **2 + costh0**2) + (A + C - 2*F - 4*L)*sinphi**2*sin( &
-      theta0)**2*costh0**2)*conjg(Wdot) + cmplx(0,1)*V*(2*(L - N)* &
-      sinphi*sinth0*costh0 + (-A + F + 2*N)*sinphi*sin( &
-      theta0)*costh0 + (A + C - 2*F - 4*L)*sinphi*sinth0* &
-      costh0**3)*conjg(Vdot) - cmplx(0,1)*Vdot*((-A + F + 2*N)*sin &
-      (dphi)*sinth0**2*cosphi + (A + C - 2*F - 4*L)*sinphi* &
-      sinth0**2*cosphi*costh0**2)*conjg(U) - cmplx(0,1)* &
-      Vdot*(2*(L - N)*sinphi*sinth0*costh0 + (-A + F + 2*N &
-      )*sinphi*sinth0*costh0 + (A + C - 2*F - 4*L)*sin( &
-      dphi)*sinth0*costh0**3)*conjg(V) - cmplx(0,1)*Vdot*(A - &
-      2*N + (sinphi**2*sinth0**2 + costh0**2)*(-A + F + 2* &
-      N) + (A + C - 2*F - 4*L)*sinphi**2*sinth0**2*costh0 &
-      **2)*conjg(W) - W*k*((L - N)*sinth0*cosphi*costh0 + &
-      (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*cos( &
-      theta0))*conjg(V) - W*k*((-A + F + 2*N)*sinth0*cosphi*cos &
-      (theta0) + (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cos( &
-      dphi)*costh0)*conjg(V) - W*k*(N + (L - N)*(sinphi**2*sin( &
-      theta0)**2 + sinth0**2*cosphi**2) + (A + C - 2*F - 4*L)* &
-      sinphi**2*sinth0**4*cosphi**2)*conjg(U) - 2*W*k*(2*(L &
-      - N)*sinphi*sinth0**2*cosphi + (-A + F + 2*N)*sin(dphi &
-      )*sinth0**2*cosphi + (A + C - 2*F - 4*L)*sinphi**3*sin &
-      (theta0)**4*cosphi)*conjg(W) - W*k*(A - 2*N + (sinphi**2* &
-      sinth0**2 + sinth0**2*cosphi**2)*(-A + F + 2*N) + (A &
-      + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)*conjg( &
-      U) + cmplx(0,1)*W*((-A + F + 2*N)*sinth0*cosphi*cos( &
-      theta0) + (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cos( &
-      dphi)*costh0)*conjg(Udot) + cmplx(0,1)*W*(2*(L - N)*sin(dphi &
-      )*sinth0*costh0 + (-A + F + 2*N)*sinphi*sinth0* &
-      costh0 + (A + C - 2*F - 4*L)*sinphi**3*sinth0**3*cos &
-      (theta0))*conjg(Wdot) + cmplx(0,1)*W*(A - 2*N + (sinphi**2*sin &
-      (theta0)**2 + costh0**2)*(-A + F + 2*N) + (A + C - 2*F - 4*L &
-      )*sinphi**2*sinth0**2*costh0**2)*conjg(Vdot) - cmplx &
-      (0,1)*Wdot*((L - N)*sinth0*cosphi*costh0 + (A + C - &
-      2*F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)* &
-      conjg(U) - cmplx(0,1)*Wdot*(N + (L - N)*(sinphi**2*sinth0 &
-      **2 + costh0**2) + (A + C - 2*F - 4*L)*sinphi**2*sin( &
-      theta0)**2*costh0**2)*conjg(V) - cmplx(0,1)*Wdot*(2*(L - N)* &
-      sinphi*sinth0*costh0 + (-A + F + 2*N)*sinphi*sin( &
-      theta0)*costh0 + (A + C - 2*F - 4*L)*sinphi**3*sin(theta0 &
-      )**3*costh0)*conjg(W)
+  temp(:) = - U*k*((L - N)*sinphi*sinth0*costh0 + (A + C &
+      - 2*F- 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(V) - U*k*((- A &
+      + F + 2*N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(V) - U*k*(N &
+      + (L - N)*(sinphi**2*sinth0**2 + sinth0**2*cosphi**2) &
+      + (A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)*conjg(W) &
+      - 2*U*k*(2*(L - N)*sinphi*sinth0**2*cosphi + (- A &
+      + F + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**4*cosphi**3)*conjg(U) - U*k*(A - 2*N &
+      + (sinphi**2*sinth0**2+ sinth0**2*cosphi**2)*(- A + F &
+      + 2*N) + (A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)*conjg(W) &
+      + cmplx(0,1)*U*((L - N)*sinphi*sinth0*costh0 &
+      + (A + C - 2*F - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(Udot) &
+      + cmplx(0,1)*U*((L - N)*sinth0*cosphi*costh0 &
+      + (A+ C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(Wdot) &
+      + cmplx(0,1)*U*((- A + F + 2*N)*sinphi*sinth0**2*cosphi &
+      + (A + C - 2*F - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Vdot) &
+      - cmplx(0,1)*Udot*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(U) - cmplx(0,1)*Udot*((L &
+      - N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(V) - cmplx(0,1)*Udot*((- A + F &
+      + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(W) - V*k*((L &
+      - N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(U) - 2*V*k*((L &
+      - N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(V) - V*k*((L &
+      - N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(W) - V*k*((- A + F &
+      + 2*N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**3*cosphi**2*costh0)*conjg(U) - V*k*((- A &
+      + F+ 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(W) + cmplx(0,1)*V*((L &
+      - N)*sinphi*sinth0**2*cosphi + (A + C- 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(Udot) + cmplx(0,1)*V*(N + (L &
+      - N)*(sinphi**2*sinth0**2 + costh0**2) + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**2*costh0**2)*conjg(Wdot) &
+      + cmplx(0,1)*V*(2*(L - N)*sinphi*sinth0*costh0 + (- A + F &
+      + 2*N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0*costh0**3)*conjg(Vdot) - cmplx(0,1)*Vdot*((- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0**2*cosphi*costh0**2)*conjg(U) - cmplx(0,1)*Vdot*(2*(L &
+      - N)*sinphi*sinth0*costh0 + (- A + F &
+      + 2*N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi*sinth0*costh0**3)*conjg(V) - cmplx(0,1)*Vdot*(A - 2*N &
+      + (sinphi**2*sinth0**2 + costh0**2)*(- A + F + 2*N) + (A + C &
+      - 2*F - 4*L)*sinphi**2*sinth0**2*costh0**2)*conjg(W) - W*k*((L &
+      - N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(V) - W*k*((- A &
+      + F + 2*N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(V) - W*k*(N &
+      + (L - N)*(sinphi**2*sinth0**2 + sinth0**2*cosphi**2) &
+      + (A + C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)*conjg(U) &
+      - 2*W*k*(2*(L- N)*sinphi*sinth0**2*cosphi + (- A + F &
+      + 2*N)*sinphi*sinth0**2*cosphi + (A + C - 2*F &
+      - 4*L)*sinphi**3*sinth0**4*cosphi)*conjg(W) - W*k*(A - 2*N &
+      + (sinphi**2*sinth0**2 + sinth0**2*cosphi**2)*(- A + F + 2*N) &
+      + (A+ C - 2*F - 4*L)*sinphi**2*sinth0**4*cosphi**2)*conjg(U) &
+      + cmplx(0,1)*W*((- A + F + 2*N)*sinth0*cosphi*costh0 &
+      + (A + C - 2*F - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(Udot) &
+      + cmplx(0,1)*W*(2*(L - N)*sinphi*sinth0*costh0 &
+      + (- A + F + 2*N)*sinphi*sinth0*costh0 + (A + C &
+      - 2*F - 4*L)*sinphi**3*sinth0**3*costh0)*conjg(Wdot) &
+      + cmplx(0,1)*W*(A - 2*N + (sinphi**2*sinth0**2 + costh0**2)*(- A &
+      + F + 2*N) + (A + C - 2*F - 4*L)*sinphi**2*sinth0**2*costh0**2)*conjg(Vdot) &
+      - cmplx(0,1)*Wdot*((L &
+      - N)*sinth0*cosphi*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**3*cosphi*costh0)*conjg(U) - cmplx(0,1)*Wdot*(N + (L &
+      - N)*(sinphi**2*sinth0**2 + costh0**2) + (A + C - 2*F &
+      - 4*L)*sinphi**2*sinth0**2*costh0**2)*conjg(V) - cmplx(0,1)*Wdot*(2*(L &
+      - N)*sinphi*sinth0*costh0 + (- A + F &
+      + 2*N)*sinphi*sinth0*costh0 + (A + C - 2*F &
+      - 4*L)*sinphi**3*sinth0**3*costh0)*conjg(W)
   dL_dkv(:,2) = real(temp(:),kind=dp)
 
 end subroutine get_kernels
