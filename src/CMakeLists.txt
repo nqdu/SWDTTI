@@ -1,6 +1,6 @@
 
 file(GLOB SOURCE "*.cpp" "*.f90")
-list(FILTER SOURCE EXCLUDE REGEX "main*")
+list(FILTER SOURCE EXCLUDE REGEX "main_*.cpp")
 
 #message("myfile = ${SOURCE}")
 
