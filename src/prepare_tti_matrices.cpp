@@ -81,10 +81,11 @@ prepare_matrices(double phi)
     K1mat.resize(msize * msize);
     K2mat.resize(msize * msize);
     Emat.resize(msize * msize);
-    std::fill(Mmat.begin(),Mmat.end(),(0.,0.));
-    std::fill(K1mat.begin(),K1mat.end(),(0.,0.));
-    std::fill(K2mat.begin(),K2mat.end(),(0.,0.));
-    std::fill(Emat.begin(),Emat.end(),(0.,0.));
+    const dcmplx ZERO{0.,0.};
+    std::fill(Mmat.begin(),Mmat.end(),ZERO);
+    std::fill(K1mat.begin(),K1mat.end(),ZERO);
+    std::fill(K2mat.begin(),K2mat.end(),ZERO);
+    std::fill(Emat.begin(),Emat.end(),ZERO);
 
     // compute M/K/E for gll/grl layer
     std::array<double,NGRL> dphi;
