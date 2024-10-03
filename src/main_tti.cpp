@@ -64,7 +64,7 @@ int main (int argc, char **argv){
             model.create_database(
                 freq[it],nz,vph.data(),vpv.data(),vsh.data(),
                 vsv.data(),eta.data(),theta0.data(),phi0.data(),
-                rho.data(),thk.data()
+                rho.data(),thk.data(),true
             );
             model.prepare_matrices(phi[id]);
             model.compute_egnfun(freq[it],phi[id],c,displ);

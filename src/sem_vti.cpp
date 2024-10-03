@@ -1,8 +1,12 @@
-#include "swdlayer.hpp"
+#include "swdlayervti.hpp"
+
+#include <iostream>
 #include <algorithm>
+
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
-#include <iostream>
+
+typedef std::complex<double> dcmplx;
 
 /**
  * @brief filter swd in the [ vmin,vmax] and Rek >= Imk
@@ -71,7 +75,7 @@ filter_swd(double vmin, double vmax,double om, const Eigen::MatrixXcd &displ_all
  * @param c dispersion, shape(nc)
  * @param displ eigen functions(displ at y direction), shape(nc,nglob)
  */
-void  LayerModel::
+void  LayerModelVTI::
 compute_slegn(double freq,std::vector<double> &c,
               std::vector<double> &displ) const
 {
@@ -103,7 +107,7 @@ compute_slegn(double freq,std::vector<double> &c,
  * @param c dispersion, shape(nc)
  * @param displ eigen functions(displ at x/z direction), shape(nc,2,nglob)
  */
-void LayerModel:: 
+void LayerModelVTI:: 
 compute_sregn(double freq,std::vector<double> &c,
                 std::vector<double> &displ) const 
 {
