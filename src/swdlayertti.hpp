@@ -5,37 +5,17 @@
 #include <vector>
 #include <array>
 
-class LayerModelTTI{
+#include "swdlayer.hpp"
+
+class LayerModelTTI : public LayerModel{
 
 typedef std::complex<double> dcmplx;
-
-private:
-    // GLL/GRL nodes and weights
-    static const int NGLL = 7, NGRL = 20;
-    std::array<double,NGLL> xgll,wgll;
-    std::array<double,NGRL> xgrl,wgrl;
-    std::array<double,NGLL*NGLL> hprimeT,hprime; // hprimeT(i,j) = l'_i(xi_j)
-    std::array<double,NGRL*NGRL> hprimeT_grl,hprime_grl;
-
-    void initialize_nodes();
-
 public:
-    // SEM Mesh
-    int nspec,nspec_grl; // # of elements for gll/grl layer
-    int nglob; // # of unique points
-    std::vector<int> ibool; // connectivity matrix, shape(nspec * NGLL + NGRL)
-    std::vector<float> skel;  // skeleton, shape(nspec * 2 + 2)
-    std::vector<double> znodes; // shape(nspec * NGLL + NGRL)
-    std::vector<double> jaco; // jacobian for GLL, shape(nspec + 1) dz / dxi
-    std::vector<double> z; // shape(nglob)
 
     LayerModelTTI(){};
-    void initialize();
 
 private:
-    std::vector<int> ilayer_flag; // shape(nspec + 1), return layer flag 
     std::vector<dcmplx> Mmat,Emat,K1mat,K2mat; // matrices for SEM,shape(3*nglob,3*nglob) om^2 M = k^2 K_2 + k K_1 + E
-    double PHASE_VELOC_MIN,PHASE_VELOC_MAX;
 
 public:
 
@@ -51,7 +31,7 @@ public:
     void create_database(double freq,int nlayer, const float *vph, const float* vpv,
                         const float *vsh, const float *vsv, const float *eta,
                         const float *theta0, const float *phi0,
-                        const float *rho,const float *thk);
+                        const float *rho,const float *thk,bool is_layer);
 
     void prepare_matrices(double phi);
 

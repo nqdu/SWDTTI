@@ -1,10 +1,12 @@
-#include "swdlayer.hpp"
+#include "swdlayervti.hpp"
+#include "swdio.hpp"
 #include <iostream>
 
 int main (int argc, char **argv){
     // read model name
-    if(argc != 3) {
-        printf("Usage: ./test_love modelfile wavetype[1 for Love and 2 for Rayleigh] ");
+    if(argc != 6) {
+        printf("Usage: ./surfvti modelfile wavetype[1 for Love and 2 for Rayleigh] f1 f2 nt\n");
+        printf("freqs = logspace(log10(f1),log10(f2),nt)\n");
         exit(1);
     }
     int wavetype;
@@ -27,25 +29,51 @@ int main (int argc, char **argv){
     fclose(fp);
 
     // Period
-    int nt = 120;
+    int nt;
+    float f1,f2;
+    sscanf(argv[3],"%g",&f1); sscanf(argv[4],"%g",&f2);
+    sscanf(argv[5],"%d",&nt);
+    f1 = std::log10(f1); f2 = std::log10(f2);
+    if(f1 > f2) std::swap(f1,f2);
     std::vector<double> freq(nt);
     for(int it = 0; it < nt; it ++) {
-        double f = -2.2 + 2.2 / (nt - 1) * it;
-        freq[nt-1 - it] = std::pow(10,f);
+        double f = f1 + (f2 - f1)/ (nt - 1) * it;
+        freq[it] = std::pow(10,f);
     }
 
     // create database
     printf("\ncomputing dispersions ...\n");
-    LayerModel model;
+    printf("freqmin = %g freqmax = %g\n",freq[0],freq[nt-1]);
+
+    LayerModelVTI model;
     model.initialize();
 
-    // love wave swd
+    // open file to write out data
     fp = fopen("out/swd.txt","w");
-    std::vector<double> c,displ,u;
+    FILE *fio = fopen("out/database.bin","wb");
+
+    // write period vector into fp
     for(int it = 0; it < nt; it ++) {
+        fprintf(fp,"%g ",1. / freq[it]);
+    }
+    fprintf(fp,"\n");
+
+    // write meta info into database
+    int nkers = 3, ncomp = 1;
+    if(wavetype != 1) {
+        nkers = 5;
+        ncomp = 2;
+    }
+    write_binary_f(fio,&nkers,1);
+    write_binary_f(fio,&ncomp,1);
+    
+    for(int it = 0; it < nt; it ++) {
+        std::vector<double> c,displ,u;
+
+        // phase velocity/eigenfunctions
         model.create_database(freq[it],nz,vp.data(),vp.data(),
                                 vs.data(),vs.data(),eta.data(),
-                                rho.data(),thk.data());
+                                rho.data(),thk.data(),true);
         model.prepare_matrices(wavetype);
         switch (wavetype)
         {
@@ -57,13 +85,19 @@ int main (int argc, char **argv){
             model.compute_sregn(freq[it],c,displ);
             break;
         }
-
-        // group
+    
+        // alloc space for group/kernels
         std::vector<double> frekl;
         int nc = c.size();
         u.resize(nc);
+
+        // get some consts
         int nglob = model.nglob;
-        //printf("%d of %d %f\n",it,nt,1./freq[it]);
+        int npts = model.ibool.size();
+
+        // write coordinates
+        write_binary_f(fio,model.znodes.data(),npts);
+
         for(int ic = 0; ic < nc; ic ++) {
             if(wavetype == 1) {
                 u[ic] = model.compute_love_kl(freq[it],c[ic],&displ[ic * nglob],frekl);
@@ -73,32 +107,23 @@ int main (int argc, char **argv){
             }
             model.transform_kernels(frekl);
 
-            // write swd
-            fprintf(fp,"%g %g %g\n",1./freq[it],c[ic],u[ic]);
+            // write swd T,c,U,mode
+            fprintf(fp,"%d %g %g %d\n",it,c[ic],u[ic],ic);
 
-            if(ic == 0) {
-                // get constants
-                int n = model.ibool.size();
-                int nkers = frekl.size() / n;
-                int ncomp = displ.size() / (nglob * nc);
-
-                std::string filename = "out/" + std::to_string(it) + ".txt";
-                FILE *fp1 = fopen(filename.c_str(),"w");
-                
-                for(int i = 0; i < n; i ++) {
-                    int iglob = model.ibool[i];
-                    
-                    fprintf(fp1,"%g ",model.znodes[i]);
-                    for(int j = 0; j < nkers; j ++) {
-                        fprintf(fp1,"%g ",frekl[j * n + i]);
-                    }
-                    for(int j = 0; j < ncomp; j ++) fprintf(fp1,"%g ",displ[ic * nglob * 2 + j * nglob +  iglob]);
-                    fprintf(fp1,"\n");
-                    
+            // write displ
+            std::vector<double> temp(npts*ncomp);
+            for(int i = 0; i < npts; i ++) {
+                int iglob = model.ibool[i];
+                for(int j = 0; j < ncomp; j ++) {
+                    temp[j * ncomp + i] = displ[ic * nglob * ncomp + j * nglob + iglob];
                 }
-                fclose(fp1);
             }
+            write_binary_f(fio,temp.data(),npts*ncomp);
+
+            // write kernels
+            write_binary_f(fio,&frekl[0],npts*nkers);
         }
     }
     fclose(fp);
+    fclose(fio);
 }

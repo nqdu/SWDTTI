@@ -1,9 +1,10 @@
 #include "swdlayertti.hpp"
+
 #include <algorithm>
-#include <Eigen/Core>
-#include <Eigen/Eigenvalues>
 #include <iostream>
 
+#include <Eigen/Core>
+#include <Eigen/Eigenvalues>
 
 /**
  * @brief compute phase velocity and eigen displacements for a given direction
@@ -38,6 +39,22 @@ compute_egnfun(double freq, double phi, std::vector<double> &c, std::vector<dcmp
     A(idx1,idx2).setIdentity(); // A[:nglob*3,nglob*3:] = I;
     A(idx2,idx1) = omega2 * dcmat(M.asDiagonal()) - E; // A[nglob*3:,:nglob*3] = om^2 * M - E
     A(idx2,idx2) =  -K1;
+
+    // solve generatlized matrix problem based on lapacke/mkl/eigen
+#ifdef EIGEN_USE_LAPACKE
+    typedef lapack_complex_double ldcmplx;
+    Eigen::VectorXcd alpha(nglob*6),beta(nglob*6);
+    dcmat displ_all(nglob * 6,nglob * 6);
+
+    B(idx1,idx1).setIdentity();
+    B(idx2,idx2) = K2; // B = [[I 0],[0,M]]
+    LAPACKE_zggev(LAPACK_ROW_MAJOR,'N','V',nglob*6,(ldcmplx*)A.data(),nglob*6,
+                 (ldcmplx*)B.data(),nglob*6,(ldcmplx*)alpha.data(),(ldcmplx*)beta.data(),
+                NULL,nglob*6,(ldcmplx*)displ_all.data(),nglob*6);
+    
+    // eigenvalues
+    Eigen::Array<dcmplx,-1,1> k = alpha.array() / beta.array();
+#else 
     B(idx1,idx1).setIdentity();
     B(idx2,idx2) = K2.inverse(); // B = [[I 0],[0,M]]
     A = B * A;
@@ -46,6 +63,7 @@ compute_egnfun(double freq, double phi, std::vector<double> &c, std::vector<dcmp
     Eigen::ComplexEigenSolver<dcmat> sol(A);
     Eigen::MatrixXcd displ_all = sol.eigenvectors();;
     Eigen::Array<dcmplx,-1,1> k = sol.eigenvalues().array();
+#endif
 
    // filter swd in [vmin * 0.85,vmax] region
     double vmin = PHASE_VELOC_MIN, vmax = PHASE_VELOC_MAX;

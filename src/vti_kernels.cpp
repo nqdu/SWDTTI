@@ -1,4 +1,4 @@
-#include "swdlayer.hpp"
+#include "swdlayervti.hpp"
 
 /**
  * @brief compute group velocity and kernels for love wave
@@ -9,7 +9,7 @@
  * @param frekl Frechet kernels (N/L/rho) for elastic parameters, shape(3,nspec*NGLL + NGRL) 
  * @return double u group velocity
  */
-double LayerModel:: 
+double LayerModelVTI:: 
 compute_love_kl(double freq,double c,const double *displ, 
                 std::vector<double> &frekl) const
 {
@@ -100,7 +100,7 @@ compute_love_kl(double freq,double c,const double *displ,
  * @param frekl Frechet kernels A/C/L/F/rho_kl kernels for elastic parameters, shape(5,nspec*NGLL + NGRL) 
  * @return double u group velocity
  */
-double LayerModel::
+double LayerModelVTI:: 
 compute_rayl_kl(double freq,double c,const double *displ, 
                 std::vector<double> &frekl) const
 {
@@ -161,7 +161,7 @@ compute_rayl_kl(double freq,double c,const double *displ,
         for(int i = 0; i < NGL; i ++) {
             int id = id0 + i;
             double rho = xrho[id];
-            double N = xN[id], A = xA[id];
+            double A = xA[id];
             double L = xL[id], F = xF[id];
 
             // kernels
@@ -195,14 +195,12 @@ compute_rayl_kl(double freq,double c,const double *displ,
     return u;
 }
 
-
-
 /**
  * @brief transform kernels from base to vp/vs/eta/rho
  * 
  * @param frekl base Frechet kernels, shape(3/5,nspec*NGLL+NGRL)
  */
-void LayerModel:: 
+void LayerModelVTI:: 
 transform_kernels(std::vector<double> &frekl) const
 {
     // get # of kernels
@@ -238,7 +236,7 @@ transform_kernels(std::vector<double> &frekl) const
         // compute vph/vpv/vsh/vsv/eta
         double vph = std::sqrt(A / rho), vpv = std::sqrt(C / rho);
         double vsh = std::sqrt(N / rho), vsv = std::sqrt(L / rho);
-        double eta = F / (A - 2. * L);
+        //double eta = F / (A - 2. * L);
 
         // transform kernels
         double vph_kl = 2. * rho * vph * A_kl, vpv_kl = 2. * rho * vpv * C_kl;

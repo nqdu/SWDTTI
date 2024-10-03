@@ -8,7 +8,7 @@ It can handle dispersion values for any TI-type layered model, any frequency, an
 
 2. packages:
 * [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) >= 3.4.0
-* [MKL/LAPACKE](https://www.netlib.org/lapack/lapacke.html), optional.
+* [MKL/LAPACK](https://www.netlib.org/lapack/lapacke.html), optional.
 * [doxygen](https://www.doxygen.nl/) for api document generation, optional.
 
 3. Install:
@@ -17,7 +17,7 @@ mkdir -p build; cd build;
 cmake .. -DCXX=g++ -DFC=gfortran  -DEIGEN_INC=/path/to/eigen/ -DUSE_LAPACK=FALSE
 make -j4; make install 
 ```
-If you want to use `LAPACKE/MKL`, you can set `-DUSE_LAPACK=TRUE`.
+If you want to use `LAPACKE/MKL`, you can set `-DUSE_LAPACK=TRUE`. This program also provides python libraries (`.so`) and you can install them by adding ```-DUSE_PYLIB=TRUE -DPYTHON_EXECUTABLE=`which python` ```
 
 4. install API docs
 ```bash
