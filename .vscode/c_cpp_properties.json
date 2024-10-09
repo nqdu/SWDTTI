@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "MACOS",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "~/software/eigen-3.4.0",
+                "/Users/nqdu/software/miniconda3/include/python3.11",
+                "/Users/nqdu/software/miniconda3/lib/python3.11/site-packages/pybind11/include"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
