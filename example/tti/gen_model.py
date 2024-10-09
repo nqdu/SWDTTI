@@ -17,6 +17,11 @@ vph = vp * 1.2
 vsv = vs * 1.
 vsh = vs * 1.2
 
+# vpv = vp * 1.
+# vph = vp * 1.
+# vsv = vs * 1.
+# vsh = vs * 1.
+
 f = open("modelhti.txt","w")
 f.write("%d\n"%(nz))
 for i in range(nz):

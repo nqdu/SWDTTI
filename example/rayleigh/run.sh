@@ -11,7 +11,7 @@ echo $sourcedir
 wavetp=2
 
 # run sem
-time $sourcedir/bin/surfvti model.txt $wavetp 0.01 1 120
+time $sourcedir/bin/surfvti model.txt $wavetp 0.01 0.5 100
 
 # convert database to h5file 
 python $sourcedir/scripts/binary2h5.py out/database.bin out/swd.txt out/kernels.h5
