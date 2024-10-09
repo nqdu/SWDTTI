@@ -17,7 +17,7 @@ def main():
     fout:h5py.File = h5py.File(outfile,"w")
 
     # open swd file to read T and swd
-    T = np.loadtxt(swdfile,max_rows=1)
+    T = np.loadtxt(swdfile,max_rows=1,ndmin=1)
     data = np.loadtxt(swdfile,skiprows=1)
     max_modes = int(np.max(data[:,-1])) + 1
     fout.create_group("swd")
@@ -46,16 +46,19 @@ def main():
         comp_name = ['W']
         fout.attrs['WaveType'] = 'Love'
         fout.attrs['ModelType'] = 'VTI'
+        displ_type = 'f8'
     elif nkers == 5:
         comp_name = ['U','V']
         kl_name = ['vph_kl','vpv_kl','vsv_kl','eta_kl','rho_kl']
         fout.attrs['WaveType'] = 'Rayleigh'
         fout.attrs['ModelType'] = 'VTI'
+        displ_type = 'f8'
     else:
         comp_name = ['U','V','W']
         kl_name = ['vph_kl','vpv_kl','vsh_kl','vsv_kl','eta_kl','theta_kl','phi_kl','rho_kl']
         fout.attrs['WaveType'] = 'Full'
         fout.attrs['ModelType'] = 'TTI'
+        displ_type = 'c16'
     fout.create_group("kernels")
 
     for it in range(len(T)):
@@ -74,10 +77,10 @@ def main():
             fout.create_group(gname)
 
             # read eigenfuncs
-            displ = fin.read_reals('f8')
+            displ = fin.read_reals(displ_type)
             displ = displ.reshape((ncomps,npts))
             for icomp in range(ncomps):
-                fout.create_dataset(f"{gname}/{comp_name[icomp]}",dtype='f8',shape=(npts))
+                fout.create_dataset(f"{gname}/{comp_name[icomp]}",dtype=displ_type,shape=(npts))
                 fout[f"{gname}/{comp_name[icomp]}"][:] = displ[icomp,:]
             
             # read kernels
