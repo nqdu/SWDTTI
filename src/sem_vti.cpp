@@ -31,7 +31,7 @@ filter_swd(double vmin, double vmax,double om, const Eigen::MatrixXcd &displ_all
     Eigen::MatrixXd displ_filt;
     using Eigen::all;
     //auto mask = ((c_all >= 0.85 * vmin) && (c_all <= vmax)) && (k.real().abs() >= k.imag().abs());
-    auto mask = ((c_all >= vmin)&& (c_all <= vmax)) && (k.real().abs() >= k.imag().abs());
+    auto mask = ((c_all >= vmin)&& (c_all <= vmax)) && (k.real().abs() > 10 * k.imag().abs());
     // std::cout << mask << "\n";
     std::vector<int> idx0; idx0.reserve(mask.cast<int>().sum());
     for(int i = 0; i < c_all.size(); i ++) {

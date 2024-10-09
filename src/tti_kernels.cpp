@@ -39,7 +39,7 @@ compute_kernels(double freq, double c,double phi,
    // first allocate element wise displ
     std::array<dcmplx,NGRL> U,dU,V,dV,W,dW;
     std::array<double,NGRL> dphi,Kwvnm;
-    std::array<double,NGRL * 2> dL_dkv;
+    std::array<double,NGRL *2> dL_dkv;
 
     // resize
     size_t size = xrho.size();
@@ -69,8 +69,9 @@ compute_kernels(double freq, double c,double phi,
         // cache displ in a element
         for(int i = 0; i < NGL; i ++) {
             int iglob = ibool[id + i];
-            U[i] = displ[iglob];
-            V[i] = displ[nglob + iglob];
+            U[i] = displ[iglob + 0 * nglob];
+            W[i] = displ[iglob + 1 * nglob];
+            V[i] = displ[iglob + 2 * nglob];
             dphi[i] = xP[id + i] - M_PI / 180. * phi;
         }
 
@@ -113,15 +114,71 @@ compute_kernels(double freq, double c,double phi,
 
     // compute group velocity
     std::array<double,2> cg;
-    cg[0] = -I3x / I2; cg[1] = -I3y / I2;
+    double ux = -I3x / I2; 
+    double uy = -I3y / I2;
+    cg[0] = std::hypot(ux,uy);
+    cg[1] = std::atan2(uy,ux) * 180. / M_PI + phi;
 
     // rescale kernels with I1
     double coef1 = c / k / I1;
     for(int iker = 0; iker < 8; iker ++) {
         for(int i = 0; i < nspec * NGLL + NGRL; i ++) {
-            frekl[iker * 8 + i] *= coef1;
+            frekl[iker * size + i] *= coef1;
         }
     }
 
     return cg;
+}
+
+/**
+ * @brief transform kernels from base to vp/vs/eta/rho/phi/theta
+ * 
+ * @param frekl base Frechet kernels, shape(8,nspec*NGLL+NGRL)
+ */
+void LayerModelTTI::
+transform_kernels(std::vector<double> &frekl) const
+{
+    // get # of kernels
+    int npts = nspec * NGLL + NGRL;
+    int nker = frekl.size() / npts;
+
+    // loop every point to transform kernels
+    for(int ipt = 0; ipt < npts; ipt ++) {
+        // set zero of all base kernels
+        double A_kl{},C_kl{},F_kl{}, L_kl{}, N_kl{}, rho_kl{};
+        double T_kl{}, P_kl{};
+
+        // fetch kernels from global array
+        A_kl = frekl[0 * npts + ipt];
+        C_kl = frekl[1 * npts + ipt];
+        F_kl = frekl[2 * npts + ipt];
+        L_kl = frekl[3 * npts + ipt];
+        N_kl = frekl[4 * npts + ipt];
+        rho_kl = frekl[7 * npts + ipt];
+
+        // get variables
+        double A = xA[ipt], C = xC[ipt], L = xL[ipt];
+        double F = xF[ipt], N = xN[ipt], rho = xrho[ipt];
+
+        // compute vph/vpv/vsh/vsv/eta
+        double vph = std::sqrt(A / rho), vpv = std::sqrt(C / rho);
+        double vsh = std::sqrt(N / rho), vsv = std::sqrt(L / rho);
+        double eta = F / (A - 2. * L);
+
+        // transform kernels
+        double vph_kl = 2. * rho * vph * A_kl, vpv_kl = 2. * rho * vpv * C_kl;
+        double vsh_kl = 2. * rho * vsh * N_kl, vsv_kl = 2. * rho * vsv * L_kl;
+        double eta_kl = (A - 2. * L) * F_kl;
+        double r_kl = vph * vph * A_kl + vpv * vpv * C_kl + 
+                      vsh * vsh * N_kl + vsv * vsv * L_kl +
+                      rho_kl;
+
+        // copy back to frekl array
+        frekl[0 * npts + ipt] = vph_kl;
+        frekl[1 * npts + ipt] = vpv_kl;
+        frekl[2 * npts + ipt] = vsh_kl;
+        frekl[3 * npts + ipt] = vsv_kl;
+        frekl[4 * npts + ipt] = eta_kl;
+        frekl[7 * npts + ipt] = r_kl;
+    }       
 }

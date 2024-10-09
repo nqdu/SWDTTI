@@ -28,6 +28,9 @@ nc = int(np.max(data[:,-1])) + 1
 plt.figure(1,figsize=(14,5))
 #plt.scatter(1./data[:,0],data[:,1],s=10,color='k')
 c_all = fetch_data(T,data,nc,1)
+idx = np.logical_and(1./ T < 0.2, 1./ T > 0.1)
+#print(T[idx],c_all[idx,:])
+#exit(1)
 for i in range(c_all.shape[1]):
     idx = c_all[:,i] > 0
     if np.sum(idx) != 0:

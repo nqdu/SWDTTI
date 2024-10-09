@@ -31,10 +31,9 @@ check_wavetype(const std::string &wavetype)
     return iwave;
 }
 
-//
 auto 
 swdvti(const ftensor &thk,const ftensor &vph,const ftensor &vpv,
-        const ftensor &vsh,const ftensor &vsv,const ftensor &rho,
+        const ftensor &vsh,const ftensor &vsv,const ftensor &eta,const ftensor &rho, 
         const dtensor &t,const std::string &wavetype, bool only_phase,
         int mode=0)
 {
@@ -43,7 +42,6 @@ swdvti(const ftensor &thk,const ftensor &vph,const ftensor &vpv,
     // allocate space
     int nt = t.size(), n = thk.size();
     dtensor cg(nt),cp(nt);
-    std::vector<float> eta(n); std::fill(eta.begin(),eta.end(),1.0);
 
     __surfvti(thk.data(),vph.data(),vpv.data(),vsh.data(),vsv.data(),eta.data(),
               rho.data(),n,nt,mode,iwave,only_phase,t.data(),cp.mutable_data(),
@@ -55,14 +53,14 @@ swdvti(const ftensor &thk,const ftensor &vph,const ftensor &vpv,
 
 auto 
 vti_kl(const ftensor &thk,const ftensor &vph,const ftensor &vpv,
-        const ftensor &vsh,const ftensor &vsv,const ftensor &rho,
-        const dtensor &t,const std::string wavetype,int mode=0)
+        const ftensor &vsh,const ftensor &vsv,const ftensor &eta,
+        const ftensor &rho,const dtensor &t,
+        const std::string &wavetype,int mode=0)
 {
     int iwave = check_wavetype(wavetype);
     int nt = t.size(), n = thk.size();
     dtensor cg(nt),cp(nt);
 
-    std::vector<float> eta(n); std::fill(eta.begin(),eta.end(),1.0);
     auto frekl = __surfvti_kl(thk.data(),vph.data(),vpv.data(),vsh.data(),vsv.data(),
                               eta.data(),rho.data(),n,nt,mode,iwave,
                               t.data(),cp.mutable_data(),cg.mutable_data());
@@ -81,7 +79,9 @@ swdiso(const ftensor &thk,const ftensor &vp,const ftensor &vs,const ftensor &rho
         const dtensor &t,const std::string &wavetype, bool only_phase,
         int mode=0)
 {
-    return swdvti(thk,vp,vp,vs,vs,rho,t,wavetype,only_phase,mode);
+    ftensor eta(thk.size());
+    for(size_t i = 0; i < thk.size(); i++ ) eta.mutable_data()[i] = 1.;
+    return swdvti(thk,vp,vp,vs,vs,eta,rho,t,wavetype,only_phase,mode);
 }
 
 auto 
@@ -89,7 +89,9 @@ iso_kl(const ftensor &thk,const ftensor &vp,const ftensor &vs,const ftensor &rho
         const dtensor &t,const std::string wavetype,int mode=0)
 {
     dtensor cp,cg,frekl;
-    std::tie(cp,cg,frekl) = vti_kl(thk,vp,vp,vs,vs,rho,t,wavetype,mode);
+    ftensor eta(thk.size());
+    for(size_t i = 0; i < thk.size(); i++ ) eta.mutable_data()[i] = 1.;
+    std::tie(cp,cg,frekl) = vti_kl(thk,vp,vp,vs,vs,eta,rho,t,wavetype,mode);
 
     int iwave = check_wavetype(wavetype);
     auto kl = frekl.unchecked<3>();
@@ -137,11 +139,11 @@ PYBIND11_MODULE(libswd,m){
           "ISO surface wave kernel c++ wrapper");
 
     m.def("swdvti",&swdvti,arg("thk"),arg("vph"),arg("vpv"),arg("vsh"),
-          arg("vsv"),arg("rho"),arg("period"),arg("wavetype"),arg("only_phase"),
+          arg("vsv"),arg("eta"),arg("rho"),arg("period"),arg("wavetype"),arg("only_phase"),
           arg("mode")=0,
           "VTI surface wave dispersion c++ wrapper");
 
     m.def("vti_kl",&vti_kl,arg("thk"),arg("vph"),arg("vpv"),arg("vsh"),
-          arg("vsv"),arg("rho"),arg("period"),arg("wavetype"),arg("mode")=0,
+          arg("vsv"),arg("eta"),arg("rho"),arg("period"),arg("wavetype"),arg("mode")=0,
           "VTI surface wave kernel c++ wrapper");
 }

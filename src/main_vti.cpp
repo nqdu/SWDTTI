@@ -37,12 +37,20 @@ int main (int argc, char **argv){
     if(f1 > f2) std::swap(f1,f2);
     std::vector<double> freq(nt);
     for(int it = 0; it < nt; it ++) {
-        double f = f1 + (f2 - f1)/ (nt - 1) * it;
+        double coef = (nt - 1);
+        if(coef == 0.) coef = 1.;
+        coef = 1. / coef;
+        double f = f1 + (f2 - f1) * coef * it;
         freq[it] = std::pow(10,f);
     }
 
     // create database
-    printf("\ncomputing dispersions ...\n");
+    if(wavetype == 1) {
+        printf("\ncomputing dispersions for Love wave ...\n");
+    }
+    else {
+        printf("\ncomputing dispersions for Rayleigh wave ...\n");
+    }
     printf("freqmin = %g freqmax = %g\n",freq[0],freq[nt-1]);
 
     LayerModelVTI model;
@@ -108,7 +116,7 @@ int main (int argc, char **argv){
             model.transform_kernels(frekl);
 
             // write swd T,c,U,mode
-            fprintf(fp,"%d %g %g %d\n",it,c[ic],u[ic],ic);
+            fprintf(fp,"%d %lf %lf %d\n",it,c[ic],u[ic],ic);
 
             // write displ
             std::vector<double> temp(npts*ncomp);

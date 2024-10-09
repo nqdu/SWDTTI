@@ -8,4 +8,10 @@ mkdir -p out
 sourcedir=../../
 
 # run sem
-time $sourcedir/bin/surftti modelhti.txt
+for i in `seq 0 99`;
+do 
+    phi=`echo $i | awk '{print 0 + 360 / 99 * $1}'`
+    $sourcedir/bin/surftti modelhti.txt $phi 0.01 0.01 1
+
+    mv out/swd.txt out/swd.$i.txt 
+done

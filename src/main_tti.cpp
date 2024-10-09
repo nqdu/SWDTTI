@@ -1,10 +1,13 @@
 #include "swdlayertti.hpp"
+#include "swdio.hpp"
+
 #include <iostream>
 
 int main (int argc, char **argv){
     // read model name
-    if(argc != 2) {
-        printf("Usage: ./surf_tti modelfile ");
+    if(argc != 6) {
+        printf("Usage: ./surfvti modelfile phi f1 f2 nt\n");
+        printf("freqs = logspace(log10(f1),log10(f2),nt)\n");
         exit(1);
     }
 
@@ -31,87 +34,90 @@ int main (int argc, char **argv){
     fclose(fp);
 
     // Period
-    int nt = 120;
+    int nt;
+    float f1,f2;
+    sscanf(argv[3],"%g",&f1); sscanf(argv[4],"%g",&f2);
+    sscanf(argv[5],"%d",&nt);
+    f1 = std::log10(f1); f2 = std::log10(f2);
+    if(f1 > f2) std::swap(f1,f2);
     std::vector<double> freq(nt);
     for(int it = 0; it < nt; it ++) {
-        double f = -2.2 + 2.2 / (nt - 1) * it;
-        freq[nt-1 - it] = std::pow(10,f);
+        double coef = (nt - 1);
+        if(coef == 0.) coef = 1.;
+        coef = 1. / coef;
+        double f = f1 + (f2 - f1) * coef * it;
+        freq[it] = std::pow(10,f);
     }
 
+    // angle
+    float phi;
+    sscanf(argv[2],"%f",&phi);
+
     // create database
-    printf("\ncomputing dispersions ...\n");
+    printf("\ncomputing dispersions for TTI model, angle = %f ...\n",phi);
     LayerModelTTI model;
     model.initialize();
 
-    // angles for each direction
-    const int ndirec = 100;
-    float phi[ndirec];
-    for(int i = 0; i < ndirec; i ++) {
-        phi[i] = 360. / ndirec * i;
-    }
+    fp = fopen("out/swd.txt","w");
+    FILE *fio = fopen("out/database.bin","wb");
 
-    // loop every direction
-    for(int id = 0; id < ndirec; id ++) {
-        printf(" direction %d of %d\n",id + 1,ndirec);
-        
-        // open file to save swd for each direction
-        std::string filename = "out/swd_direc" + std::to_string(id) + ".txt";
-        fp = fopen(filename.c_str(),"w");
-        
-        std::vector<double> c,u;
+    // write period vector into fp
+    for(int it = 0; it < nt; it ++) {
+        fprintf(fp,"%g ",1. / freq[it]);
+    }
+    fprintf(fp,"\n");
+
+    // write meta info into database
+    int nkers = 8, ncomp = 3;
+    write_binary_f(fio,&nkers,1);
+    write_binary_f(fio,&ncomp,1);
+
+    for(int it = 0; it < nt; it ++) {
+        std::vector<double> c;
         std::vector<std::complex<double>> displ;
-        for(int it = 100; it < 101; it ++) {
-            model.create_database(
-                freq[it],nz,vph.data(),vpv.data(),vsh.data(),
-                vsv.data(),eta.data(),theta0.data(),phi0.data(),
-                rho.data(),thk.data(),true
-            );
-            model.prepare_matrices(phi[id]);
-            model.compute_egnfun(freq[it],phi[id],c,displ);
 
-            // write dispersion in file
-            int nc = c.size();
-            for(int ic = 0; ic < nc; ic ++) {
-                fprintf(fp,"%g %g %g\n",phi[id],1. / freq[it],c[ic]);
+        // phase velocity/eigenfunctions
+        model.create_database(
+            freq[it],nz,vph.data(),vpv.data(),vsh.data(),
+            vsv.data(),eta.data(),theta0.data(),phi0.data(),
+            rho.data(),thk.data(),true);
+        model.prepare_matrices(phi);
+        model.compute_egnfun(freq[it],phi,c,displ);
+
+        // get some consts
+        int nglob = model.nglob;
+        int npts = model.ibool.size();
+
+        // write coordinates
+        write_binary_f(fio,model.znodes.data(),npts);
+
+        // group
+        std::vector<double> frekl;
+        int nc = c.size();
+        double u,uphi;
+        for(int ic = 0; ic < nc; ic ++) {
+            auto out = model.compute_kernels(freq[it],c[ic],phi,displ,frekl);
+            u = out[0]; uphi = out[1];
+            model.transform_kernels(frekl);
+
+            // write swd
+            fprintf(fp,"%d %g %g %g %g %d\n",it,c[ic],u,phi,uphi,ic);
+
+            // write displ
+            std::vector<std::complex<double>> temp(npts*ncomp);
+            for(int i = 0; i < npts; i ++) {
+                int iglob = model.ibool[i];
+                for(int j = 0; j < ncomp; j ++) {
+                    temp[j * ncomp + i] = displ[ic * nglob * ncomp + j * nglob + iglob];
+                }
             }
+            write_binary_f(fio,temp.data(),npts*ncomp);
 
-            // // group
-            // std::vector<double> frekl;
-            // int nc = c.size();
-            // u.resize(nc);
-            // int nglob = model.nglob;
-            // for(int ic = 0; ic < nc; ic ++) {
-            //     u[ic] = model.compute_kernels(freq[it],c[ic],phi[id],displ,frekl);
-            //     model.transform_kernels(frekl);
-
-            //     // write swd
-            //     fprintf(fp,"%g %g %g\n",1./freq[it],c[ic],u[ic]);
-
-            //     if(ic == 0) {
-            //         // get constants
-            //         int n = model.ibool.size();
-            //         int nkers = frekl.size() / n;
-            //         int ncomp = displ.size() / (nglob * nc);
-
-            //         std::string filename = "out/" + std::to_string(it) + ".txt";
-            //         FILE *fp1 = fopen(filename.c_str(),"w");
-                    
-            //         for(int i = 0; i < n; i ++) {
-            //             int iglob = model.ibool[i];
-                        
-            //             fprintf(fp1,"%g ",model.znodes[i]);
-            //             for(int j = 0; j < nkers; j ++) {
-            //                 fprintf(fp1,"%g ",frekl[j * n + i]);
-            //             }
-            //             fprintf(fp1,"\n");
-                        
-            //         }
-            //         fclose(fp1);
-            //     }
-            // }
+            // write kernels
+            write_binary_f(fio,&frekl[0],npts*nkers);
         }
-
-        fclose(fp);
     }
+    fclose(fio);
+    fclose(fp);
     
 }

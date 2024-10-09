@@ -29,5 +29,5 @@ doxygen config.cfg
 ### Benchmark: SWDTTI with CPS330
 ![image](example//rayleigh/phase.jpg)
 ### HTI model: Phase velocity vs. Azimuthal angle
-![image](example/tti/test.jpg)
+![image](example/tti/group-direc.jpg)
 
