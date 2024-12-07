@@ -34,17 +34,25 @@ create_database(double freq,int nlayer, const float *vph, const float* vpv,
     // copy is_layer
     IS_DICON_MODEL = is_layer;
 
+    //scale factor for last layer
+    double scale = PHASE_VELOC_MAX / freq / xgrl[NGRL-1] * 5;  // up to 5 wavelength
+
     // determine no. elements in each layer
-    std::vector<int> nel(nlayer - 1);
-    for(int i = 0; i < nlayer - 1; i ++) {
-        float v0 = std::min(vsv[i],vsh[i]) * 0.85;
-        nel[i] = (int)(thk[i] * freq / v0 ) + 1;
+    std::vector<int> nel;
+    if(this -> IS_DICON_MODEL) {
+        nel.resize(nlayer - 1);
+        for(int i = 0; i < nlayer - 1; i ++) {
+            float v0 = std::min(vsv[i],vsh[i]) * 0.85;
+            nel[i] = thk[i] * freq / v0 + 1;
+        }
+    }
+    else { // continuous model, constructed with min velocity
+        nel.resize(1);
+        float maxdepth = zlist[nlayer - 1] - zlist[0];
+        nel[0] = maxdepth * freq / PHASE_VELOC_MIN + 1;
     }
 
-    //scale factor for last layer
-    double v0 = std::max(vsh[nlayer -1],vsv[nlayer - 1]);
-    double scale = v0 / freq / xgrl[NGRL-1] * 5;  // up to 5 wavelength
-
+    // create sem mesh
     this -> create_mesh(nel.data(),thk,zlist.data(),nlayer,scale);
 
     // allocate space
