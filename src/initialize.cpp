@@ -47,6 +47,29 @@ void LayerModel:: initialize()
     }}
 }
 
+/**
+ * @brief find location of z0 in ascending list z
+ * 
+ * @param z depth list, shape(nlayer)
+ * @param z0 current loc, must be inside z 
+ * @param nlayer 
+ * @return int location of z0 in z, satisfies  z0 >= z[i] && z0 < z[i + 1]
+ */
+static int 
+find_loc(const float *z,float z0,int nz) 
+{
+
+    int i = 0;
+    while(i < nz) {
+        if(z0 >= z[i] && z0 < z[i + 1]) {
+            break;
+        }
+        i += 1;
+    }
+
+    return i;
+}
+
 
 /**
  * @brief interpolate a model by using coordinates
@@ -80,12 +103,17 @@ interp_model(const float *z,const float *param,std::vector<double> &md) const
                 md[id] = param[ilay];
             }
             else {
-                if(ilay == nlay - 1) {
+                if(z0 >= z[nlay - 1]) {
                     md[id] = param[nlay - 1];
                 }
+                else if (z0 <= z[0]) {
+                     md[id] = param[0];
+                }
                 else {
+                    // find location
+                    int ilay =  find_loc(z,z0,nlay);
                     float dz = z[ilay + 1] - z[ilay];
-                    md[id] = param[ilay] + (param[ilay + 1] - param[ilay]) / dz * (z[ilay + 1] - z0);
+                    md[id] = param[ilay] + (param[ilay + 1] - param[ilay]) / dz * (z0 - z[ilay]);
                 }
             }
         }
@@ -95,9 +123,9 @@ interp_model(const float *z,const float *param,std::vector<double> &md) const
 /**
  * @brief Create SEM mesh by using input model info
  * 
- * @param nel no. of elements for each layer, shape(nlayer - 1)
+ * @param nel no. of elements for each layer, shape(nlayer - 1) for layered model, and shape(1) for continous model
  * @param thk thickness of each layer, shape(nlayer)
- * @param zlist cumsum(thk)
+ * @param zlist cumsum(thk), shape(nlayer)
  * @param nlayer no. of layers
  * @param scale scale factor for GRL layer, zbot = sum(thk) + xgrl[-1] * scale
  */
@@ -105,8 +133,10 @@ void LayerModel::
 create_mesh(const int *nel, const float *thk,const float *zlist,int nlayer,double scale)
 {
     // count # of elements
+    int nelsize = nlayer - 1;
+    if(!IS_DICON_MODEL) nelsize = 1;
     nspec = 0;
-    for(int i = 0; i < nlayer - 1; i ++) {
+    for(int i = 0; i < nelsize; i ++) {
         nspec += nel[i];
     }
     nspec_grl = 1;
@@ -133,17 +163,30 @@ create_mesh(const int *nel, const float *thk,const float *zlist,int nlayer,doubl
     nglob = ibool[nspec * NGLL + NGRL - 1] + 1;
 
     // compute skeleton coordinates in GLL layer
-    int id = 0;
-    for(int i = 0; i < nlayer - 1; i ++) {
-        float h = thk[i] / nel[i];
-        for(int j = 0; j < nel[i]; j ++ ) {
-            skel[id * 2 + 0] = zlist[i] + h  * j;
-            skel[id * 2 + 1] = zlist[i] + h  * (j+1);
-            ilayer_flag[id] = i;
+    if(this -> IS_DICON_MODEL) {
+        int id = 0;
+        for(int i = 0; i < nelsize; i ++) {
+            float h = thk[i] / nel[i];
+            for(int j = 0; j < nel[i]; j ++ ) {
+                skel[id * 2 + 0] = zlist[i] + h  * j;
+                skel[id * 2 + 1] = zlist[i] + h  * (j+1);
+                ilayer_flag[id] = i;
+                id += 1;
+            }
+        }
+        ilayer_flag[nspec] = nlayer - 1;
+    }
+    else {
+        int id = 0;
+        float h = (zlist[nlayer - 1] - zlist[0]) / nel[0];
+        for(int j = 0; j < nel[0]; j ++ ) {
+            skel[id * 2 + 0] = zlist[0] + h  * j;
+            skel[id * 2 + 1] = zlist[0] + h  * (j+1);
+            ilayer_flag[id] = -1; // will not be used
             id += 1;
         }
+        ilayer_flag[nspec] = nlayer - 1;
     }
-    ilayer_flag[nspec] = nlayer - 1;
 
     // compute coordinates and jaco in GLL layer
     for(int ispec = 0; ispec < nspec; ispec ++) {
@@ -209,14 +252,18 @@ project_kl(const float *z, const double *param_kl, double *kl_out) const
                 kl_out[ilay] += param_kl[id];
             }
             else {
-                if(ilay == nlayer - 1) {
-                    kl_out[ilay] += param_kl[id];
+                if(z0 >= z[nlayer - 1]) {
+                    kl_out[nlayer - 1] += param_kl[id];
+                }
+                else if (z0 <= z[0]) {
+                    kl_out[0] += param_kl[id];
                 }
                 else {
+                    int ilay = find_loc(z,z0,nlayer);
                     double dz = z[ilay + 1] - z[ilay];
-                    double coef = (z[ilay + 1] - z0) / dz;
-                    kl_out[ilay] += 1 - coef;
-                    kl_out[ilay + 1] += coef;
+                    double coef = (z0 - z[ilay]) / dz;
+                    kl_out[ilay] += (1 - coef) * param_kl[id];
+                    kl_out[ilay + 1] += coef * param_kl[id];
                 }
             }
         }

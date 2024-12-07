@@ -81,7 +81,7 @@ int main (int argc, char **argv){
         // phase velocity/eigenfunctions
         model.create_database(freq[it],nz,vp.data(),vp.data(),
                                 vs.data(),vs.data(),eta.data(),
-                                rho.data(),thk.data(),true);
+                                rho.data(),thk.data(),false);
         model.prepare_matrices(wavetype);
         switch (wavetype)
         {
