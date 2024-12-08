@@ -54,7 +54,7 @@ def main():
         fout.attrs['ModelType'] = 'VTI'
         displ_type = 'f8'
     else:
-        comp_name = ['U','V','W']
+        comp_name = ['U','W','V']
         kl_name = ['vph_kl','vpv_kl','vsh_kl','vsv_kl','eta_kl','theta_kl','phi_kl','rho_kl']
         fout.attrs['WaveType'] = 'Full'
         fout.attrs['ModelType'] = 'TTI'

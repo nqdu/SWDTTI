@@ -23,7 +23,7 @@ def main():
     thk = data[:,0]
     rho = data[:,1]
     vs = data[:,2]
-    vp = data[:,3]
+    vp = data[:,4]
 
     # load frequency
     T = np.loadtxt("out/swd.txt",max_rows=1)
@@ -38,7 +38,7 @@ def main():
         wtp = 'R'
     else:
         wtp = 'L'
-    for i in range(4):
+    for i in range(0,4):
         c = get_disp(thk,vp,vs,rho,T,i,f"{wtp}c",False)
         u = get_disp(thk,vp,vs,rho,T,i,f"{wtp}g",False)
 
