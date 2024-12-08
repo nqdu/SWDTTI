@@ -2,6 +2,7 @@
 #include "swdio.hpp"
 
 #include <iostream>
+#include <fstream>
 
 int main (int argc, char **argv){
     // read model name
@@ -12,18 +13,19 @@ int main (int argc, char **argv){
     }
 
     // read model
+    std::ifstream infile; infile.open(argv[1]);
     printf("reading velocity model %s:\n",argv[1]);
     printf("layer number\t thick\t rho\t vsv\t vsh\t vpv\t vph\t theta\t phi  \n");
     std::vector<float> thk,vpv,vph,vsv,vsh,rho,theta0,phi0,eta;
     int nz;
-    FILE *fp = fopen(argv[1],"r");
-    fscanf(fp,"%d",&nz);
+    infile >> nz;
     thk.resize(nz); vsv.resize(nz); vsh.resize(nz); rho.resize(nz);
     vpv.resize(nz); vph.resize(nz); eta.resize(nz); theta0.resize(nz);
     phi0.resize(nz);
     for(int i = 0; i < nz; i ++) {
-        fscanf(fp,"%f%f%f%f%f%f%f%f",&thk[i],&rho[i],&vsv[i],
-                &vsh[i],&vpv[i],&vph[i],&theta0[i],&phi0[i]);
+        infile >> thk[i] >> rho[i] >> vsv[i] >>
+                  vsh[i] >> vpv[i] >> vph[i] >>
+                  theta0[i] >> phi0[i];
         printf("layer %d\t %g\t %g\t %g\t %g\t %g\t %g\t %g\t %g\n",
                 i + 1,thk[i],rho[i],vsv[i],
                vsh[i],vpv[i],vph[i],theta0[i],phi0[i]);
@@ -31,7 +33,7 @@ int main (int argc, char **argv){
         theta0[i] *= M_PI / 180.;
         phi0[i] *= M_PI / 180.;
     }
-    fclose(fp);
+    infile.close();
 
     // Period
     int nt;
@@ -58,7 +60,7 @@ int main (int argc, char **argv){
     LayerModelTTI model;
     model.initialize();
 
-    fp = fopen("out/swd.txt","w");
+    FILE *fp = fopen("out/swd.txt","w");
     FILE *fio = fopen("out/database.bin","wb");
 
     // write period vector into fp

@@ -1,6 +1,8 @@
 #include "swdlayervti.hpp"
 #include "swdio.hpp"
+
 #include <iostream>
+#include <fstream>
 
 int main (int argc, char **argv){
     // read model name
@@ -17,16 +19,16 @@ int main (int argc, char **argv){
     printf("layer number\t thick\t rho\t vs\t vp  \n");
     std::vector<float> thk,vp,rho,vs,eta;
     int nz;
-    FILE *fp = fopen(argv[1],"r");
-    fscanf(fp,"%d",&nz);
+    std::ifstream infile; infile.open(argv[1]);
+    infile >> nz;
     thk.resize(nz); vs.resize(nz); rho.resize(nz);
     vp.resize(nz);  eta.resize(nz);
     for(int i = 0; i < nz; i ++) {
-        fscanf(fp,"%f%f%f%f",&thk[i],&rho[i],&vs[i],&vp[i]);
+        infile >> thk[i] >> rho[i] >> vs[i] >> vp[i];
         printf("layer %d\t %f\t %f\t %f\t %f\n",i + 1,thk[i],rho[i],vs[i],vp[i]);
         eta[i] = 1.;
     }
-    fclose(fp);
+    infile.close();
 
     // Period
     int nt;
@@ -57,7 +59,7 @@ int main (int argc, char **argv){
     model.initialize();
 
     // open file to write out data
-    fp = fopen("out/swd.txt","w");
+    FILE *fp = fopen("out/swd.txt","w");
     FILE *fio = fopen("out/database.bin","wb");
 
     // write period vector into fp
