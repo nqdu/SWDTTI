@@ -49,7 +49,8 @@ create_database(double freq,int nlayer, const float *vph, const float* vpv,
     else { // continuous model, constructed with min velocity
         nel.resize(1);
         float maxdepth = zlist[nlayer - 1] - zlist[0];
-        nel[0] = maxdepth * freq / PHASE_VELOC_MIN + 1;
+        nel[0] = 1.5 * (maxdepth * freq / PHASE_VELOC_MIN + 1);
+        //printf("%d\n",nel[0]);
     }
 
     // create sem mesh

@@ -33,7 +33,7 @@ void get_kernels_(int NGL,double k,const double *A,const double *C,const double 
  */
 std::array<double,2> LayerModelTTI ::
 compute_kernels(double freq, double c,double phi,
-                const std::vector<dcmplx> &displ,
+                const dcmplx *displ,
                 std::vector<double> &frekl) const 
 {
    // first allocate element wise displ
@@ -101,7 +101,9 @@ compute_kernels(double freq, double c,double phi,
         for(int i = 0; i < NGL; i ++) {
             // rho kernel
             double rho = xrho[id + i];
-            double disp_sq = (U[i] * std::conj(U[i]) + V[i] * std::conj(V[i]) + W[i] * std::conj(W[i])).real();
+            double disp_sq = std::pow(std::abs(U[i]),2) + 
+                             std::pow(std::abs(V[i]),2) + 
+                             std::pow(std::abs(W[i]),2);
             rho_kl[id + i] = om * om * disp_sq;
 
             // accumulate I1/I2/I3x/I3y

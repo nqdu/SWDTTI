@@ -38,7 +38,7 @@ public:
     void compute_egnfun(double freq, double phi, std::vector<double> &c, std::vector<dcmplx> &displ) const;
     std::array<double,2>
     compute_kernels(double freq, double c,double phi,
-                    const std::vector<dcmplx> &displ,
+                    const dcmplx *displ,
                     std::vector<double> &frekl) const;
     
     void transform_kernels(std::vector<double> &frekl) const;
