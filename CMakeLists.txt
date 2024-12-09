@@ -1,6 +1,6 @@
 #  CMakeLists.txt
 
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.13.0)
 
 ################## compiler options ##################
 # compiler
@@ -37,7 +37,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/build/obj)
 
 ################# cmake setup #################
-set(CMAKE_CXX_FLAGS  " -g")
+set(CMAKE_CXX_FLAGS  "-g")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") 
   set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -march=native -ffast-math")

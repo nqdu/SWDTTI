@@ -1,10 +1,10 @@
 import numpy as np
 
-#z = np.linspace(0,50,5)
-z = np.array([0,30.])
+z = np.linspace(0,50,6)
+#z = np.array([0,30.])
 nz = len(z)
-#vs = 3.5 + 0.02 * z 
-vs = np.array([3.5,4.5])
+vs = 3.5 + 0.02 * z 
+#vs = np.array([3.5,4.5])
 
 # vs[10:20] = 1.4
 # vs[40:50] = 2.5

@@ -17,6 +17,8 @@ sourcedir=../../
 # done
 $sourcedir/bin/surftti model.txt 0 0.01 0.5 100
 
+# bin2h5
+echo "converting to hdf5..."
 python $sourcedir/scripts/binary2h5.py out/database.bin out/swd.txt out/kernels.h5
 
 
@@ -24,8 +26,13 @@ python $sourcedir/scripts/binary2h5.py out/database.bin out/swd.txt out/kernels.
 \rm -f  *.so bench_cps.py 
 ln -s $sourcedir/lib/cps* . 
 \cp $sourcedir/scripts/bench_cps.py .
-
 python bench_cps.py 2
 mv out/swd.cps.txt out/swd.cps.rayl.txt 
 python bench_cps.py 1
 mv out/swd.cps.txt out/swd.cps.love.txt 
+
+# plot dispersion curves
+python plot_disp.py 
+
+# plot eigenfunctions
+python plot_kernels.py out/kernels.h5 50 0
