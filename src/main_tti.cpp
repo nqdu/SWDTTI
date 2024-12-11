@@ -15,20 +15,20 @@ int main (int argc, char **argv){
     // read model
     std::ifstream infile; infile.open(argv[1]);
     printf("reading velocity model %s:\n",argv[1]);
-    printf("layer number\t thick\t rho\t vsv\t vsh\t vpv\t vph\t eta\t theta\t phi  \n");
+    printf("layer number\t thick\t rho\t vpv\t vph\t vsv\t vsh\t eta\t theta\t phi  \n");
     std::vector<float> thk,vpv,vph,vsv,vsh,rho,theta0,phi0,eta;
     int nz;
-    infile >> nz;
+    infile >> nz; 
     thk.resize(nz); vsv.resize(nz); vsh.resize(nz); rho.resize(nz);
     vpv.resize(nz); vph.resize(nz); eta.resize(nz); theta0.resize(nz);
     phi0.resize(nz);
     for(int i = 0; i < nz; i ++) {
-        infile >> thk[i] >> rho[i] >> vsv[i] >>
-                  vsh[i] >> vpv[i] >> vph[i] >>
+        infile >> thk[i] >> rho[i] >> vpv[i] >>
+                  vph[i] >> vsv[i] >> vsh[i] >>
                   eta[i] >> theta0[i] >> phi0[i];
         printf("layer %d\t %g\t %g\t %g\t %g\t %g\t %g\t %g\t %g\t %g\n",
-                i + 1,thk[i],rho[i],vsv[i],
-               vsh[i],vpv[i],vph[i],eta[i],
+                i + 1,thk[i],rho[i],vpv[i],
+               vph[i],vsv[i],vsh[i],eta[i],
                theta0[i],phi0[i]);
         theta0[i] *= M_PI / 180.;
         phi0[i] *= M_PI / 180.;
@@ -80,9 +80,9 @@ int main (int argc, char **argv){
 
         // phase velocity/eigenfunctions
         model.create_database(
-            freq[it],nz,vph.data(),vpv.data(),vsh.data(),
-            vsv.data(),eta.data(),theta0.data(),phi0.data(),
-            rho.data(),thk.data(),true);
+            freq[it],nz,rho.data(),vpv.data(),vph.data(),vsv.data(),
+            vsh.data(),eta.data(),theta0.data(),phi0.data(),
+            thk.data(),true);
         model.prepare_matrices(phi);
         model.compute_egnfun(freq[it],phi,c,displ);
 

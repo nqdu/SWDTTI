@@ -9,9 +9,10 @@
  * @param is_layer if the input model is a layered (discontinuous) model
  */
 void LayerModelVTI:: 
-create_database(double freq,int nlayer, const float *vph, const float* vpv,
-                const float *vsh, const float *vsv, const float *eta,
-                const float *rho,const float *thk,bool is_layer)
+create_database(double freq,int nlayer, const float *rho,
+                const float *vpv, const float* vph,
+                const float *vsv, const float *vsh, const float *eta,
+                const float *thk, bool is_layer)
 {
     // get zlist
     std::vector<float> zlist(nlayer);

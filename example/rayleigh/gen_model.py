@@ -16,7 +16,7 @@ thk[0:nz-1] = np.diff(z)
 f = open("model.txt","w")
 f.write("%d\n"%(nz))
 for i in range(nz):
-    f.write("%f %f %f %f %f %f 1.\n"%(thk[i],rho[i],vs[i],vs[i],vp[i],vp[i]))
+    f.write("%f %f %f %f %f %f 1.\n"%(thk[i],rho[i],vp[i],vp[i],vs[i],vs[i]))
 f.close()
 
 z = np.zeros_like(thk)

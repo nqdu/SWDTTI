@@ -176,11 +176,13 @@ transform_kernels(std::vector<double> &frekl) const
                       rho_kl;
 
         // copy back to frekl array
-        frekl[0 * npts + ipt] = vph_kl;
+        frekl[0 * npts + ipt] = r_kl;
         frekl[1 * npts + ipt] = vpv_kl;
-        frekl[2 * npts + ipt] = vsh_kl;
+        frekl[2 * npts + ipt] = vph_kl;
         frekl[3 * npts + ipt] = vsv_kl;
-        frekl[4 * npts + ipt] = eta_kl;
-        frekl[7 * npts + ipt] = r_kl;
+        frekl[4 * npts + ipt] = vsh_kl;
+        frekl[5 * npts + ipt] = eta_kl;
+        frekl[6 * npts + ipt] = T_kl;
+        frekl[7 * npts + ipt] = P_kl;
     }       
 }

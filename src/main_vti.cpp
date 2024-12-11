@@ -16,7 +16,7 @@ int main (int argc, char **argv){
 
     // read model
     printf("reading velocity model:\n");
-    printf("layer number\t thick\t rho\t vsv\t vsh\t vpv\t vph\t eta\n");
+    printf("layer number\t thick\t rho\t vpv\t vph\t vsv\t vsh\t eta\n");
 
     std::vector<float> thk,vpv,vph,rho,vsv,vsh,eta;
     int nz;
@@ -26,12 +26,12 @@ int main (int argc, char **argv){
     vpv.resize(nz); vph.resize(nz); eta.resize(nz);
     vsh.resize(nz);
     for(int i = 0; i < nz; i ++) {
-        infile >> thk[i] >> rho[i] >> vsv[i] >>
-                  vsh[i] >> vpv[i] >> vph[i] >> 
+        infile >> thk[i] >> rho[i] >> vpv[i] >>
+                  vph[i] >> vsv[i] >> vsh[i] >> 
                   eta[i];
         printf("layer %d\t %g\t %g\t %g\t %g\t %g\t %g\t %g\n",
-                i + 1,thk[i],rho[i],vsv[i],
-               vsh[i],vpv[i],vph[i],eta[i]);
+                i + 1,thk[i],rho[i],vpv[i],
+               vph[i],vsv[i],vsh[i],eta[i]);
     }
     infile.close();
 
@@ -94,8 +94,8 @@ int main (int argc, char **argv){
         std::vector<double> c,displ,u;
 
         // phase velocity/eigenfunctions
-        model.create_database(freq[it],nz,vph.data(),vpv.data(),vsh.data(),
-                              vsv.data(),eta.data(),rho.data(),thk.data(),
+        model.create_database(freq[it],nz,rho.data(),vpv.data(),vph.data(),
+                              vsv.data(),vsh.data(),eta.data(),thk.data(),
                               is_layer);
         model.prepare_matrices(wavetype);
         switch (wavetype)

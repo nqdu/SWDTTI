@@ -22,8 +22,8 @@ def main():
     data = np.loadtxt("model.txt",skiprows=1,dtype=np.float32)
     thk = data[:,0]
     rho = data[:,1]
-    vs = data[:,2]
-    vp = data[:,4]
+    vs = data[:,4]
+    vp = data[:,2]
 
     # load frequency
     T = np.loadtxt("out/swd.txt",max_rows=1)

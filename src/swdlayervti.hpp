@@ -20,9 +20,10 @@ public:
     std::vector<double> xA,xC,xL,xF,xN; // shape(nspec * NGLL + NGRL)
 
     // VTI model
-    void create_database(double freq,int nlayer, const float *vph, const float* vpv,
-                        const float *vsh, const float *vsv, const float *eta,
-                        const float *rho,const float *thk, bool is_layer);
+    void create_database(double freq,int nlayer, const float *rho,
+                        const float *vpv, const float* vph,
+                        const float *vsv, const float *vsh, const float *eta,
+                        const float *thk, bool is_layer);
 
     void prepare_matrices(int wavetype);
 

@@ -27,11 +27,12 @@ public:
     std::vector<double> xT,xP; // theta/phi, shape(nspec *NGLL + NGRL), in rad
 
 
-    // VTI model
-    void create_database(double freq,int nlayer, const float *vph, const float* vpv,
-                        const float *vsh, const float *vsv, const float *eta,
+    // TTI model
+    void create_database(double freq,int nlayer, const float *rho,
+                        const float *vpv, const float* vph,
+                        const float *vsv, const float *vsh, const float *eta,
                         const float *theta0, const float *phi0,
-                        const float *rho,const float *thk,bool is_layer);
+                        const float *thk,bool is_layer);
 
     void prepare_matrices(double phi);
 
