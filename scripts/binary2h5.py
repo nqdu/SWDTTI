@@ -42,20 +42,20 @@ def main():
     assert(nkers in [3,5,8])
     assert(ncomps in [1,2,3])
     if nkers == 3:
-        kl_name = ['vsh_kl','vsv_kl','rho_kl']
+        kl_name = ['rho_kl','vsv_kl','vsh_kl']
         comp_name = ['W']
         fout.attrs['WaveType'] = 'Love'
         fout.attrs['ModelType'] = 'VTI'
         displ_type = 'f8'
     elif nkers == 5:
         comp_name = ['U','V']
-        kl_name = ['vph_kl','vpv_kl','vsv_kl','eta_kl','rho_kl']
+        kl_name = ['rho_kl','vpv_kl','vph_kl','vsv_kl','eta_kl']
         fout.attrs['WaveType'] = 'Rayleigh'
         fout.attrs['ModelType'] = 'VTI'
         displ_type = 'f8'
     else:
-        comp_name = ['U','V','W']
-        kl_name = ['vph_kl','vpv_kl','vsh_kl','vsv_kl','eta_kl','theta_kl','phi_kl','rho_kl']
+        comp_name = ['U','W','V']
+        kl_name = ['rho_kl','vpv_kl','vph_kl','vsv_kl','vsh_kl','eta_kl','theta_kl','phi_kl']
         fout.attrs['WaveType'] = 'Full'
         fout.attrs['ModelType'] = 'TTI'
         displ_type = 'c16'

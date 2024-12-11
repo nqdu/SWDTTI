@@ -2,6 +2,7 @@
 #include "swdio.hpp"
 
 #include <iostream>
+#include <fstream>
 
 int main (int argc, char **argv){
     // read model name
@@ -12,26 +13,27 @@ int main (int argc, char **argv){
     }
 
     // read model
+    std::ifstream infile; infile.open(argv[1]);
     printf("reading velocity model %s:\n",argv[1]);
-    printf("layer number\t thick\t rho\t vsv\t vsh\t vpv\t vph\t theta\t phi  \n");
+    printf("layer number\t thick\t rho\t vpv\t vph\t vsv\t vsh\t eta\t theta\t phi  \n");
     std::vector<float> thk,vpv,vph,vsv,vsh,rho,theta0,phi0,eta;
     int nz;
-    FILE *fp = fopen(argv[1],"r");
-    fscanf(fp,"%d",&nz);
+    infile >> nz; 
     thk.resize(nz); vsv.resize(nz); vsh.resize(nz); rho.resize(nz);
     vpv.resize(nz); vph.resize(nz); eta.resize(nz); theta0.resize(nz);
     phi0.resize(nz);
     for(int i = 0; i < nz; i ++) {
-        fscanf(fp,"%f%f%f%f%f%f%f%f",&thk[i],&rho[i],&vsv[i],
-                &vsh[i],&vpv[i],&vph[i],&theta0[i],&phi0[i]);
-        printf("layer %d\t %g\t %g\t %g\t %g\t %g\t %g\t %g\t %g\n",
-                i + 1,thk[i],rho[i],vsv[i],
-               vsh[i],vpv[i],vph[i],theta0[i],phi0[i]);
-        eta[i] = 1.;
+        infile >> thk[i] >> rho[i] >> vpv[i] >>
+                  vph[i] >> vsv[i] >> vsh[i] >>
+                  eta[i] >> theta0[i] >> phi0[i];
+        printf("layer %d\t %g\t %g\t %g\t %g\t %g\t %g\t %g\t %g\t %g\n",
+                i + 1,thk[i],rho[i],vpv[i],
+               vph[i],vsv[i],vsh[i],eta[i],
+               theta0[i],phi0[i]);
         theta0[i] *= M_PI / 180.;
         phi0[i] *= M_PI / 180.;
     }
-    fclose(fp);
+    infile.close();
 
     // Period
     int nt;
@@ -58,7 +60,7 @@ int main (int argc, char **argv){
     LayerModelTTI model;
     model.initialize();
 
-    fp = fopen("out/swd.txt","w");
+    FILE *fp = fopen("out/swd.txt","w");
     FILE *fio = fopen("out/database.bin","wb");
 
     // write period vector into fp
@@ -78,9 +80,9 @@ int main (int argc, char **argv){
 
         // phase velocity/eigenfunctions
         model.create_database(
-            freq[it],nz,vph.data(),vpv.data(),vsh.data(),
-            vsv.data(),eta.data(),theta0.data(),phi0.data(),
-            rho.data(),thk.data(),true);
+            freq[it],nz,rho.data(),vpv.data(),vph.data(),vsv.data(),
+            vsh.data(),eta.data(),theta0.data(),phi0.data(),
+            thk.data(),true);
         model.prepare_matrices(phi);
         model.compute_egnfun(freq[it],phi,c,displ);
 
@@ -96,7 +98,7 @@ int main (int argc, char **argv){
         int nc = c.size();
         double u,uphi;
         for(int ic = 0; ic < nc; ic ++) {
-            auto out = model.compute_kernels(freq[it],c[ic],phi,displ,frekl);
+            auto out = model.compute_kernels(freq[it],c[ic],phi,&displ[ic*nglob*3],frekl);
             u = out[0]; uphi = out[1];
             model.transform_kernels(frekl);
 
@@ -108,7 +110,7 @@ int main (int argc, char **argv){
             for(int i = 0; i < npts; i ++) {
                 int iglob = model.ibool[i];
                 for(int j = 0; j < ncomp; j ++) {
-                    temp[j * ncomp + i] = displ[ic * nglob * ncomp + j * nglob + iglob];
+                    temp[j * npts + i] = displ[ic * nglob * ncomp + j * nglob + iglob];
                 }
             }
             write_binary_f(fio,temp.data(),npts*ncomp);

@@ -196,7 +196,7 @@ compute_rayl_kl(double freq,double c,const double *displ,
 }
 
 /**
- * @brief transform kernels from base to vp/vs/eta/rho
+ * @brief transform kernels from base to rho/vsv/vsh(love) and rho/vpv/vph/vsv/eta (rayleigh)
  * 
  * @param frekl base Frechet kernels, shape(3/5,nspec*NGLL+NGRL)
  */
@@ -250,17 +250,17 @@ transform_kernels(std::vector<double> &frekl) const
         switch (nker)
         {
         case 3:
-            frekl[0 * npts + ipt] = vsh_kl;
             frekl[1 * npts + ipt] = vsv_kl;
+            frekl[2 * npts + ipt] = vsh_kl;
             break;
         
         default:
-            frekl[0 * npts + ipt] = vph_kl;
             frekl[1 * npts + ipt] = vpv_kl;
-            frekl[2 * npts + ipt] = vsv_kl;
-            frekl[3 * npts + ipt] = eta_kl;
+            frekl[2 * npts + ipt] = vpv_kl;
+            frekl[3 * npts + ipt] = vsv_kl;
+            frekl[4 * npts + ipt] = eta_kl;
             break;
         }
-        frekl[(nker-1) * npts + ipt] = r_kl;
+        frekl[0 * npts + ipt] = r_kl;
     }       
 }

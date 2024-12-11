@@ -10,10 +10,11 @@ typedef std::complex<double> dcmplx;
  * @param theta0/phi0 axis direction
  */
 void LayerModelTTI:: 
-create_database(double freq,int nlayer, const float *vph, const float* vpv,
-                const float *vsh, const float *vsv, const float *eta,
+create_database(double freq,int nlayer, const float *rho,
+                const float *vpv, const float* vph,
+                const float *vsv, const float *vsh, const float *eta,
                 const float *theta0, const float *phi0,
-                const float *rho,const float *thk,bool is_layer)
+                const float *thk,bool is_layer)
 {
     // find min/max thickness, min veloc and create depth list
     std::vector<float> zlist(nlayer);
@@ -51,7 +52,7 @@ create_database(double freq,int nlayer, const float *vph, const float* vpv,
     else { // continuous model, constructed with min velocity
         nel.resize(1);
         float maxdepth = zlist[nlayer - 1] - zlist[0];
-        nel[0] = maxdepth * freq / PHASE_VELOC_MIN + 1;
+        nel[0] = 1.5 * (maxdepth * freq / PHASE_VELOC_MIN) + 1;
     }
 
     // create mesh

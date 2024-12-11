@@ -25,5 +25,5 @@ vsh = vs * 1.2
 f = open("modelhti.txt","w")
 f.write("%d\n"%(nz))
 for i in range(nz):
-    f.write("%f %f %f %f %f %f %f %f\n"%(thk[i],rho[i],vsv[i],vsh[i],vpv[i],vph[i],90.,0))
+    f.write("%f %f %f %f %f %f 1. %f %f\n"%(thk[i],rho[i],vpv[i],vph[i],vsv[i],vsh[i],90.,0))
 f.close()

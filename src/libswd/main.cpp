@@ -32,8 +32,8 @@ check_wavetype(const std::string &wavetype)
 }
 
 auto 
-swdvti(const ftensor &thk,const ftensor &vph,const ftensor &vpv,
-        const ftensor &vsh,const ftensor &vsv,const ftensor &eta,const ftensor &rho, 
+swdvti(const ftensor &thk,const ftensor &vpv,const ftensor &vph,
+        const ftensor &vsv,const ftensor &vsh,const ftensor &eta,const ftensor &rho, 
         const dtensor &t,const std::string &wavetype, bool only_phase,
         int mode=0)
 {
@@ -52,8 +52,8 @@ swdvti(const ftensor &thk,const ftensor &vph,const ftensor &vpv,
 }
 
 auto 
-vti_kl(const ftensor &thk,const ftensor &vph,const ftensor &vpv,
-        const ftensor &vsh,const ftensor &vsv,const ftensor &eta,
+vti_kl(const ftensor &thk,const ftensor &vpv,const ftensor &vph,
+        const ftensor &vsv,const ftensor &vsh,const ftensor &eta,
         const ftensor &rho,const dtensor &t,
         const std::string &wavetype,int mode=0)
 {
@@ -138,12 +138,12 @@ PYBIND11_MODULE(libswd,m){
           arg("rho"),arg("period"),arg("wavetype"),arg("mode")=0,
           "ISO surface wave kernel c++ wrapper");
 
-    m.def("swdvti",&swdvti,arg("thk"),arg("vph"),arg("vpv"),arg("vsh"),
-          arg("vsv"),arg("eta"),arg("rho"),arg("period"),arg("wavetype"),arg("only_phase"),
+    m.def("swdvti",&swdvti,arg("thk"),arg("vpv"),arg("vph"),arg("vsv"),
+          arg("vsh"),arg("eta"),arg("rho"),arg("period"),arg("wavetype"),arg("only_phase"),
           arg("mode")=0,
           "VTI surface wave dispersion c++ wrapper");
 
-    m.def("vti_kl",&vti_kl,arg("thk"),arg("vph"),arg("vpv"),arg("vsh"),
-          arg("vsv"),arg("eta"),arg("rho"),arg("period"),arg("wavetype"),arg("mode")=0,
+    m.def("vti_kl",&vti_kl,arg("thk"),arg("vpv"),arg("vph"),arg("vsv"),
+          arg("vsh"),arg("eta"),arg("rho"),arg("period"),arg("wavetype"),arg("mode")=0,
           "VTI surface wave kernel c++ wrapper");
 }

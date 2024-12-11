@@ -70,7 +70,7 @@ compute_egnfun(double freq, double phi, std::vector<double> &c, std::vector<dcmp
     Eigen::Array<double,-1,1> c_filt;
     Eigen::MatrixXcd displ_filt;
     Eigen::Array<double,-1,1> c_all = (om / k).real();
-    auto mask = ((c_all >= vmin)&& (c_all <= vmax)) && (k.real().abs() >= k.imag().abs());
+    auto mask = ((c_all >= vmin)&& (c_all <= vmax)) && (k.real().abs() > k.imag().abs());
     std::vector<int> fidx; fidx.reserve(mask.cast<int>().sum()); // filterd indexes
     for(int i = 0; i < c_all.size(); i ++) {
         if(mask[i]) {

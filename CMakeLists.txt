@@ -1,6 +1,6 @@
 #  CMakeLists.txt
 
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.13.0)
 
 ################## compiler options ##################
 # compiler
@@ -23,7 +23,7 @@ if(NOT DEFINED ${var})
 set(${var} ${val})
 endif()
 endmacro()
-setDefault(EIGEN_INC   "/Users/nqdu/software/eigen-3.4.0")
+setDefault(EIGEN_INC   "~/software/eigen-3.4.0")
 setDefault(USE_LAPACK FALSE)
 setDefault(BUILD_PYLIB FALSE)
 
@@ -37,7 +37,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_Fortran_MODULE_DIRECTORY ${PROJECT_SOURCE_DIR}/build/obj)
 
 ################# cmake setup #################
-set(CMAKE_CXX_FLAGS  " -g")
+set(CMAKE_CXX_FLAGS  "-g")
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") 
   set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -march=native -ffast-math")
@@ -71,7 +71,9 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/src/)
 
 # check build pylib
 if(${BUILD_PYLIB}) 
-  find_package(pybind11 REQUIRED)
+  #find_package(pybind11 REQUIRED)
+  find_package(Python COMPONENTS Interpreter Development)
+  find_package(pybind11 CONFIG)
   add_subdirectory(src/cps330)
   add_subdirectory(src/libswd)
   target_include_directories(libswd  PUBLIC ${PROJECT_SOURCE_DIR}/src)

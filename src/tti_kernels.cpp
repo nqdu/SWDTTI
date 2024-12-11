@@ -33,7 +33,7 @@ void get_kernels_(int NGL,double k,const double *A,const double *C,const double 
  */
 std::array<double,2> LayerModelTTI ::
 compute_kernels(double freq, double c,double phi,
-                const std::vector<dcmplx> &displ,
+                const dcmplx *displ,
                 std::vector<double> &frekl) const 
 {
    // first allocate element wise displ
@@ -101,7 +101,9 @@ compute_kernels(double freq, double c,double phi,
         for(int i = 0; i < NGL; i ++) {
             // rho kernel
             double rho = xrho[id + i];
-            double disp_sq = (U[i] * std::conj(U[i]) + V[i] * std::conj(V[i]) + W[i] * std::conj(W[i])).real();
+            double disp_sq = std::pow(std::abs(U[i]),2) + 
+                             std::pow(std::abs(V[i]),2) + 
+                             std::pow(std::abs(W[i]),2);
             rho_kl[id + i] = om * om * disp_sq;
 
             // accumulate I1/I2/I3x/I3y
@@ -174,11 +176,13 @@ transform_kernels(std::vector<double> &frekl) const
                       rho_kl;
 
         // copy back to frekl array
-        frekl[0 * npts + ipt] = vph_kl;
+        frekl[0 * npts + ipt] = r_kl;
         frekl[1 * npts + ipt] = vpv_kl;
-        frekl[2 * npts + ipt] = vsh_kl;
+        frekl[2 * npts + ipt] = vph_kl;
         frekl[3 * npts + ipt] = vsv_kl;
-        frekl[4 * npts + ipt] = eta_kl;
-        frekl[7 * npts + ipt] = r_kl;
+        frekl[4 * npts + ipt] = vsh_kl;
+        frekl[5 * npts + ipt] = eta_kl;
+        frekl[6 * npts + ipt] = T_kl;
+        frekl[7 * npts + ipt] = P_kl;
     }       
 }

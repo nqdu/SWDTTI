@@ -1,11 +1,13 @@
 #include "swdlayervti.hpp"
 #include "swdio.hpp"
+
 #include <iostream>
+#include <fstream>
 
 int main (int argc, char **argv){
     // read model name
-    if(argc != 6) {
-        printf("Usage: ./surfvti modelfile wavetype[1 for Love and 2 for Rayleigh] f1 f2 nt\n");
+    if(argc != 6 && argc != 7) {
+        printf("Usage: ./surfvti modelfile wavetype[1 for Love and 2 for Rayleigh] f1 f2 nt [is_layered=1]\n");
         printf("freqs = logspace(log10(f1),log10(f2),nt)\n");
         exit(1);
     }
@@ -14,19 +16,24 @@ int main (int argc, char **argv){
 
     // read model
     printf("reading velocity model:\n");
-    printf("layer number\t thick\t rho\t vs\t vp  \n");
-    std::vector<float> thk,vp,rho,vs,eta;
+    printf("layer number\t thick\t rho\t vpv\t vph\t vsv\t vsh\t eta\n");
+
+    std::vector<float> thk,vpv,vph,rho,vsv,vsh,eta;
     int nz;
-    FILE *fp = fopen(argv[1],"r");
-    fscanf(fp,"%d",&nz);
-    thk.resize(nz); vs.resize(nz); rho.resize(nz);
-    vp.resize(nz);  eta.resize(nz);
+    std::ifstream infile; infile.open(argv[1]);
+    infile >> nz;
+    thk.resize(nz); vsv.resize(nz); rho.resize(nz);
+    vpv.resize(nz); vph.resize(nz); eta.resize(nz);
+    vsh.resize(nz);
     for(int i = 0; i < nz; i ++) {
-        fscanf(fp,"%f%f%f%f",&thk[i],&rho[i],&vs[i],&vp[i]);
-        printf("layer %d\t %f\t %f\t %f\t %f\n",i + 1,thk[i],rho[i],vs[i],vp[i]);
-        eta[i] = 1.;
+        infile >> thk[i] >> rho[i] >> vpv[i] >>
+                  vph[i] >> vsv[i] >> vsh[i] >> 
+                  eta[i];
+        printf("layer %d\t %g\t %g\t %g\t %g\t %g\t %g\t %g\n",
+                i + 1,thk[i],rho[i],vpv[i],
+               vph[i],vsv[i],vsh[i],eta[i]);
     }
-    fclose(fp);
+    infile.close();
 
     // Period
     int nt;
@@ -57,7 +64,7 @@ int main (int argc, char **argv){
     model.initialize();
 
     // open file to write out data
-    fp = fopen("out/swd.txt","w");
+    FILE *fp = fopen("out/swd.txt","w");
     FILE *fio = fopen("out/database.bin","wb");
 
     // write period vector into fp
@@ -74,14 +81,22 @@ int main (int argc, char **argv){
     }
     write_binary_f(fio,&nkers,1);
     write_binary_f(fio,&ncomp,1);
+
+    // read flag if required
+    bool is_layer = true;
+    if(argc == 7) {
+        int flag;
+        sscanf(argv[6],"%d",&flag);
+        is_layer = (flag == 1);
+    }
     
     for(int it = 0; it < nt; it ++) {
         std::vector<double> c,displ,u;
 
         // phase velocity/eigenfunctions
-        model.create_database(freq[it],nz,vp.data(),vp.data(),
-                                vs.data(),vs.data(),eta.data(),
-                                rho.data(),thk.data(),false);
+        model.create_database(freq[it],nz,rho.data(),vpv.data(),vph.data(),
+                              vsv.data(),vsh.data(),eta.data(),thk.data(),
+                              is_layer);
         model.prepare_matrices(wavetype);
         switch (wavetype)
         {
