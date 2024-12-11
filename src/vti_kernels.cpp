@@ -256,7 +256,7 @@ transform_kernels(std::vector<double> &frekl) const
         
         default:
             frekl[1 * npts + ipt] = vpv_kl;
-            frekl[2 * npts + ipt] = vpv_kl;
+            frekl[2 * npts + ipt] = vph_kl;
             frekl[3 * npts + ipt] = vsv_kl;
             frekl[4 * npts + ipt] = eta_kl;
             break;
