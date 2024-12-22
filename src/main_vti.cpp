@@ -14,8 +14,22 @@ int main (int argc, char **argv){
     int wavetype;
     sscanf(argv[2],"%d",&wavetype);
 
+    // read flag if required
+    bool is_layer = true;
+    if(argc == 7) {
+        int flag;
+        sscanf(argv[6],"%d",&flag);
+        is_layer = (flag == 1);
+    }
+
     // read model
-    printf("reading velocity model:\n");
+    if(is_layer) {
+        printf("reading layered velocity model:\n");
+    }
+    else {
+        printf("reading continuous velocity model:\n");
+    }
+    
     printf("layer number\t thick\t rho\t vpv\t vph\t vsv\t vsh\t eta\n");
 
     std::vector<float> thk,vpv,vph,rho,vsv,vsh,eta;
@@ -81,14 +95,6 @@ int main (int argc, char **argv){
     }
     write_binary_f(fio,&nkers,1);
     write_binary_f(fio,&ncomp,1);
-
-    // read flag if required
-    bool is_layer = true;
-    if(argc == 7) {
-        int flag;
-        sscanf(argv[6],"%d",&flag);
-        is_layer = (flag == 1);
-    }
     
     for(int it = 0; it < nt; it ++) {
         std::vector<double> c,displ,u;

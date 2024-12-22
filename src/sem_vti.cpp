@@ -31,7 +31,7 @@ filter_swd(double vmin, double vmax,double om, const Eigen::MatrixXcd &displ_all
     Eigen::MatrixXd displ_filt;
     using Eigen::all;
     //auto mask = ((c_all >= 0.85 * vmin) && (c_all <= vmax)) && (k.real().abs() >= k.imag().abs());
-    auto mask = ((c_all >= vmin)&& (c_all <= vmax)) && (k.real().abs() > 10 * k.imag().abs());
+    auto mask = ((c_all >= vmin)&& (c_all <= vmax)) && (k.real().abs() > 5 * k.imag().abs());
     // std::cout << mask << "\n";
     std::vector<int> idx0; idx0.reserve(mask.cast<int>().sum());
     for(int i = 0; i < c_all.size(); i ++) {
@@ -119,14 +119,15 @@ compute_sregn(double freq,std::vector<double> &c,
 
     // prepare matrix A = om^2 M -E
     double om = 2. * M_PI * freq;
-    double omega2 = std::pow(om,2);
-    dmat2 A = omega2 * dmat2(M.asDiagonal()) - E;
+    double omega2 = om * om;
+    Eigen::MatrixXf A = (omega2 * dmat2(M.asDiagonal()) - E).cast<float>();
+    Eigen::MatrixXf K1 = K.cast<float>();
 
     // solve generalized eigenvalue problem A x = k^2 K x
-    Eigen::GeneralizedEigenSolver<dmat2> sol;
-    sol.compute(A,K);
-    Eigen::MatrixXcd displ_all = sol.eigenvectors();
-    Eigen::Array<dcmplx,-1,1> k = sol.eigenvalues().array().sqrt();
+    Eigen::GeneralizedEigenSolver<Eigen::MatrixXf> sol;
+    sol.compute(A,K1);
+    Eigen::MatrixXcd displ_all = sol.eigenvectors().cast<dcmplx>();
+    Eigen::Array<dcmplx,-1,1> k = sol.eigenvalues().array().sqrt().cast<dcmplx>();
 
     // filter swd
     filter_swd(PHASE_VELOC_MIN,PHASE_VELOC_MAX,om,displ_all,k,c,displ);
