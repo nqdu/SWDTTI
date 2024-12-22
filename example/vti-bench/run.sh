@@ -35,4 +35,7 @@ mv out/swd.cps.txt out/swd.cps.love.txt
 python plot_disp.py 
 
 # plot eigenfunctions
-python plot_kernels.py out/kernels.h5 50 0
+for mode in 0 1;
+do 
+    python plot_kernels.py out/kernels.h5 50 $mode
+done

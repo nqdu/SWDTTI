@@ -6,15 +6,28 @@
 
 int main (int argc, char **argv){
     // read model name
-    if(argc != 6) {
-        printf("Usage: ./surfvti modelfile phi f1 f2 nt\n");
+    if(argc != 6 & argc != 7) {
+        printf("Usage: ./surfvti modelfile phi f1 f2 nt [is_layered=1]\n");
         printf("freqs = logspace(log10(f1),log10(f2),nt)\n");
         exit(1);
     }
 
+    // read flag if required
+    bool is_layer = true;
+    if(argc == 7) {
+        int flag;
+        sscanf(argv[6],"%d",&flag);
+        is_layer = (flag == 1);
+    }
+
     // read model
     std::ifstream infile; infile.open(argv[1]);
-    printf("reading velocity model %s:\n",argv[1]);
+    if(is_layer) {
+        printf("reading layered velocity model:\n");
+    }
+    else {
+        printf("reading continuous velocity model:\n");
+    }
     printf("layer number\t thick\t rho\t vpv\t vph\t vsv\t vsh\t eta\t theta\t phi  \n");
     std::vector<float> thk,vpv,vph,vsv,vsh,rho,theta0,phi0,eta;
     int nz;
@@ -82,7 +95,7 @@ int main (int argc, char **argv){
         model.create_database(
             freq[it],nz,rho.data(),vpv.data(),vph.data(),vsv.data(),
             vsh.data(),eta.data(),theta0.data(),phi0.data(),
-            thk.data(),true);
+            thk.data(),is_layer);
         model.prepare_matrices(phi);
         model.compute_egnfun(freq[it],phi,c,displ);
 

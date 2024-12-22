@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.interpolate import interp1d
 
-z = np.linspace(0,50,100)
+z = np.linspace(0,50,10)
 nz = len(z)
 vs = 3.5 + 0.02 * z
 

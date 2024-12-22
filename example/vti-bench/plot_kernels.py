@@ -18,52 +18,24 @@ def main():
         print("Tid = {Tid} and mode ={mode} don't exist!")
         exit(1)
     z = fio[f'kernels/{Tid}/zcords'][:]
-    vsv_kl = fio[f'kernels/{Tid}/mode{mode}/vsv_kl'][:]
-    vsh_kl = fio[f'kernels/{Tid}/mode{mode}/vsh_kl'][:]
-    rho_kl = fio[f'kernels/{Tid}/mode{mode}/rho_kl'][:]
-    phi_kl = fio[f'kernels/{Tid}/mode{mode}/phi_kl'][:]
-    theta_kl = fio[f'kernels/{Tid}/mode{mode}/theta_kl'][:]
-    eta_kl = fio[f'kernels/{Tid}/mode{mode}/eta_kl'][:]
+    kl_names = [['vsv_kl','vpv_kl','vsh_kl','vph_kl'],
+               ['eta_kl','phi_kl','theta_kl','rho_kl']]
     U = fio[f'kernels/{Tid}/mode{mode}/U'][:]
     V = fio[f'kernels/{Tid}/mode{mode}/V'][:]
     W = fio[f'kernels/{Tid}/mode{mode}/W'][:]
 
+    for i in range(2):
+        fig,axes = plt.subplots(1,4,sharey=True,figsize=(12,16))
+        for j in range(4):
+            name = kl_names[i][j]
+            kl = fio[f'kernels/{Tid}/mode{mode}/{name}'][:]
 
-    plt.figure(1,figsize=(14,20))
-    plt.subplot(131)
-    plt.plot(vsv_kl,-z,label='vsv_kl')
-    plt.ylabel("depth,km")
-    plt.legend()
-
-    plt.subplot(132)
-    plt.plot(rho_kl,-z,label='rho_kl')
-    #plt.ylabel("depth,km")
-    plt.legend()
-
-    plt.subplot(133)
-    plt.plot(phi_kl,-z,label='phi_kl')
-    #plt.ylabel("depth,km")
-    plt.legend()
-
-    plt.savefig("kernel1.jpg")
-
-    plt.figure(2,figsize=(14,20))
-    plt.subplot(131)
-    plt.plot(vsh_kl,-z,label='vsh_kl')
-    plt.ylabel("depth,km")
-    plt.legend()
-
-    plt.subplot(132)
-    plt.plot(eta_kl,-z,label='eta_kl')
-    #plt.ylabel("depth,km")
-    plt.legend()
-
-    plt.subplot(133)
-    plt.plot(theta_kl,-z,label='theta_kl')
-    #plt.ylabel("depth,km")
-    plt.legend()
-
-    plt.savefig("kernel2.jpg")
+            axes[j].plot(kl,-z,label=f'{name}')
+            if j== 0:
+                axes[j].set_ylabel("depth,km")
+            axes[j].legend()
+            axes[j].set_xlabel(f"{name}")
+        fig.savefig(f"kernel{i+1}.mode{mode}.jpg",dpi=300)
 
     plt.figure(3,figsize=(14,20))
     plt.subplot(131)
@@ -81,7 +53,7 @@ def main():
     #plt.ylabel("depth,km")
     plt.legend()
 
-    plt.savefig("eigenfunc.jpg")
+    plt.savefig(f"eigenfunc.mode{mode}.jpg",dpi=300)
 
 
 main()
