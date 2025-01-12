@@ -48,7 +48,7 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
   set(CMAKE_Fortran_FLAGS  "${CMAKE_Fortran_FLAGS} -xHost -extend-source")
 endif()
 
-set(CMAKE_VERBOSE_MAKEFILE off)
+set(CMAKE_VERBOSE_MAKEFILE on)
 
 ################# find packages #################
 # path of *.cmake files

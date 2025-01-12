@@ -38,7 +38,7 @@ create_database(double freq,int nlayer, const float *rho,
     IS_DICON_MODEL = is_layer;
 
     //double scale =  Tmin /(2.0 * M_PI * std::sqrt(1. / (4.99 * 4.99) - 1 / (vmax * vmax)));
-    double scale = PHASE_VELOC_MAX / freq / xgrl[NGRL-1] * 5;
+    double scale = PHASE_VELOC_MAX / freq / xgrl[NGRL-1] * 10;
 
     // determine no. elements in each layer
     std::vector<int> nel;
@@ -46,7 +46,7 @@ create_database(double freq,int nlayer, const float *rho,
         nel.resize(nlayer - 1);
         for(int i = 0; i < nlayer - 1; i ++) {
             float v0 = std::min(vsv[i],vsh[i]) * 0.85;
-            nel[i] = (int)(thk[i] * freq / v0 ) + 1;
+            nel[i] = (int)(thk[i] * freq / v0 * 1.5 ) + 1;
         }
     }
     else { // continuous model, constructed with min velocity

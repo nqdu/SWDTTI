@@ -133,7 +133,7 @@ compute_kernels(double freq, double c,double phi,
 }
 
 /**
- * @brief transform kernels from base to vp/vs/eta/rho/phi/theta
+ * @brief transform kernels from base to rho/vpv/vph/vsv/vsh/eta/T/P
  * 
  * @param frekl base Frechet kernels, shape(8,nspec*NGLL+NGRL)
  */
@@ -156,6 +156,8 @@ transform_kernels(std::vector<double> &frekl) const
         F_kl = frekl[2 * npts + ipt];
         L_kl = frekl[3 * npts + ipt];
         N_kl = frekl[4 * npts + ipt];
+        T_kl = frekl[5 * npts + ipt];
+        P_kl = frekl[6 * npts + ipt];
         rho_kl = frekl[7 * npts + ipt];
 
         // get variables
