@@ -3,7 +3,7 @@ from scipy.interpolate import interp1d
 
 z = np.linspace(0,50,10)
 nz = len(z)
-vs = 3.5 + 0.02 * z
+vs = 2.5 + 0.02 * z
 
 # vs[10:20] = 1.4
 # vs[40:50] = 2.5
