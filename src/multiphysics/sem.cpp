@@ -127,24 +127,6 @@ prepare_matrices(double freq)
         }
     }
 
-    // acoustic free boundary condition
-    if(ac_elmnts.size() < 0 &&  ac_elmnts[0] == 0) { 
-        double coef = 1. / (jaco[0] * xrho_ac[0]); 
-        std::array<double,NGLL> sumE;
-        for(int i = 1; i < NGLL; i ++) {
-            double s{};
-            for(int m = 0; m < NGLL; m ++) {
-                s += wgll[m] / jaco[0] / xrho_ac[m] * hprimeT[m] * hprimeT[i * NGLL + m];
-            }
-            sumE[i] = s;
-        }
-
-        for(int i = 1; i < NGLL; i ++) {
-            int iglob = ibool_ac[i] + nglob_el * 2;
-            Emat[nglob_el * 2 * ng + iglob] += coef * hprime[i] + sumE[i];
-        }
-    }
-
     // acoustic-elastic boundary
     double om = M_PI * 2 * freq;
     for(int iface = 0; iface < nfaces_bdry; iface ++) {
