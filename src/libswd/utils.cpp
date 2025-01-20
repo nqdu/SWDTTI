@@ -1,5 +1,5 @@
-#include "swdlayertti.hpp"
-#include "swdlayervti.hpp"
+#include "tti/swdlayertti.hpp"
+#include "vti/swdlayervti.hpp"
 
 #include <iostream>
 #include <vector>

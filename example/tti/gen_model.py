@@ -13,17 +13,17 @@ thk = np.zeros_like(z)
 thk[0:nz-1] = np.diff(z)
 
 vpv = vp * 1.
-vph = vp * 1.2
+vph = vp * 1.1
 vsv = vs * 1.
-vsh = vs * 1.2
+vsh = vs * 1.1
 
 # vpv = vp * 1.
 # vph = vp * 1.
 # vsv = vs * 1.
 # vsh = vs * 1.
 
-f = open("modelhti.txt","w")
+f = open("modeltti.txt","w")
 f.write("%d\n"%(nz))
 for i in range(nz):
-    f.write("%f %f %f %f %f %f 1. %f %f\n"%(thk[i],rho[i],vpv[i],vph[i],vsv[i],vsh[i],90.,0))
+    f.write("%f %f %f %f %f %f 1. %f %f\n"%(thk[i],rho[i],vpv[i],vph[i],vsv[i],vsh[i],30.,35))
 f.close()

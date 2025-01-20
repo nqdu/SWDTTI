@@ -1,5 +1,6 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
+import sys 
 
 def fetch_data(T,data,nc,col_id):
     nt = len(T)
@@ -14,59 +15,71 @@ def fetch_data(T,data,nc,col_id):
 
     return c_all
 
-# load swd data
-data = np.loadtxt("out/swd.txt",skiprows=1)
-data1 = np.loadtxt("out/swd.cps.txt",skiprows=1)
+def main():
 
-# find unique T
-T = np.loadtxt("out/swd.txt",max_rows=1)
-T1 = np.loadtxt("out/swd.cps.txt",max_rows=1)
-nt = len(T)
+    if len(sys.argv) != 2 and len(sys.argv) != 1:
+        print("usage: python plot_disp.py max_order")
+        exit(1)
+    
+    if len(sys.argv)  == 2:
+        ncplot = int(sys.argv[1])
+    else:
+        ncplot = 100
 
-# plot phase
-nc = int(np.max(data[:,-1])) + 1
-plt.figure(1,figsize=(14,5))
-#plt.scatter(1./data[:,0],data[:,1],s=10,color='k')
-c_all = fetch_data(T,data,nc,1)
-idx = np.logical_and(1./ T < 0.2, 1./ T > 0.1)
-#print(T[idx],c_all[idx,:])
-#exit(1)
-for i in range(c_all.shape[1]):
-    idx = c_all[:,i] > 0
-    if np.sum(idx) != 0:
-        plt.plot(1./T[idx],c_all[idx,i])
+    # load swd data
+    data = np.loadtxt("out/swd.txt",skiprows=1)
+    data1 = np.loadtxt("out/swd.cps.txt",skiprows=1)
 
-c1_all = fetch_data(T1,data1,nc,1)
-for i in range(c1_all.shape[1]):
-    idx = c1_all[:,i] > 0
-    if np.sum(idx) != 0:
-        plt.plot(1./T1[idx],c1_all[idx,i],color='k',ls='--',label='cps')
+    # find unique T
+    T = np.loadtxt("out/swd.txt",max_rows=1)
+    T1 = np.loadtxt("out/swd.cps.txt",max_rows=1)
+    nt = len(T)
 
-plt.legend()
-plt.xlabel("Frequency,Hz")
-plt.ylabel("Phase Velocity, km/s")
-plt.savefig("phase.jpg")
-plt.clf()
+    # plot phase
+    nc = int(np.max(data[:,-1])) + 1
+    plt.figure(1,figsize=(14,5))
+    #plt.scatter(1./data[:,0],data[:,1],s=10,color='k')
+    c_all = fetch_data(T,data,nc,1)
 
-# plot group
-plt.figure(1,figsize=(14,5))
-#plt.scatter(1./data[:,0],data[:,2],s=10,color='k')
-c_all = fetch_data(T,data,nc,2)
+    ncplot = min(ncplot,c_all.shape[1])
+    for i in range(ncplot):
+        idx = c_all[:,i] > 0
+        if np.sum(idx) != 0:
+            plt.plot(1./T[idx],c_all[idx,i])
 
-# plot
-for i in range(c_all.shape[1]):
-    idx = c_all[:,i] > 0
-    if np.sum(idx) != 0:
-        plt.plot(1./T[idx],c_all[idx,i])
+    c1_all = fetch_data(T1,data1,nc,1)
+    for i in range(ncplot):
+        idx = c1_all[:,i] > 0
+        if np.sum(idx) != 0:
+            plt.plot(1./T1[idx],c1_all[idx,i],color='k',ls='--',label=f'cps_{i}')
 
-c1_all = fetch_data(T1,data1,nc,2)
-for i in range(c1_all.shape[1]):
-    idx = c1_all[:,i] > 0
-    if np.sum(idx) != 0:
-        plt.plot(1./T1[idx],c1_all[idx,i],color='k',ls='--',label='cps')
-plt.legend()
-plt.xlabel("Frequency,Hz")
-plt.ylabel("Group Velocity, km/s")
-plt.savefig("group.jpg")
+    plt.legend()
+    plt.xlabel("Frequency,Hz")
+    plt.ylabel("Phase Velocity, km/s")
+    plt.savefig("phase.jpg")
+    plt.clf()
 
+    # plot group
+    plt.figure(1,figsize=(14,5))
+    #plt.scatter(1./data[:,0],data[:,2],s=10,color='k')
+    c_all = fetch_data(T,data,nc,2)
+
+    # plot
+    for i in range(ncplot):
+        idx = c_all[:,i] > 0
+        if np.sum(idx) != 0:
+            plt.plot(1./T[idx],c_all[idx,i])
+
+    c1_all = fetch_data(T1,data1,nc,2)
+
+    for i in range(ncplot):
+        idx = c1_all[:,i] > 0
+        if np.sum(idx) != 0:
+            plt.plot(1./T1[idx],c1_all[idx,i],color='k',ls='--',label=f'cps_{i}')
+    plt.legend()
+    plt.xlabel("Frequency,Hz")
+    plt.ylabel("Group Velocity, km/s")
+    plt.savefig("group.jpg")
+
+main()
     

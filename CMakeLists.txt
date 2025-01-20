@@ -42,7 +42,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") 
   set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -march=native -ffast-math")
   set(CMAKE_Fortran_FLAGS  "${CMAKE_Fortran_FLAGS} -march=native -ffixed-line-length-none")
-  #set(CMAKE_CXX_FLAGS_RELEASE  "-O2")
+  set(CMAKE_CXX_FLAGS_RELEASE  "-O2")
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
   set(CMAKE_CXX_FLAGS_RELEASE  "${CMAKE_CXX_FLAGS_RELEASE} -xHost -DEIGEN_STRONG_INLINE=inline")
   set(CMAKE_Fortran_FLAGS  "${CMAKE_Fortran_FLAGS} -xHost -extend-source")
@@ -65,9 +65,13 @@ endif()
 
 ################# include paths #################
 include_directories(${PROJECT_SOURCE_DIR}/src)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # subs
-add_subdirectory(${PROJECT_SOURCE_DIR}/src/)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/shared)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/vti)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/tti)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/multiphysics)
 
 # check build pylib
 if(${BUILD_PYLIB}) 
@@ -76,11 +80,4 @@ if(${BUILD_PYLIB})
   find_package(pybind11 CONFIG)
   add_subdirectory(src/cps330)
   add_subdirectory(src/libswd)
-  target_include_directories(libswd  PUBLIC ${PROJECT_SOURCE_DIR}/src)
 endif()
-
-# exe
-add_executable(surfvti ${PROJECT_SOURCE_DIR}/src/main_vti.cpp)
-add_executable(surftti ${PROJECT_SOURCE_DIR}/src/main_tti.cpp)
-target_link_libraries(surfvti swd ${LAPACK_LIBRARIES})
-target_link_libraries(surftti swd ${LAPACK_LIBRARIES})

@@ -38,9 +38,12 @@ def main():
         wtp = 'R'
     else:
         wtp = 'L'
-    for i in range(0,4):
-        c = get_disp(thk,vp,vs,rho,T,i,f"{wtp}c",False)
-        u = get_disp(thk,vp,vs,rho,T,i,f"{wtp}g",False)
+    for i in range(0,6):
+        c = np.zeros(len(T))
+        u = np.zeros(len(T))
+        for it in range(len(T)):
+            c[it] = get_disp(thk,vp,vs,rho,T[it:it+1],i,f"{wtp}c",False)[0]
+            u[it] = get_disp(thk,vp,vs,rho,T[it:it+1],i,f"{wtp}g",False)[0]
 
         for it in range(len(T)):
             fp.write("%d %g %g %d\n" %(it,c[it],u[it],i))

@@ -1,7 +1,8 @@
-# SWDTTI
-**SWDTTI** utilizes spectral element method and quadratic eigenvalue solver to compute surface wave dispersion, eigen function and sensitivity kernels for **general layered TI** model (Tilted Transversely Isotropic).
+# SPECSWD
+**SpecSWD** utilizes spectral element method and quadratic eigenvalue solver to compute surface wave dispersion, eigen function and sensitivity kernels for **general layered models**.
 
-It can handle dispersion values for any TI-type layered model, any frequency, and any mode.
+It can handle dispersion values for several type of complex media, such as VTI, TTI(Tilted Transversely Isotropic), acoustic-VTI coupling, and at any frequency, and any mode. And it can support both 1-D layered
+model (1-D model with discontinuities) and gradient model (continous variation in both fluid and elastic domain).
 
 ## Requirements and Installation
 1. **Compilers:** C++/Fortran compilers which support c++14 (tested on `GCC >=7.5`), `cmake >= 3.12`
@@ -30,4 +31,9 @@ doxygen config.cfg
 ![image](example//rayleigh/phase.jpg)
 ### HTI model: Phase velocity vs. Azimuthal angle
 ![image](example/tti/group-direc.jpg)
+
+### Fluid-Elastic Coupling phase and group velocity
+![image](example/ac/phase.jpg)
+![image](example/ac/group.jpg)
+### Acoustic 
 

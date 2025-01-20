@@ -1,0 +1,173 @@
+#include "multiphysics/vti_acoustic.hpp"
+
+/**
+ * @brief compute group velocity and kernels for love wave
+ * 
+ * @param freq current frequency
+ * @param c  current phase velocity
+ * @param egn eigen function, shape(nglob_el*2 + nglob_ac), (U,V,chi)
+ * @param frekl_el Frechet kernels A/C/L/F/rho_kl kernels for elastic parameters, shape(5,npts_el) 
+ * @param frekl_ac Frechet kernels rho/kappa_kl kernels for acoustic parameters, shape(2,npts_el) 
+ * @return double u group velocity
+ */
+double LayerModelMultiPhyVTI:: 
+compute_kernels(double freq, double c,const double *egn,
+                std::vector<double> &frekl_el,std::vector<double> &frekl_ac) const
+{
+   // first allocate element wise egn
+    std::array<double,NGRL> U,dU,V,dV;
+    std::array<double,NGRL> chi,dchi;
+
+    // resize
+    size_t size_el = xrho_el.size(), size_ac = xrho_ac.size();
+    frekl_el.resize(5 * size_el); frekl_ac.resize(2*size_ac);
+
+    // get kernel pointers
+    double *A_kl = &frekl_el[0], *C_kl = &frekl_el[size_el];
+    double *L_kl = &frekl_el[2*size_el], *F_kl = &frekl_el[size_el * 3];
+    double *rho_kl = &frekl_el[4 * size_el];
+    double *rhoa_kl = &frekl_ac[0], *kappa_kl = &frekl_ac[size_ac];
+
+    // consts
+    double om = 2 * M_PI * freq;
+    double k = om / c;
+    int ng = nglob_ac + nglob_el * 2;
+
+    // init energy integral
+    // I1 = \int rho (v^2 + u^2) dz = \partial_{\omega} L / om
+    //  k * I2 + I3 = \int (-\partial_k L) dz
+    double I1{},I2{},I3{};
+
+    // loop every elastic element
+    for(int ispec = 0; ispec < nspec_el + nspec_el_grl; ispec += 1) {
+        int iel = el_elmnts[ispec];
+        const double *hp = &hprime[0];
+        const double *w = &wgll[0];
+        int NGL = NGLL;
+        int id0 = ispec * NGLL;
+        const double J = jaco[iel];
+
+        // GRL layer
+        if(ispec == nspec_el) {
+            hp = &hprime_grl[0];
+            w = &wgrl[0];
+            NGL = NGRL;
+        }
+
+        // cache egn in a element
+        for(int i = 0; i < NGL; i ++) {
+            int id = id0 + i;
+            int iglob = ibool_el[id];
+            U[i] = egn[iglob];
+            V[i] = egn[nglob_el + iglob];
+        }
+
+        // compute derivative 
+        for(int i = 0; i < NGL; i ++) {
+            double sx{},sz{};
+            for(int j = 0; j < NGL; j ++) {
+                sx += U[j] * hp[i * NGL + j];
+                sz += V[j] * hp[i * NGL + j];
+            }
+            dU[i] = sx  / J;
+            dV[i] = sz  / J;
+        }
+
+        // compute kernel/energy integral 
+        for(int i = 0; i < NGL; i ++) {
+            int id = id0 + i;
+            double rho = xrho_el[id];
+            double A = xA[id];
+            double L = xL[id], F = xF[id];
+            double U2 = U[i] * U[i], V2 = V[i] * V[i];
+            double dU2 = dU[i] * dU[i], dV2 = dV[i] * dV[i];
+
+            // kernels dc = \int (-2 KL) /(2 k^2 U I1)
+            A_kl[id] = k * k * U2;
+            C_kl[id] = dV2;
+            F_kl[id] = 2 * k * U[i] * dV[i];
+            L_kl[id] = dU2 + std::pow(k,2) * V2 - 2. * k * V[i] * dU[i];
+            rho_kl[id] = -om * om * (U2 + V2);
+
+            // accumulate I1/I2 (Aki and Richards, 2002, (7.66))
+            auto tmp1 = rho * (U2 + V2) * w[i] * J;
+            auto tmp2 = (A * U2 + L * V2) * w[i] * J;
+            auto tmp3 = (-L * V[i] * dU[i] + F * U[i] * dV[i]) * w[i] * J;
+            I1 += tmp1;
+            I2 += tmp2;
+            I3 += tmp3;
+        }
+    }
+
+    // acoustic elment
+    for(int ispec = 0; ispec < nspec_ac + nspec_ac_grl; ispec += 1) {
+    // for(int ispec = 0; ispec <0; ispec ++) {
+        int iel = ac_elmnts[ispec];
+        const double *hp = &hprime[0];
+        const double *w = &wgll[0];
+        int NGL = NGLL;
+        int id0 = ispec * NGLL;
+        const double J = jaco[iel];
+
+        // GRL layer
+        if(ispec == nspec_ac) {
+            hp = &hprime_grl[0];
+            w = &wgrl[0];
+            NGL = NGRL;
+        }
+
+        // cache chi in an element
+        for(int i = 0; i < NGL; i ++) {
+            int id = id0 + i;
+            int iglob = ibool_ac[id];
+            chi[i] = (iglob == -1) ? 0.: egn[nglob_el * 2 + iglob];
+        }
+    
+        // compute derivative 
+        for(int i = 0; i < NGL; i ++) {
+            double s{};
+            for(int j = 0; j < NGL; j ++) {
+                s += chi[j] * hp[i * NGL + j];
+            }
+            dchi[i] = s / J;
+        }
+
+        // compute kernel/energy integral 
+        for(int i = 0; i < NGL; i ++) {
+            int id = id0 + i;
+            double rhoinv = 1. / xrho_ac[id];
+            double kapainv = 1. / xkappa_ac[id];
+            double dchi2 = dchi[i] * dchi[i];
+            double chi2 = chi[i] * chi[i];
+
+            // note: dc = \int (-2 KL) /(2 k^2 U I1)
+            rhoa_kl[id] = std::pow(rhoinv * om,2) * (dchi2 + k*k * chi2);
+            kappa_kl[id] = - std::pow(kapainv * om * om,2) * chi2;
+
+            // energy integral
+            // I1 = \partial_{\omega} L / om
+            //  k * I2 + I3 = \int (-\partial_k L) dz
+            auto tmp1 = rhoinv * (dchi2 + k*k * chi2); //- 2. * std::pow(om,2) * kapainv * chi2;
+            auto tmp2 = om * om * rhoinv * chi2; // (-\partial_k L) / k
+            I1 += w[i] * J * tmp1;
+            I2 += w[i] * J * tmp2;
+        }
+    }
+
+    // group velocity
+    double u = (I2 + I3 / k) /(c * I1);
+
+    // rescale kernels
+    double coef = 1. / (2. * k * k * u * I1);
+    for(size_t i = 0; i < size_el; i ++) {
+        A_kl[i] *= coef; L_kl[i] *= coef;
+        C_kl[i] *= coef; F_kl[i] *= coef;
+        rho_kl[i] *= coef;
+    }
+    for(size_t i = 0; i < size_ac; i ++) {
+        rhoa_kl[i] *= coef;
+        kappa_kl[i] *= coef;
+    }
+
+    return u;
+}

@@ -15,7 +15,7 @@ sourcedir=../../
 
 #     mv out/swd.txt out/swd.$i.txt 
 # done
-$sourcedir/bin/surftti model.txt 0 0.01 0.5 100
+time $sourcedir/bin/surftti model.txt 0 0.01 0.5 100
 
 # bin2h5
 echo "converting to hdf5..."
@@ -35,4 +35,7 @@ mv out/swd.cps.txt out/swd.cps.love.txt
 python plot_disp.py 
 
 # plot eigenfunctions
-python plot_kernels.py out/kernels.h5 50 0
+for mode in 0 1;
+do 
+    python plot_kernels.py out/kernels.h5 50 $mode
+done

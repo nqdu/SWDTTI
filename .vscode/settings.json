@@ -112,7 +112,8 @@
         "cinttypes": "cpp",
         "format": "cpp",
         "stdfloat": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "eigenvalues": "cpp"
     },
     //"C_Cpp.errorSquiggles": "disabled"
 }

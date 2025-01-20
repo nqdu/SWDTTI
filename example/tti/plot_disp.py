@@ -31,8 +31,8 @@ u_all = fetch_data(T,data,nc,2)
 for i in range(c_all.shape[1]):
     idx = c_all[:,i] > 0
     if np.sum(idx) != 0:
-        plt.plot(1./T[idx],c_all[idx,i],label='phase',ls='--',color='k')
-        plt.plot(1./T[idx],u_all[idx,i],label='group',color='r')
+        plt.plot(1./T[idx],c_all[idx,i],label=f'phase_{i}',ls='--',color='k')
+        plt.plot(1./T[idx],u_all[idx,i],label=f'group_{i}',color='r')
 
 
 plt.legend()
