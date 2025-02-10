@@ -49,13 +49,12 @@ public:
                         const float *thk,bool is_layer);
 
     void prepare_matrices(double freq);
-
     void compute_egnfun(double freq, std::vector<double> &c, std::vector<double> &egn) const;
     double compute_kernels(double freq, double c,const double *egn,
-                        std::vector<double> &frekl_el,std::vector<double> &frekl_ac) const;
+                        std::vector<double> &frekl) const;
     
     void transform_kernels(std::vector<double> &frekl) const;
-    void transform_ac_egnfun();
+    void transform_egn2disp(double freq,double c,const double *egn, double *__restrict displ) const;
     void interp_model(const float *z,const float *param,bool elastic,std::vector<double> &md) const;
 
 private:
