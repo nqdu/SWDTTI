@@ -96,17 +96,10 @@ int main (int argc, char **argv){
         model.compute_egnfun(freq[it],c,egn);
 
         // alloc space for group/kernels
-        std::vector<double> frekl_el,frekl_ac;
+        std::vector<double> frekl;
         int nc = c.size();
         u.resize(nc);
-
-        if(it == 0) {
-            for (auto a : model.ibool_ac) {
-                printf("%d ",a);
-            }
-            std::cout << "\n" <<  model.ac_elmnts[0] << "\n";
-        }
-
+        
         // get some consts
         int ng = model.nglob_ac + model.nglob_el * 2;
         int npts = model.ibool.size();
@@ -115,23 +108,21 @@ int main (int argc, char **argv){
         write_binary_f(fio,model.znodes.data(),npts);
 
         for(int ic = 0; ic < nc; ic ++) {
-            u[ic] = model.compute_kernels(freq[it],c[ic],&egn[ic*ng],frekl_el,frekl_ac);
+            u[ic] = model.compute_kernels(freq[it],c[ic],&egn[ic*ng],frekl);
+            model.transform_kernels(frekl);
 
             // write swd T,c,U,mode
             fprintf(fp,"%d %lf %lf %d\n",it,c[ic],u[ic],ic);
 
-        //     // write displ
-        //     std::vector<double> temp(npts*ncomp);
-        //     for(int i = 0; i < npts; i ++) {
-        //         int iglob = model.ibool[i];
-        //         for(int j = 0; j < ncomp; j ++) {
-        //             temp[j * ncomp + i] = displ[ic * nglob * ncomp + j * nglob + iglob];
-        //         }
-        //     }
-        //     write_binary_f(fio,temp.data(),npts*ncomp);
+            // convert chi to displ
+            std::vector<double> displ(ncomp * npts);
+            model.transform_egn2disp(freq[it],c[ic],egn.data(),displ.data());
 
-        //     // write kernels
-        //     write_binary_f(fio,&frekl[0],npts*nkers);
+            // write displ
+            write_binary_f(fio,displ.data(),npts*ncomp);
+
+            // write kernels
+            write_binary_f(fio,&frekl[0],npts*nkers);
         }
     }
     fclose(fp);

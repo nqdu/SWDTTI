@@ -144,7 +144,7 @@ int main (int argc, char **argv){
             for(int i = 0; i < npts; i ++) {
                 int iglob = model.ibool[i];
                 for(int j = 0; j < ncomp; j ++) {
-                    temp[j * ncomp + i] = displ[ic * nglob * ncomp + j * nglob + iglob];
+                    temp[j * npts + i] = displ[ic * nglob * ncomp + j * nglob + iglob];
                 }
             }
             write_binary_f(fio,temp.data(),npts*ncomp);
